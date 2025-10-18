@@ -1,0 +1,3648 @@
+<?php
+/*
+Hall of Fame Webgame Code
+Copyright (C) TEKITO PROJECT for JUICE ( http://tekito.kanichat.com/ )
+Remaked by https://github.com/remileon/hof
+
+Code fixed by Kustale ( jinsu8527@gmail.com )
+
+한국어 버전 by Kustale, FE
+*/
+
+include(CLASS_USER);
+include(GLOBAL_PHP);
+class main extends user {
+
+	var $islogin	= false;
+
+
+	function __construct() {
+		$this->SessionSwitch();
+		$this->Set_ID_PASS();
+		ob_start();
+		$this->Order();
+		$content	= ob_get_contents();
+		ob_end_clean();
+
+		$this->Head();
+		print($content);
+		$this->Debug();
+		$this->Foot();
+	}
+
+
+	function Order() {
+		switch(true) {
+			case(__GET("menu") === "auction"):
+				include(CLASS_AUCTION);
+				$ItemAuction	= new Auction(item);
+				$ItemAuction->AuctionHttpQuery("auction");
+				$ItemAuction->ItemCheckSuccess(); 
+				$ItemAuction->UserSaveData(); 
+				break;
+
+			case(__GET("menu") === "rank"):
+				include(CLASS_RANKING);
+				$Ranking	= new Ranking();
+				break;
+		}
+		if( true === $message = $this->CheckLogin() ):
+			include_once(DATA_ITEM);
+			include(CLASS_CHAR);
+			if($this->FirstLogin())
+				return 0;
+
+			switch(true) {
+
+				case($this->OptionOrder()):	return false;
+
+				case(__POST("delete")):
+					if($this->DeleteMyData())
+						return 0;
+
+				case(__SERVER("QUERY_STRING") === "setting"):
+					if($this->SettingProcess())
+						$this->SaveData();
+
+					$this->fpCloseAll();
+					$this->SettingShow();
+					return 0;
+
+				case(__GET("menu") === "auction"):
+					$this->LoadUserItem();
+					$this->AuctionHeader();
+
+					$ResultExhibit	= $this->AuctionItemExhibitProcess($ItemAuction);
+					$ResultBidding	= $this->AuctionItemBiddingProcess($ItemAuction);
+					$ItemAuction->ItemSaveData();
+    
+					if(__POST("ExhibitItemForm")) {
+						$this->fpCloseAll();
+						$this->AuctionItemExhibitForm($ItemAuction);
+
+					} else if($ResultExhibit !== false) {
+
+						if($ResultExhibit === true || $ResultBidding === true)
+							$this->SaveData();
+
+						$this->fpCloseAll();
+						$this->AuctionItemBiddingForm($ItemAuction);
+
+					} else {
+						$this->fpCloseAll();
+						$this->AuctionItemExhibitForm($ItemAuction);
+					}
+
+					$this->AuctionFoot($ItemAuction);
+					return 0;
+
+				case(__SERVER("QUERY_STRING") === "hunt"):
+					$this->LoadUserItem();
+					$this->fpCloseAll();
+					$this->HuntShow();
+					return 0;
+
+				case(__SERVER("QUERY_STRING") === "town"):
+					$this->LoadUserItem();
+					$this->fpCloseAll();
+					$this->TownShow();
+					return 0;
+
+				case(__SERVER("QUERY_STRING") === "simulate"):
+					$this->CharDataLoadAll();
+					if($this->SimuBattleProcess())
+						$this->SaveData();
+
+					$this->fpCloseAll();
+					$this->SimuBattleShow($result);
+					return 0;
+
+				case(__GET("union")):
+					$this->CharDataLoadAll();
+					include(CLASS_UNION);
+					include(DATA_MONSTER);
+					if($this->UnionProcess()) {
+						$this->SaveData();
+						$this->fpCloseAll();
+					} else {
+						$this->fpCloseAll();
+						$this->UnionShow();
+					}
+					return 0;
+
+				case(__GET("common")):
+					$this->CharDataLoadAll();
+					$this->LoadUserItem();
+					if($this->MonsterBattle()) {
+						$this->SaveData();
+						$this->fpCloseAll();
+					} else {
+						$this->fpCloseAll();
+						$this->MonsterShow();
+					}
+					return 0;
+
+				case(__GET("char")):
+					$this->CharDataLoadAll();
+					include(DATA_SKILL);
+					include(DATA_JUDGE_SETUP);
+					$this->LoadUserItem();
+					$this->CharStatProcess();
+					$this->fpCloseAll();
+					$this->CharStatShow();
+					return 0;
+
+				case(__SERVER("QUERY_STRING") === "item"):
+					$this->LoadUserItem();
+					$this->fpCloseAll();
+					$this->ItemShow();
+					return 0;
+
+				case(__GET("menu") === "refine"):
+					$this->LoadUserItem();
+					$this->SmithyRefineHeader();
+					if($this->SmithyRefineProcess())
+						$this->SaveData();
+
+					$this->fpCloseAll();
+					$result	= $this->SmithyRefineShow();
+					return 0;
+
+				case(__GET("menu") === "create"):
+					$this->LoadUserItem();
+					$this->SmithyCreateHeader();
+					include(DATA_CREATE);
+					if($this->SmithyCreateProcess())
+						$this->SaveData();
+
+					$this->fpCloseAll();
+					$this->SmithyCreateShow();
+					return 0;
+				case(__SERVER("QUERY_STRING") === "shop"):
+					$this->LoadUserItem();
+					if($this->ShopProcess())
+						$this->SaveData();
+					$this->fpCloseAll();
+					$this->ShopShow();
+					return 0;
+				case(__GET("menu") === "buy"):
+					$this->LoadUserItem();
+					$this->ShopHeader();
+					if($this->ShopBuyProcess())
+						$this->SaveData();
+					$this->fpCloseAll();
+					$this->ShopBuyShow();
+					return 0;
+
+				case(__GET("menu") === "sell"):
+					$this->LoadUserItem();
+					$this->ShopHeader();
+					if($this->ShopSellProcess())
+						$this->SaveData();
+					$this->fpCloseAll();
+					$this->ShopSellShow();
+					return 0;
+
+				case(__GET("menu") === "work"):
+					$this->ShopHeader();
+					if($this->WorkProcess())
+						$this->SaveData();
+					$this->fpCloseAll();
+					$this->WorkShow();
+					return 0;
+
+				case(__GET("menu") === "rank"):
+					$this->CharDataLoadAll();
+					$RankProcess	= $this->RankProcess($Ranking);
+
+					if ($RankProcess === "BATTLE") {
+						$this->SaveData();
+						$this->fpCloseAll();
+					} else if ($RankProcess === true) {
+						$this->SaveData();
+						$this->fpCloseAll();
+						$this->RankShow($Ranking);
+					} else {
+						$this->fpCloseAll();
+						$this->RankShow($Ranking);
+					}
+					return 0;
+
+				case(__SERVER("QUERY_STRING") === "recruit"):
+					if($this->RecruitProcess())
+						$this->SaveData();
+
+					$this->fpCloseAll();
+					$this->RecruitShow($result);
+					return 0;
+
+				default:
+					$this->CharDataLoadAll();
+					$this->fpCloseAll();
+					$this->LoginMain();
+					return 0;
+			}
+		else:
+			$this->fpCloseAll();
+			switch(true) {
+				case($this->OptionOrder()):	return false;
+				case(__POST("Make")):
+					list($bool,$message) = $this->MakeNewData();
+					if( true === $bool ) {
+						$this->LoginForm($message);
+						return false;
+					}
+				case(__SERVER("QUERY_STRING") === "newgame"):
+					$this->NewForm($message);	return false;
+				default:	$this->LoginForm($message);
+			}
+		endif;
+	}
+
+
+	function OptionOrder() {
+		$this->fpCloseAll();
+		switch(true) {
+			case(__SERVER("QUERY_STRING") === "rank"):	RankAllShow();	return true;
+			case(__SERVER("QUERY_STRING") === "update"):	ShowUpDate();	return true;
+			case(__SERVER("QUERY_STRING") === "bbs"):	$this->bbs01();	return true;
+			case(__SERVER("QUERY_STRING") === "manual"):	ShowManual();	return true;
+			case(__SERVER("QUERY_STRING") === "manual2"):	ShowManual2();	return true;
+			case(__SERVER("QUERY_STRING") === "tutorial"):	ShowTutorial();	return true;
+			case(__SERVER("QUERY_STRING") === "log"):
+				ShowLogList();
+				return true;
+			case(__SERVER("QUERY_STRING") === "clog"): LogShowCommon(); return true;
+			case(__SERVER("QUERY_STRING") === "ulog"): LogShowUnion(); return true;
+			case(__SERVER("QUERY_STRING") === "rlog"): LogShowRanking(); return true;
+			case(__GET("gamedata")):
+				ShowGameData();
+				return true;
+			case(__GET("log")):
+				ShowBattleLog(__GET("log"));
+				return true;
+			case(__GET("ulog")):
+				ShowBattleLog(__GET("ulog"),"UNION");
+				return true;
+			case(__GET("rlog")):
+				ShowBattleLog(__GET("rlog"),"RANK");
+				return true;
+		}
+	}
+
+
+	function EnemyNumber($party) {
+		$min	= __count($party);
+		if($min == 5)
+			return 5;
+		$max	= $min + ENEMY_INCREASE;
+		if($max>5)
+			$max	= 5;
+		mt_srand();
+		return mt_rand($min,$max);
+	}
+
+	function SelectMonster($monster) {
+		foreach($monster as $val)
+			$max	+= $val[0];
+		$pos	= mt_rand(0,$max);
+		foreach($monster as $monster_no => $val) {
+			$upp	+= $val[0];
+			if($pos <= $upp)
+				return $monster_no;
+		}
+	}
+
+	function EnemyParty($Amount,$MonsterList,$Specify=false) {
+
+		if($Specify) {
+			$MonsterNumbers	= $Specify;
+		}
+
+		$enemy	= array();
+		if(!$Amount)
+			return $enemy;
+		mt_srand();
+		for($i=0; $i<$Amount; $i++)
+			$MonsterNumbers[]	= $this->SelectMonster($MonsterList);
+
+		$overlap	= array_count_values($MonsterNumbers);
+
+		include(CLASS_MONSTER);
+		foreach($MonsterNumbers as $Number) {
+			if(1 < $overlap[$Number])
+				$enemy[]	= new monster(CreateMonster($Number,true));
+			else
+				$enemy[]	= new monster(CreateMonster($Number));
+		}
+		return $enemy;
+	}
+
+	function CharStatProcess() {
+		$char	= &$this->char[__GET("char")];
+		if(!$char) return false;
+		switch(true):
+			case(__POST("stup")):
+				$Sum	= abs(__POST("upStr")) + abs(__POST("upInt")) + abs(__POST("upDex")) + abs(__POST("upSpd")) + abs(__POST("upLuk"));
+				if($char->statuspoint < $Sum) {
+					ShowError("상태 포인트가 너무 많습니다","margin15");
+					return false;
+				}
+
+				if($Sum == 0)
+					return false;
+
+				$Stat	= array("Str","Int","Dex","Spd","Luk");
+				foreach($Stat as $val) {
+					if(MAX_STATUS < ($char->{strtolower($val)} + __POST("up".$val))) {
+						ShowError("최대 상태를 초과(".MAX_STATUS.")","margin15");
+						return false;
+					}
+				}
+				$char->str	+= __POST("upStr");
+				$char->int	+= __POST("upInt");
+				$char->dex	+= __POST("upDex");
+				$char->spd	+= __POST("upSpd");
+				$char->luk	+= __POST("upLuk");
+				$char->SetHpSp();
+
+				$char->statuspoint	-= $Sum;
+				print("<div class=\"margin15\">\n");
+				if(__POST("upStr"))
+					ShowResult("STR <span class=\"bold\">".__POST('upStr')."</span>이 증가합니다.".(($char->str) - ((int)__POST("upStr")))." -> ".$char->str."<br />\n");
+				if(__POST("upInt"))
+					ShowResult("INT <span class=\"bold\">".__POST('upInt')."</span>이 증가합니다.".(($char->int) - ((int)__POST("upInt")))." -> ".$char->int."<br />\n");
+				if(__POST("upDex"))
+					ShowResult("DEX <span class=\"bold\">".__POST('upDex')."</span>이 증가합니다.".(($char->dex) - ((int)__POST("upDex")))." -> ".$char->dex."<br />\n");
+				if(__POST("upSpd"))
+					ShowResult("SPD <span class=\"bold\">".__POST('upSpd')."</span>이 증가합니다.".(($char->spd) - ((int)__POST("upSpd")))." -> ".$char->spd."<br />\n");
+				if(__POST("upLuk"))
+					ShowResult("LUK <span class=\"bold\">".__POST('upLuk')."</span>이 증가합니다.".(($char->luk) - ((int)__POST("upLuk")))." -> ".$char->luk."<br />\n");
+				print("</div>\n");
+				$char->SaveCharData($this->id);
+				return true;
+			case(__POST("position")):
+				if(__POST("position") == "front") {
+					$char->position	= FRONT;
+					$pos	= "전방(Front)";
+				} else {
+					$char->position	= BACK;
+					$pos	= "후방(Back)";
+				}
+
+				$char->guard	= __POST("guard");
+				switch(__POST("guard")) {
+					case "never": $guard = "가드 포기"; break;
+					case "life25": $guard = "체력이 25% 이상일 때 가드 보호"; break;
+					case "life50": $guard = "체력이 50% 이상일 때 가드 보호"; break;
+					case "life75": $guard = "체력이 75% 이상일 때 가드 보호"; break;
+					case "prob25": $guard = "25% 확률로 가드 보호"; break;
+					case "prob50": $guard = "50% 확률로 가드 보호"; break;
+					case "prob75": $guard = "75% 확률로 가드 보호"; break;
+					default: $guard = "항상 가드 보호"; break;
+				}
+				$char->SaveCharData($this->id);
+				ShowResult($char->Name()." {$pos}의 구성입니다.<br />가드(guard)로 사용하는 경우 {$guard}로 설정합니다.\n","margin15");
+				return true;
+			case(__POST("ChangePattern")):
+				$max	= $char->MaxPatterns();
+				for($i=0; $i<$max; $i++) {
+					$judge[]	= __POST("judge".$i);
+					$quantity_post	= (int)__POST("quantity".$i);
+					if(4 < strlen($quantity_post)) {
+						$quantity_post	= substr($quantity_post,0,4);
+					}
+					$quantity[]	= $quantity_post;
+					$action[]	= __POST("skill".$i);
+				}
+				if($char->PatternSave($judge,$quantity,$action)) {
+					$char->SaveCharData($this->id);
+					ShowResult("전투 설정이 저장되었습니다.","margin15");
+					return true;
+				}
+				ShowError("저장에 실패하셨나요? 운영자에게 문의해보세요.","margin15");
+				return false;
+				break;
+			case(__POST("TestBattle")):
+					$max	= $char->MaxPatterns();
+					for($i=0; $i<$max; $i++) {
+						$judge[]	= __POST("judge".$i);
+						$quantity_post	= (int)__POST("quantity".$i);
+						if(4 < strlen($quantity_post)) {
+							$quantity_post	= substr($quantity_post,0,4);
+						}
+						$quantity[]	= $quantity_post;
+						$action[]	= __POST("skill".$i);
+					}
+					if($char->PatternSave($judge,$quantity,$action)) {
+						$char->SaveCharData($this->id);
+						$this->CharTestDoppel();
+					}
+				break;
+			case(__POST("PatternMemo")):
+				if($char->ChangePatternMemo()) {
+					$char->SaveCharData($this->id);
+					ShowResult("모드 전환 완료","margin15");
+					return true;
+				}
+				break;
+			case(__POST("AddNewPattern")):
+				if(!__POST("PatternNumber"))
+					return false;
+				if($char->AddPattern(__POST("PatternNumber"))) {
+					$char->SaveCharData($this->id);
+					ShowResult("모드 추가 완료","margin15");
+					return true;
+				}
+				break;
+			case(__POST("DeletePattern")):
+				if(!__POST("PatternNumber"))
+					return false;
+				if($char->DeletePattern(__POST("PatternNumber"))) {
+					$char->SaveCharData($this->id);
+					ShowResult("모드 삭제 완료","margin15");
+					return true;
+				}
+				break;
+			case(__POST("remove")):
+				if(!__POST("spot")) {
+					ShowError("제거할 장비가 선택되지 않았습니다.","margin15");
+					return false;
+				}
+				if(!$char->{__POST("spot")}) {
+					ShowError("지정된 위치에 장비가 없습니다","margin15");
+					return false;
+				}
+				$item	= LoadItemData($char->{__POST("spot")});
+				if(!$item) return false;
+				$this->AddItem($char->{__POST("spot")});
+				$this->SaveUserItem();
+				$char->{__POST("spot")}	= NULL;
+				$char->SaveCharData($this->id);
+				SHowResult($char->Name()."의 {$item[name]}이 릴리스되었습니다.","margin15");
+				return true;
+				break;
+			case(__POST("remove_all")):
+				if($char->weapon || $char->shield || $char->armor || $char->item ) {
+					if($char->weapon)	{ $this->AddItem($char->weapon);	$char->weapon	=NULL; }
+					if($char->shield)	{ $this->AddItem($char->shield);	$char->shield	=NULL; }
+					if($char->armor)	{ $this->AddItem($char->armor);		$char->armor	=NULL; }
+					if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
+					$this->SaveUserItem();
+					$char->SaveCharData($this->id);
+					ShowResult("모든 ".$char->Name()." 장비가 제거되었습니다.","margin15");
+					return true;
+				}	break;
+			case(__POST("equip_item")):
+				$item_no	= __POST("item_no");
+				if(!$this->item["$item_no"]) {
+					ShowError("Item not exists.","margin15");
+					return false;
+				}
+
+				$JobData	= LoadJobData($char->job);
+				$item	= LoadItemData($item_no);
+				if( !in_array( $item["type"], $JobData["equip"]) ) {
+					ShowError("{$char->job_name} can't equip {$item[name]}.","margin15");
+					return false;
+				}
+
+				if(false === $return = $char->Equip($item)) {
+					ShowError("장비가 너무 무겁습니다(손잡이가 부족함).","margin15");
+					return false;
+				} else {
+					$this->DeleteItem($item_no);
+					foreach($return as $no) {
+						$this->AddItem($no);
+					}
+				}
+
+				$this->SaveUserItem();
+				$char->SaveCharData($this->id);
+				ShowResult("{$char->name}의 {$item[name]} 항목.","margin15");
+				return true;
+				break;
+			case(__POST("learnskill")):
+				if(!__POST("newskill")) {
+					ShowError("선택된 기술이 없습니다","margin15");
+					return false;
+				}
+
+				$char->SetUser($this->id);
+				list($result,$message)	= $char->LearnNewSkill(__POST("newskill"));
+				if($result) {
+					$char->SaveCharData();
+					ShowResult($message,"margin15");
+				} else {
+					ShowError($message,"margin15");
+				}
+				return true;
+			case(__POST("classchange")):
+				if(!__POST("job")) {
+					ShowError("선택된 직업이 없습니다","margin15");
+					return false;
+				}
+				if($char->ClassChange(__POST("job"))) {
+					if($char->weapon || $char->shield || $char->armor || $char->item ) {
+						if($char->weapon)	{ $this->AddItem($char->weapon);	$char->weapon	=NULL; }
+						if($char->shield)	{ $this->AddItem($char->shield);	$char->shield	=NULL; }
+						if($char->armor)	{ $this->AddItem($char->armor);		$char->armor	=NULL; }
+						if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
+						$this->SaveUserItem();
+					}
+					$char->SaveCharData($this->id);
+					ShowResult("작업 이전 완료","margin15");
+					return true;
+				}
+				ShowError("failed.","margin15");
+				return false;
+			case(__POST("rename")):
+				$Name	= $char->Name();
+				$temp_b = __GET("char");
+				$message = <<< EOD
+<form action="?char={}" method="post" class="margin15">
+반각 영어로 16자 (전각으로 1자 = 반각으로 2자)<br />
+<input type="text" name="NewName" style="width:160px" class="text" />
+<input type="submit" class="btn" name="NameChange" value="Change" />
+<input type="submit" class="btn" value="Cancel" />
+</form>
+EOD;
+				print($message);
+				return false;
+			case(__POST("NewName")):
+				list($result,$return)	= CheckString(__POST("NewName"),16);
+				if($result === false) {
+					ShowError($return,"margin15");
+					return false;
+				} else if($result === true) {
+					if($this->DeleteItem("7500",1) == 1) {
+						ShowResult($char->Name()." 는 ".$return." 로 이름 변경이 완료되었습니다.","margin15");
+						$char->ChangeName($return);
+						$char->SaveCharData($this->id);
+						$this->SaveUserItem();
+						return true;
+					} else {
+						ShowError("장비 없음.","margin15");
+						return false;
+					}
+					return true;
+				}
+			case(__POST("showreset")):
+				$Name	= $char->Name();
+				print('<div class="margin15">'."\n");
+				print("장비 사용하기<br />\n");
+				print('<form action="?char='.__GET("char").'" method="post">'."\n");
+				print('<select name="itemUse">'."\n");
+				$resetItem	= array(7510,7511,7512,7513,7520);
+				foreach($resetItem as $itemNo) {
+					if($this->item[$itemNo]) {
+						$item	= LoadItemData($itemNo);
+						print('<option value="'.$itemNo.'">'.$item[name]." x".$this->item[$itemNo].'</option>'."\n");
+					}
+				}
+				print("</select>\n");
+				print('<input type="submit" class="btn" name="resetVarious" value="다시 놓기">'."\n");
+				print('<input type="submit" class="btn" value="취소">'."\n");
+				print('</form>'."\n");
+				print('</div>'."\n");
+				break;
+
+			case(__POST("resetVarious")):
+				switch(__POST("itemUse")) {
+					case 7510:
+						$lowLimit	= 1;
+						break;
+					case 7511:
+						$lowLimit	= 30;
+						break;
+					case 7512:
+						$lowLimit	= 50;
+						break;
+					case 7513:
+						$lowLimit	= 100;
+						break;
+					case 7520:
+						$skillReset	= true;
+						break;
+				}
+				if(__POST("itemUse") == 6000) {
+					if($this->DeleteItem(6000) == 0) {
+						ShowError("장비가 없어요.","margin15");
+						return false;
+					}
+					if(1 < $char->spd) {
+						$dif	= $char->spd - 1;
+						$char->spd	-= $dif;
+						$char->statuspoint	+= $dif;
+						$char->SaveCharData($this->id);
+						$this->SaveUserItem();
+						ShowResult("포인트 반환","margin15");
+						return true;
+					}
+				}
+				if($lowLimit) {
+					if(!$this->item[__POST("itemUse")]) {
+						ShowError("장비가 없어요.","margin15");
+						return false;
+					}
+					if($lowLimit < $char->str) {$dif = $char->str - $lowLimit; $char->str -= $dif; $pointBack += $dif;}
+					if($lowLimit < $char->int) {$dif = $char->int - $lowLimit; $char->int -= $dif; $pointBack += $dif;}
+					if($lowLimit < $char->dex) {$dif = $char->dex - $lowLimit; $char->dex -= $dif; $pointBack += $dif;}
+					if($lowLimit < $char->spd) {$dif = $char->spd - $lowLimit; $char->spd -= $dif; $pointBack += $dif;}
+					if($lowLimit < $char->luk) {$dif = $char->luk - $lowLimit; $char->luk -= $dif; $pointBack += $dif;}
+					if($pointBack) {
+						if($this->DeleteItem(__POST("itemUse")) == 0) {
+							ShowError("장비가 없어요.","margin15");
+							return false;
+						}
+						$char->statuspoint	+= $pointBack;
+						if($char->weapon || $char->shield || $char->armor || $char->item ) {
+							if($char->weapon)	{ $this->AddItem($char->weapon);	$char->weapon	=NULL; }
+							if($char->shield)	{ $this->AddItem($char->shield);	$char->shield	=NULL; }
+							if($char->armor)	{ $this->AddItem($char->armor);		$char->armor	=NULL; }
+							if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
+							ShowResult($char->Name()." 의 모든 장비가 제거되었습니다.","margin15");
+						}
+						$char->SaveCharData($this->id);
+						$this->SaveUserItem();
+						ShowResult("포인트가 성공적으로 반환되었습니다","margin15");
+						return true;
+					} else {
+						ShowError("포인트 반환에 실패했습니다","margin15");
+						return false;
+					}
+				}
+				if($skillReset) {
+					if(!$this->item[__POST("itemUse")]) {
+						ShowError("장비가 없어요.","margin15");
+						return false;
+					}
+					if($skillReset = true)
+				if($char->job < 199) {$dif = ($char->level - 1) * 2 - $char->skillpoint; $char->skill ="1000<>1001"; $pointBack += $dif;}
+				else if($char->job < 299) {$dif = ($char->level - 1) * 2 - $char->skillpoint; $char->skill ="1000<>1002<>3010"; $pointBack += $dif;}
+				else if($char->job < 399) {$dif = ($char->level - 1) * 2 - $char->skillpoint; $char->skill ="1000<>3000<>3101"; $pointBack += $dif;}
+				else {$dif = ($char->level - 1) * 2 - $char->skillpoint; $char->skill ="2300<>2310"; $pointBack += $dif;}
+					if($pointBack) {
+						if($this->DeleteItem(__POST("itemUse")) == 0) {
+							ShowError("장비가 없어요.","margin15");
+							return false;
+						}
+						$char->skillpoint	+= $pointBack;
+						$char->SaveCharData($this->id);
+						$this->SaveUserItem();
+						ShowResult("스킬 초기화 성공","margin15");
+						return true;
+					} else {
+						ShowError("스킬 초기화에 실패했습니다.","margin15");
+						return false;
+					}
+				}
+				break;
+
+			case(__POST("byebye")):
+				$Name	= $char->Name();
+				$temp_a = __GET("char");
+				$message = <<< HTML_BYEBYE
+<div class="margin15">
+{$Name} 를 해고 하겠습니까?<br>
+<form action="?char={}" method="post">
+<input type="submit" class="btn" name="kick" value="Yes">
+<input type="submit" class="btn" value="No">
+</form>
+</div>
+HTML_BYEBYE;
+				print($message);
+				return false;
+			case(__POST("kick")):
+				$char->DeleteChar();
+				$host  = __SERVER('HTTP_HOST');
+				$uri   = rtrim(dirname(__SERVER('PHP_SELF')));
+				$extra = INDEX;
+				header("Location: http://$host$uri/$extra");
+				exit;
+				break;
+		endswitch;
+	}
+	
+	function CharStatShow() {
+		$char	= &$this->char[__GET("char")];
+		if(!$char) {
+			print("Not exists");
+			return false;
+		}
+		$char->SetBattleVariable();
+
+		$JobData	= LoadJobData($char->job);
+
+		if($JobData["change"]) {
+			include_once(DATA_CLASSCHANGE);
+			foreach($JobData["change"] as $job) {
+				if(CanClassChange($char,$job))
+					$CanChange[]	= $job;
+			}
+		}
+		$temp1 = __GET("char");
+echo <<<P1
+<form action="?char={$temp1}" method="post" style="padding:5px 0 0 15px">
+P1;
+		print('<div style="padding-top:5px">');
+		foreach($this->char as $key => $val) {
+			echo "<a href=\"?char={$key}\">{$val->name}</a>  ";
+		}
+		print("</div>");
+echo <<<P2
+<h4>캐릭터 상태 <a href="?manual#charstat" target="_blank" class="a0">?</a></h4>
+P2;
+		$char->ShowCharDetail();
+		if($this->item["7500"])
+			print('<input type="submit" class="btn" name="rename" value="ChangeName">'."\n");
+		if($this->item["7510"] ||
+			$this->item["7511"] ||
+			$this->item["7512"] ||
+			$this->item["7513"] ||
+			$this->item["7520"]) {
+			print('<input type="submit" class="btn" name="showreset" value="다시 놓기">'."\n");
+		}
+echo <<<P3
+<input type="submit" class="btn" name="byebye" value="제거">
+</form>
+P3;
+	if(0 < $char->statuspoint) {
+		$temp_ = __GET("char");
+print <<< HTML
+	<form action="?char={$temp_}" method="post" style="padding:0 15px">
+	<h4>Status <a href="?manual#statup" target="_blank" class="a0">?</a></h4>
+HTML;
+
+		$Stat	= array("Str","Int","Dex","Spd","Luk");
+		print("Point : {$char->statuspoint}<br />\n");
+		foreach($Stat as $val) {
+			print("{$val}:\n");
+			print("<select name=\"up{$val}\" class=\"vcent\">\n");
+			for($i=0; $i < $char->statuspoint + 1; $i++)
+				print("<option value=\"{$i}\">+{$i}</option>\n");
+			print("</select>");
+		}
+		print("<br />");
+		print('<input type="submit" class="btn" name="stup" value="감사">');
+		print("\n");
+
+	print("</form>\n");
+	}
+	$temp2 = __GET("char");
+	
+echo <<<P4
+	<form action="?char={$temp2}" method="post" style="padding:0 15px">
+	<h4>액션 모드 <a href="?manual#jdg" target="_blank" class="a0">?</a></h4>
+P4;
+
+		$list	= JudgeList();
+		print("<table cellspacing=\"5\"><tbody>\n");
+		for($i=0; $i<$char->MaxPatterns(); $i++) {
+			print("<tr><td>");
+			print( ($i+1)."</td><td>");
+			print("<select name=\"judge".$i."\">\n");
+			foreach($list as $val) {
+				$exp	= LoadJudgeData($val);
+				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).($exp["css"]?' class="select0"':NULL).">".($exp["css"]?' ':'   ')."{$exp[exp]}</option>\n");
+			}
+			print("</select>\n");
+			print("</td><td>\n");
+			print("<input type=\"text\" name=\"quantity".$i."\" maxlength=\"4\" value=\"".$char->quantity[$i]."\" style=\"width:56px\" class=\"text\">");
+			print("</td><td>\n");
+			print("<select name=\"skill".$i."\">\n");
+			foreach($char->skill as $val) {
+				$skill	= LoadSkillData($val);
+				print("<option value=\"{$val}\"".($char->action[$i] == $val ? " selected" : NULL).">");
+				print($skill["name"].(isset($skill["sp"])?" - (SP:{$skill[sp]})":NULL));
+				print("</option>\n");
+			}
+			print("</select>\n");
+			print("</td><td>\n");
+			print('<input type="radio" name="PatternNumber" value="'.$i.'">');
+			print("</td></tr>\n");
+		}
+		print("</tbody></table>\n");
+
+		$temp3 = __GET("char");
+		$temp4 = (($char->position=="front") ? " checked" : NULL);
+		$temp5 = (($char->position=="back") ? " checked" : NULL);
+echo <<<P5
+<input type="submit" class="btn" value="확인 모드" name="ChangePattern">
+<input type="submit" class="btn" value="설정 및 테스트" name="TestBattle">
+ <a href="?simulate">Simulate</a><br />
+<input type="submit" class="btn" value="스위칭 모드" name="PatternMemo">
+<input type="submit" class="btn" value="추가" name="AddNewPattern">
+<input type="submit" class="btn" value="삭제" name="DeletePattern">
+</form>
+<form action="?char={$temp3}" method="post" style="padding:0 15px">
+<h4>위치 및 보호<a href="?manual#posi" target="_blank" class="a0">?</a></h4>
+<table><tbody>
+<tr><td>위치(Position) :</td><td><input type="radio" class="vcent" name="position" value="front"
+{$temp4}>전방(Front)</td></tr>
+<tr><td></td><td><input type="radio" class="vcent" name="position" value="back"
+{$temp5}>후방(Backs)</td></tr>
+<tr><td>경비원(Guarding) :</td><td>
+<select name="guard">
+P5;
+
+		$option	= array(
+			"always" => "항상 보호",
+			"never" => "보호 안 함",
+			"life25" => "HP가 25% 이상일 때 보호",
+			"life50" => "HP가 50% 이상일 때 보호",
+			"life75" => "HP가 75% 이상일 때 보호",
+			"prob25" => "25% 확률로 보호",
+			"prpb50" => "50% 확률로 보호",
+			"prob75" => "75% 확률로 보호",
+		);
+		foreach($option as $key => $val)
+			print("<option value=\"{$key}\"".($char->guard==$key ? " selected" : NULL ).">{$val}</option>");
+echo <<<P6
+	</select>
+	</td></tr>
+	</tbody></table>
+	<input type="submit" class="btn" value="설정">
+	</form>
+P6;
+		$weapon	= LoadItemData($char->weapon);
+		$shield	= LoadItemData($char->shield);
+		$armor	= LoadItemData($char->armor);
+		$item	= LoadItemData($char->item);
+
+		$handle	= 0;
+		$handle	= $weapon["handle"] + $shield["handle"] + $armor["handle"] + $item["handle"];
+
+		$temp6 = __GET("char");
+		$temp7 = ShowItemDetail(LoadItemData($char->weapon));
+		$temp8 = ShowItemDetail(LoadItemData($char->shield));
+		$temp9 = ShowItemDetail(LoadItemData($char->armor));
+		$temp10 = ShowItemDetail(LoadItemData($char->item));
+echo <<<P7
+	<div style="margin:0 15px">
+	<h4>장비<a href="?manual#equip" target="_blank" class="a0">?</a></h4>
+	<div class="bold u">Current Equip's</div>
+	<table>
+	<tr><td class="dmg" style="text-align:right">Atk :</td><td class="dmg">{$char->atk[0]}</td></tr>
+	<tr><td class="spdmg" style="text-align:right">Matk :</td><td class="spdmg">{$char->atk[1]}</td></tr>
+	<tr><td class="recover" style="text-align:right">Def :</td><td class="recover">{$char->def[0]} + {$char->def[1]}</td></tr>
+	<tr><td class="support" style="text-align:right">Mdef :</td><td class="support">{$char->def[2]} + {$char->def[3]}</td></tr>
+	<tr><td class="charge" style="text-align:right">handle :</td><td class="charge">{$handle} / {$char->GetHandle()}</td></tr>
+	</table>
+	<form action="?char={$temp6}" method="post">
+	<table>
+	<tr><td class="align-right">
+	무기:</td><td><input type="radio" class="vcent" name="spot" value="weapon">
+	{$temp7}
+	</td></tr><tr><td class="align-right">
+	방패:</td><td><input type="radio" class="vcent" name="spot" value="shield">
+	{$temp8}
+	</td></tr><tr><td class="align-right">
+	갑옷:</td><td><input type="radio" class="vcent" name="spot" value="armor">
+	{$temp9}
+	</td></tr><tr><td class="align-right">
+	장비 : </td><td><input type="radio" class="vcent" name="spot" value="item">
+	{$temp10}
+	</td></tr></tbody>
+	</table>
+	<input type="submit" class="btn" name="remove" value="장비해제">
+	<input type="submit" class="btn" name="remove_all" value="전부해제">
+	</form>
+	</div>
+P7;
+
+		if($JobData["equip"])
+			$EquipAllow	= array_flip($JobData["equip"]);
+		else
+			$EquipAllow	= array();
+		$Equips		= array("Weapon"=>"2999","Shield"=>"4999","Armor"=>"5999","Item"=>"9999");
+
+		print("<div style=\"padding:15px 15px 0 15px\">\n");
+		print("\t<div class=\"bold u\">소유 및 허용 장비</div>\n");
+		if($this->item) {
+			include(CLASS_JS_ITEMLIST);
+			$EquipList	= new JS_ItemList();
+			$EquipList->SetID("equip");
+			$EquipList->SetName("type_equip");
+			if($this->no_JS_itemlist)
+				$EquipList->NoJS();
+			reset($this->item);
+			foreach($this->item as $key => $val) {
+				$item	= LoadItemData($key);
+				if(!isset( $EquipAllow[ $item["type"] ] ))
+					continue;
+				$head	= '<input type="radio" name="item_no" value="'.$key.'" class="vcent">';
+				$head	.= ShowItemDetail($item,$val,true)."<br />";
+				$EquipList->AddItem($item,$head);
+			}
+			print($EquipList->GetJavaScript("list0"));
+			print($EquipList->ShowSelect());
+			print('<form action="?char='.__GET("char").'" method="post">'."\n");
+			print('<div id="list0">'.$EquipList->ShowDefault().'</div>'."\n");
+			print('<input type="submit" class="btn" name="equip_item" value="장비">'."\n");
+			print("</form>\n");
+		} else {
+			print("아직 장비가 없습니다.<br />\n");
+		}
+		print("</div>\n");
+
+		$temp11 = __GET("char");
+echo <<<P8
+	<form action="?char={$temp11}" method="post" style="padding:0 15px">
+	<h4>기능<a href="?manual#skill" target="_blank" class="a0">?</a></h4>
+P8;
+
+		include_once(DATA_SKILL_TREE);
+		if($char->skill) {
+			print('<div class="u bold">마스터했다</div>');
+			print("<table><tbody>");
+			foreach($char->skill as $val) {
+				print("<tr><td>");
+				$skill	= LoadSkillData($val);
+				ShowSkillDetail($skill);
+				print("</td></tr>");
+			}
+			print("</tbody></table>");
+			print('<div class="u bold">새로운 기술</div>');
+			print("기술 포인트 : {$char->skillpoint}");
+			print("<table><tbody>");
+			$tree	= LoadSkillTree($char);
+			foreach(array_diff($tree,$char->skill) as $val) {
+				print("<tr><td>");
+				$skill	= LoadSkillData($val);
+				ShowSkillDetail($skill,1);
+				print("</td></tr>");
+			}
+			print("</tbody></table>");
+			print('<input type="submit" class="btn" name="learnskill" value="인수">'."\n");
+			print('<input type="hidden" name="learnskill" value="1">'."\n");
+		}
+		if($CanChange) {
+			$temp12 = __GET("char");
+echo <<<P9
+	</form>
+	<form action="?char={$temp12}" method="post" style="padding:0 15px">
+	<h4>직업 변경</h4>
+	<table><tbody><tr>
+P9;
+			foreach($CanChange as $job) {
+				print("<td valign=\"bottom\" style=\"padding:5px 30px;text-align:center\">");
+				$JOB	= LoadJobData($job);
+				print('<img src="'.IMG_CHAR.$JOB["img_".($char->gender?"female":"male")].'">'."<br />\n");
+				print('<input type="radio" value="'.$job.'" name="job">'."<br />\n");
+				print($JOB["name_".($char->gender?"female":"male")]);
+				print("</td>");
+			}
+
+echo <<<P10
+	</tr></tbody></table>
+	<input type="submit" class="btn" name="classchange" value="직업 변경">
+	<input type="hidden" name="classchange" value="1">
+P10;
+		}
+
+
+		print("</form>");
+
+		print('<div  style="padding:15px">');
+		foreach($this->char as $key => $val) {
+			echo "<a href=\"?char={$key}\">{$val->name}</a>  ";
+		}
+		print('</div>');
+	}
+
+	function CharTestDoppel() {
+		if(!__POST("TestBattle")) return 0;
+
+		$char	= $this->char[__GET("char")];
+		$this->DoppelBattle(array($char));
+	}
+
+	function DoppelBattle($party,$turns=10) {
+
+		foreach($party as $key => $char) {
+			$enemy[$key]	= new char();
+			$enemy[$key]->SetCharData(get_object_vars($char));
+			
+		}
+		foreach($enemy as $key => $doppel) {
+			$enemy[$key]->ChangeName("Nise".$doppel->name);
+		}
+
+		include(CLASS_BATTLE);
+		$battle	= new battle($party,$enemy);
+		$battle->SetTeamName($this->name,"Do-feru");
+		$battle->LimitTurns($turns);
+		$battle->NoResult();
+		$battle->Process();
+		return true;
+	}
+
+	function SimuBattleProcess() {
+		if(__POST("simu_battle")) {
+			$this->MemorizeParty();
+			foreach($this->char as $key => $val) {
+				if(__POST("char_".$key))
+					$MyParty[]	= $this->char[$key];
+			}
+			if( __count($MyParty) === 0) {
+				ShowError('전투에는 최소 한 명 이상이 참여해야 합니다.',"margin15");
+				return false;
+			} else if(5 < __count($MyParty)) {
+				ShowError('최대 5명까지 전투에 참여할 수 있습니다.',"margin15");
+				return false;
+			}
+			$this->DoppelBattle($MyParty,50);
+			return true;
+		}
+	}
+
+	function SimuBattleShow($message=false) {
+		print('<div style="margin:15px">');
+		ShowError($message);
+		print('<span class="bold">시뮬레이션 전투</span>');
+		print('<h4>Teams</h4></div>');
+		print('<form action="'.INDEX.'?simulate" method="post">');
+		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
+echo <<<P11
+	<div style="margin:15px;text-align:center">
+	<input type="submit" class="btn" name="simu_battle" value="대결!">
+	<input type="reset" class="btn" value="다시 놓기"><br>
+	이 팀을 저장하세요 : <input type="checkbox" name="memory_party" value="1">
+	</div></form>
+P11;
+	}
+
+	function HuntShow() {
+		include(DATA_LAND);
+		include(DATA_LAND_APPEAR);
+		print('<div style="margin:15px">');
+		print('<h4>평범한 괴물들</h4>');
+		print('<div style="margin:0 20px">');
+
+		$mapList	= LoadMapAppear($this);
+		foreach($mapList as $map) {
+			list($land)	= LandInformation($map);
+			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land[name]}</a>");
+			print("</p>");
+		}
+
+		print("</div>\n");
+		$files	= glob(UNION."*");
+		if($files) {
+			include(CLASS_UNION);
+			include(DATA_MONSTER);
+			foreach($files as $file) {
+				$UnionMons	= new union($file);
+				if($UnionMons->is_Alive())
+					$Union[]	= $UnionMons;
+			}
+		}
+		if($Union) {
+			print('<h4>BOSS</h4>');
+			$result = $this->CanUnionBattle();
+			if($result !== true) {
+				$left_minute	= floor($result/60);
+				$left_second	= $result%60;
+				print('<div style="margin:0 20px">');
+				print('다음 전투는 다음과 같습니다 : <span class="bold">'.$left_minute. ":".sprintf("%02d",$left_second)."</span>");
+				print("</div>");
+			}
+			print("</div>");
+			$this->ShowCharacters($Union);
+		} else {
+			print("</div>");
+		}
+
+		print("<div style=\"margin:0 15px\">\n");
+		print("<h4>BOSS 배틀 레코드 <a href=\"?ulog\">전체 표현</a></h4>\n");
+		print("<div style=\"margin:0 20px\">\n");
+		$log	= @glob(LOG_BATTLE_UNION."*");
+		foreach(array_reverse($log) as $file) {
+			$limit++;
+			BattleLogDetail($file,"UNION");
+			if(15 <= $limit)
+				break;
+		}
+		print("</div></div>\n");
+	}
+
+	function MonsterShow() {
+		$land_id	= __GET("common");
+		include(DATA_LAND);
+		include_once(DATA_LAND_APPEAR);
+		if(!in_array(__GET("common"),LoadMapAppear($this))) {
+			print('<div style="margin:15px">not appeared or not exist</div>');
+			return false;
+		}
+		list($land,$monster_list)	= LandInformation($land_id);
+		if(!$land || !$monster_list) {
+			print('<div style="margin:15px">fail to load</div>');
+			return false;
+		}
+
+		print('<div style="margin:15px">');
+		ShowError($message);
+		print('<span class="bold">'.$land["name"].'</span>');
+		print('<h4>팀</h4></div>');
+		print('<form action="'.INDEX.'?common='.__GET("common").'" method="post">');
+		$this->ShowCharacters($this->char,"CHECKBOX",explode("<>",$this->party_memo));
+
+echo <<<P12
+	<div style="margin:15px;text-align:center">
+	<input type="submit" class="btn" name="monster_battle_multiply" value="대결! (테스트 중) (실패하면 클릭하지 마세요)">
+	<input type="submit" class="btn" name="monster_battle" value="대결!">
+	<input type="reset" class="btn" value="다시 놓기"><br>
+	이 팀을 저장하세요 : <input type="checkbox" name="memory_party" value="1">
+	</div></form>
+P12;
+		include(DATA_MONSTER);
+		include(CLASS_MONSTER);
+		foreach($monster_list as $id =>$val) {
+			if($val[1])
+				$monster[]	= new monster(CreateMonster($id));
+		}
+		print('<div style="margin:15px"><h4>MonsterAppearance</h4></div>');
+		$this->ShowCharacters($monster,"MONSTER",$land["land"]);
+	}
+
+
+	function TimeCostCalc() {
+		return NORMAL_BATTLE_TIME;
+	}
+
+
+	function MonsterBattle() {
+		if(__POST("monster_battle") || __POST("monster_battle_multiply")) {
+			$this->MemorizeParty();
+			include_once(DATA_LAND_APPEAR);
+			$land	= LoadMapAppear($this);
+			if(!in_array(__GET("common"),$land)) {
+				ShowError("지도가 나타나지 않습니다","margin15");
+				return false;
+			}
+
+			if($this->time < NORMAL_BATTLE_TIME) {
+				ShowError("시간 부족(필요한 시간 : ".NORMAL_BATTLE_TIME.")","margin15");
+				return false;
+			}
+			foreach($this->char as $key => $val) {
+				if(__POST("char_".$key))
+					$MyParty[]	= $this->char[$key];
+			}
+			if( __count($MyParty) === 0) {
+				ShowError('전투에는 최소 한 명 이상이 참여해야 합니다.',"margin15");
+				return false;
+			} else if(5 < __count($MyParty)) {
+				ShowError('최대 5명까지 전투에 참여할 수 있습니다.',"margin15");
+				return false;
+			}
+			include(DATA_LAND);
+			include(DATA_MONSTER);
+			list($Land,$MonsterList)	= LandInformation(__GET("common"));
+			$EneNum	= $this->EnemyNumber($MyParty);
+			$EnemyParty	= $this->EnemyParty($EneNum,$MonsterList);
+
+			$this->WasteTime(NORMAL_BATTLE_TIME);
+			include(CLASS_BATTLE);
+			$battle	= new battle($MyParty,$EnemyParty);
+			$battle->SetBackGround($Land["land"]);
+			$battle->SetTeamName($this->name,$Land["name"]);
+			$battle->Process();
+			$battle->SaveCharacters();
+			list($UserMoney)	= $battle->ReturnMoney();
+			$this->GetMoney($UserMoney);
+			if($this->record_btl_log)
+				$battle->RecordLog();
+
+			if($itemdrop	= $battle->ReturnItemGet(0)) {
+				$this->LoadUserItem();
+				foreach($itemdrop as $itemno => $amount)
+					$this->AddItem($itemno,$amount);
+				$this->SaveUserItem();
+			}
+			return true;
+		}
+	}
+
+
+	function ItemProcess() {
+	}
+
+
+	function ItemShow() {
+echo <<<P13
+		<div style="margin:15px">
+		<h4>장비</h4>
+		<div style="margin:0 20px">
+P13;
+		if($this->item) {
+			include(CLASS_JS_ITEMLIST);
+			$goods	= new JS_ItemList();
+			$goods->SetID("my");
+			$goods->SetName("type");
+			if($this->no_JS_itemlist)
+				$goods->NoJS();
+			foreach($this->item as $no => $val) {
+				$item	= LoadItemData($no);
+				$string	= ShowItemDetail($item,$val,1)."<br />";
+				$goods->AddItem($item,$string);
+			}
+			print($goods->GetJavaScript("list"));
+			print($goods->ShowSelect());
+			print('<div id="list">'.$goods->ShowDefault().'</div>');
+		} else {
+			print("No items.");
+		}
+		print("</div></div>");
+	}
+
+	function ShopHeader() {
+		$temp13 = IMG_CHAR;
+echo <<<P14
+<div style="margin:15px">
+<h4>상점</h4>
+
+<div style="width:600px">
+<div style="float:left;width:50px;">
+<img src="{$temp13}ori_002.gif" />
+</div>
+<div style="float:right;width:550px;">
+상점에 오신걸 환영 합니다ㅡ<br />
+<a href="?menu=buy">사기</a> / <a href="?menu=sell">팔기</a><br />
+<a href="?menu=work">일하기</a>
+</div>
+<div style="clear:both"></div>
+</div>
+
+</div>
+P14; 
+	}
+
+	function ShopProcess() {
+		switch(true) {
+			case(__POST("partjob")):
+				if($this->WasteTime(100)) {
+					$this->GetMoney(500);
+					ShowResult("공작".MoneyFormat(500)." 굉장하다!(?)","margin15");
+					return true;
+				} else {
+					ShowError("시간이 없다. 일하는 아무것도 아깝다. (?)","margin15");
+					return false;
+				}
+			case(__POST("shop_buy")):
+				$ShopList	= ShopList();
+				if(__POST("item_no") && in_array(__POST("item_no"),$ShopList)) {
+					if(preg_match("/^[0-9]/",__POST("Amount"))) {
+						$amount	= (int)__POST("Amount");
+						if($amount == 0)
+							$amount	= 1;
+					} else {
+						$amount	= 1;
+					}
+					$item	= LoadItemData(__POST("item_no"));
+					$need	= $amount * $item["buy"];
+					if($this->TakeMoney($need)) {
+						$this->AddItem(__POST("item_no"),$amount);
+						$this->SaveUserItem();
+						if(1 < $amount) {
+							$img	= "<img src=\"".IMG_ICON.$item[img]."\" class=\"vcent\" />";
+							ShowResult("{$img}{$item[name]}  {$amount}개 구매 (".MoneyFormat($item["buy"])." x{$amount} = ".MoneyFormat($need).")","margin15");
+							return true;
+						} else {
+							$img	= "<img src=\"".IMG_ICON.$item[img]."\" class=\"vcent\" />";
+							ShowResult("{$img}{$item[name]}개 구매 (".MoneyFormat($need).")","margin15");
+							return true;
+						}
+					} else {
+						ShowError("금액 부족(".MoneyFormat($need)." 필요)","margin15");
+						return false;
+					}
+				}
+				break;
+			case(__POST("shop_sell")):
+				if(__POST("item_no") && $this->item[__POST("item_no")]) {
+					if(preg_match("/^[0-9]/",__POST("Amount"))) {
+						$amount	= (int)__POST("Amount");
+						if($amount == 0)
+							$amount	= 1;
+					} else {
+						$amount	= 1;
+					}
+					$DeletedAmount	= $this->DeleteItem(__POST("item_no"),$amount);
+					$item	= LoadItemData(__POST("item_no"));
+					$price	= (isset($item["sell"]) ? $item["sell"] : round($item["buy"]*SELLING_PRICE));
+					$this->GetMoney($price*$DeletedAmount);
+					$this->SaveUserItem();
+					if($DeletedAmount != 1)
+						$add	= " x{$DeletedAmount}";
+					$img	= "<img src=\"".IMG_ICON.$item[img]."\" class=\"vcent\" />";
+					ShowResult("{$img}{$item[name]}{$add}".MoneyFormat($price*$DeletedAmount)." 에 판매","margin15");
+					return true;
+				}
+				break;
+		}
+	}
+
+	function ShopShow($message=NULL) {
+		$temp14 = ShowError($message);
+echo <<<P15
+	<div style="margin:15px">
+	{$temp14}
+	<h4>Goods List</h4>
+	<div style="margin:0 20px">
+P15;
+		include(CLASS_JS_ITEMLIST);
+		$ShopList	= ShopList();
+
+		$goods	= new JS_ItemList();
+		$goods->SetID("JS_buy");
+		$goods->SetName("type_buy");
+		if($this->no_JS_itemlist)
+			$goods->NoJS();
+		foreach($ShopList as $no) {
+			$item	= LoadItemData($no);
+			$string	= '<input type="radio" name="item_no" value="'.$no.'" class="vcent">';
+			$string	.= "<span style=\"padding-right:10px;width:10ex\">".MoneyFormat($item["buy"])."</span>".ShowItemDetail($item,false,1)."<br />";
+			$goods->AddItem($item,$string);
+		}
+		print($goods->GetJavaScript("list_buy"));
+		print($goods->ShowSelect());
+
+		print('<form action="?shop" method="post">'."\n");
+		print('<div id="list_buy">'.$goods->ShowDefault().'</div>'."\n");
+		print('<input type="submit" class="btn" name="shop_buy" value="买">'."\n");
+		print('Amount <input type="text" name="amount" style="width:60px" class="text vcent">(input if 2 or more)<br />'."\n");
+		print('<input type="hidden" name="shop_buy" value="1">');
+		print('</form></div>'."\n");
+
+		print("<h4>My Items<a name=\"sell\"></a></h4>\n");
+		print('<div style="margin:0 20px">'."\n");
+		if($this->item) {
+			$goods	= new JS_ItemList();
+			$goods->SetID("JS_sell");
+			$goods->SetName("type_sell");
+			if($this->no_JS_itemlist)
+				$goods->NoJS();
+			foreach($this->item as $no => $val) {
+				$item	= LoadItemData($no);
+				$price	= (isset($item["sell"]) ? $item["sell"] : round($item["buy"]*SELLING_PRICE));
+				$string	= '<input type="radio" class="vcent" name="item_no" value="'.$no.'">';
+				$string	.= "<span style=\"padding-right:10px;width:10ex\">".MoneyFormat($price)."</span>".ShowItemDetail($item,$val,1)."<br />";
+				$head	= '<input type="radio" name="item_no" value="'.$no.'" class="vcent">'.MoneyFormat($item["buy"]);
+				$goods->AddItem($item,$string);
+			}
+			print($goods->GetJavaScript("list_sell"));
+			print($goods->ShowSelect());
+	
+			print('<form action="?shop" method="post">'."\n");
+			print('<div id="list_sell">'.$goods->ShowDefault().'</div>'."\n");
+			print('<input type="submit" class="btn" name="shop_sell" value="Sell">');
+			print('Amount <input type="text" name="amount" style="width:60px" class="text vcent">(input if 2 or more)'."\n");
+			print('<input type="hidden" name="shop_sell" value="1">');
+			print('</form>'."\n");
+		} else {
+			print("No items");
+		}
+		print("</div>\n");
+		$temp15 = MoneyFormat("500");
+echo <<<P16
+<form action="?shop" method="post">
+<h4>일하기</h4>
+<div style="margin:0 20px">
+가게에서 타공하여 돈을 얻는다...<br />
+<input type="submit" class="btn" name="partjob" value="일하기">
+Get {$temp15} for 100Time.
+</form></div></div>
+P16;
+	}
+
+
+	function ShopBuyProcess() {
+		if(!__POST("ItemBuy"))
+			return false;
+
+		print("<div style=\"margin:15px\">");
+		print("<table cellspacing=\"0\">\n");
+		print('<tr><td class="td6" style="text-align:center">价格</td>'.
+		'<td class="td6" style="text-align:center">数</td>'.
+		'<td class="td6" style="text-align:center">共计</td>'.
+		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
+		$moneyNeed	= 0;
+		$ShopList	= ShopList();
+		foreach($ShopList as $itemNo) {
+			if(!__POST("check_".$itemNo))
+				continue;
+			$item	= LoadItemData($itemNo);
+			if(!$item) continue;
+			$amount	= (int)__POST("amount_".$itemNo);
+			if($amount < 0)
+				$amount	= 0;
+			
+			$buyPrice	= $item["buy"];
+			$Total	= $amount * $buyPrice;
+			$moneyNeed	+= $Total;
+			print("<tr><td class=\"td7\">");
+			print(MoneyFormat($buyPrice)."\n");
+			print("</td><td class=\"td7\">");
+			print("x {$amount}\n");
+			print("</td><td class=\"td7\">");
+			print("= ".MoneyFormat($Total)."\n");
+			print("</td><td class=\"td8\">");
+			print(ShowItemDetail($item)."\n");
+			print("</td></tr>\n");
+			$this->AddItem($itemNo,$amount);
+		}
+		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($moneyNeed)."</td></tr>");
+		print("</table>\n");
+		print("</div>");
+		if($this->TakeMoney($moneyNeed)) {
+			$this->SaveUserItem();
+			return true;
+		} else {
+			ShowError("您没有足够的钱","margin15");
+			return false;
+		}
+	}
+
+	function ShopBuyShow() {
+		print('<div style="margin:15px">'."\n");
+		print("<h4>购买</h4>\n");
+
+print <<< JS_HTML
+<script type="text/javascript">
+<!--
+function toggleCSS(id) {
+Element.toggleClassName('i'+id+'a', 'tdToggleBg');
+Element.toggleClassName('i'+id+'b', 'tdToggleBg');
+Element.toggleClassName('i'+id+'c', 'tdToggleBg');
+Element.toggleClassName('i'+id+'d', 'tdToggleBg');
+Field.focus('text_'+id);
+}
+function toggleCheckBox(id) {
+if($('check_'+id).checked) {
+  $('check_'+id).checked = false;
+} else {
+  $('check_'+id).checked = true;
+  Field.focus('text_'+id);
+}
+toggleCSS(id);
+}
+// -->
+</script>
+JS_HTML;
+
+		print('<form action="?menu=buy" method="post">'."\n");
+		print("<table cellspacing=\"0\">\n");
+		print('<tr><td class="td6"></td>'.
+		'<td style="text-align:center" class="td6">价格</td>'.
+		'<td style="text-align:center" class="td6">数</td>'.
+		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
+		$ShopList	= ShopList();
+		foreach($ShopList as $itemNo) {
+			$item	= LoadItemData($itemNo);
+			if(!$item) continue;
+			print("<tr><td class=\"td7\" id=\"i{$itemNo}a\">\n");
+			print('<input type="checkbox" name="check_'.$itemNo.'" value="1" onclick="toggleCSS(\''.$itemNo.'\')">'."\n");
+			print("</td><td class=\"td7\" id=\"i{$itemNo}b\" onclick=\"toggleCheckBox('{$itemNo}')\">\n");
+			$price	= $item["buy"];
+			print(MoneyFormat($price));
+			print("</td><td class=\"td7\" id=\"i{$itemNo}c\">\n");
+			print('<input type="text" id="text_'.$itemNo.'" name="amount_'.$itemNo.'" value="1" style="width:60px" class="text">'."\n");
+			print("</td><td class=\"td8\" id=\"i{$itemNo}d\" onclick=\"toggleCheckBox('{$itemNo}')\">\n");
+			print(ShowItemDetail($item));
+			print("</td></tr>\n");
+		}
+		print("</table>\n");
+		print('<input type="submit" name="ItemBuy" value="买" class="btn">'."\n");
+		print("</form>\n");
+
+		print("</div>\n");
+	}
+
+	function ShopSellProcess() {
+		if(!__POST("ItemSell"))
+			return false;
+
+		$GetMoney	= 0;
+		print("<div style=\"margin:15px\">");
+		print("<table cellspacing=\"0\">\n");
+		print('<tr><td class="td6" style="text-align:center">价格</td>'.
+		'<td class="td6" style="text-align:center">数</td>'.
+		'<td class="td6" style="text-align:center">共计</td>'.
+		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
+		foreach($this->item as $itemNo => $amountHave) {
+			if(!__POST("check_".$itemNo))
+				continue;
+			$item	= LoadItemData($itemNo);
+			if(!$item) continue;
+			$amount	= (int)__POST("amount_".$itemNo);
+			if($amount < 0)
+				$amount	= 0;
+			$Deleted	= $this->DeleteItem($itemNo,$amount);
+			$sellPrice	= ItemSellPrice($item);
+			$Total	= $Deleted * $sellPrice;
+			$getMoney	+= $Total;
+			print("<tr><td class=\"td7\">");
+			print(MoneyFormat($sellPrice)."\n");
+			print("</td><td class=\"td7\">");
+			print("x {$Deleted}\n");
+			print("</td><td class=\"td7\">");
+			print("= ".MoneyFormat($Total)."\n");
+			print("</td><td class=\"td8\">");
+			print(ShowItemDetail($item)."\n");
+			print("</td></tr>\n");
+		}
+		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($getMoney)."</td></tr>");
+		print("</table>\n");
+		print("</div>");
+		$this->SaveUserItem();
+		$this->GetMoney($getMoney);
+		return true;
+	}
+
+	function ShopSellShow() {
+		print('<div style="margin:15px">'."\n");
+		print("<h4>出售</h4>\n");
+
+print <<< JS_HTML
+<script type="text/javascript">
+<!--
+function toggleCSS(id) {
+Element.toggleClassName('i'+id+'a', 'tdToggleBg');
+Element.toggleClassName('i'+id+'b', 'tdToggleBg');
+Element.toggleClassName('i'+id+'c', 'tdToggleBg');
+Element.toggleClassName('i'+id+'d', 'tdToggleBg');
+Field.focus('text_'+id);
+}
+function toggleCheckBox(id) {
+if($('check_'+id).checked) {
+  $('check_'+id).checked = false;
+} else {
+  $('check_'+id).checked = true;
+  Field.focus('text_'+id);
+}
+toggleCSS(id);
+}
+// -->
+</script>
+JS_HTML;
+
+		print('<form action="?menu=sell" method="post">'."\n");
+		print("<table cellspacing=\"0\">\n");
+		print('<tr><td class="td6"></td>'.
+		'<td style="text-align:center" class="td6">价格</td>'.
+		'<td style="text-align:center" class="td6">数</td>'.
+		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
+		foreach($this->item as $itemNo => $amount) {
+			$item	= LoadItemData($itemNo);
+			if(!$item) continue;
+			print("<tr><td class=\"td7\" id=\"i{$itemNo}a\">\n");
+			print('<input type="checkbox" name="check_'.$itemNo.'" value="1" onclick="toggleCSS(\''.$itemNo.'\')">'."\n");
+			print("</td><td class=\"td7\" id=\"i{$itemNo}b\" onclick=\"toggleCheckBox('{$itemNo}')\">\n");
+			$price	= ItemSellPrice($item);
+			print(MoneyFormat($price));
+			print("</td><td class=\"td7\" id=\"i{$itemNo}c\">\n");
+			print('<input type="text" id="text_'.$itemNo.'" name="amount_'.$itemNo.'" value="'.$amount.'" style="width:60px" class="text">'."\n");
+			print("</td><td class=\"td8\" id=\"i{$itemNo}d\" onclick=\"toggleCheckBox('{$itemNo}')\">\n");
+			print(ShowItemDetail($item,$amount));
+			print("</td></tr>\n");
+		}
+		print("</table>\n");
+		print('<input type="submit" name="ItemSell" value="Sell" class="btn" />'."\n");
+		print('<input type="hidden" name="ItemSell" value="1" />'."\n");
+		print("</form>\n");
+
+		print("</div>\n");
+	}
+
+	function WorkProcess() {
+		//nani...
+	}
+
+	function WorkShow() {
+		$temp16 = MoneyFormat(500);
+echo <<<P17
+<div style="margin:15px">
+<h4>一份兼职工作！</h4>
+<form method="post" action="?menu=work">
+<p>1回 100Time<br />
+給与 : {$temp16}/回</p>
+<select name="amount">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+</select><br />
+<input type="submit" value="打工" class="btn"/>
+</form>
+</div>
+P17;
+	}
+
+	function RankProcess(&$Ranking) {
+
+		if(__POST("ChallengeRank")) {
+			if(!$this->party_rank) {
+				ShowError("小队尚未设定","margin15");
+				return false;
+			}
+			$result	= $this->CanRankBattle();
+			if(is_array($result)) {
+				ShowError("仍需等待时间（？）","margin15");
+				return false;
+			}
+
+			$Result	= $Ranking->Challenge($this);
+
+			return $Result;
+		}
+
+		if(__POST("SetRankTeam")) {
+			$now	= time();
+			if(($now - $this->rank_set_time) < RANK_TEAM_SET_TIME) {
+				$left	= RANK_TEAM_SET_TIME - ($now - $this->rank_set_time);
+				$day	= floor($left / 3600 / 24);
+				$hour	= floor($left / 3600)%24;
+				$min	= floor(($left % 3600)/60);
+				$sec	= floor(($left % 3600)%60);
+				ShowError("离再设定队伍还需 {$day}日 と {$hour}小时 {$min}分 {$sec}秒","margin15");
+				return false;
+			}
+			foreach($this->char as $key => $val) {
+				if(__POST("char_".$key))
+					$checked[]	= $key;
+			}
+			if(__count($checked) == 0 || 5 < __count($checked)) {
+				ShowError("队伍人数应大于1人小于5人","margin15");
+				return false;
+			}
+
+			$this->party_rank	= implode("<>",$checked);
+			$this->rank_set_time	= $now;
+			ShowResult("队伍设定完成","margin15");
+			return true;
+		}
+	}
+
+	function RankShow(&$Ranking) {
+
+		$now	= time();
+		if( ($now - $this->rank_set_time) < RANK_TEAM_SET_TIME) {
+			$left	= RANK_TEAM_SET_TIME - ($now - $this->rank_set_time);
+			$hour	= floor($left / 3600);
+			$min	= floor(($left % 3600)/60);
+			$left_mes	= "<div class=\"bold\">{$hour}Hour {$min}minutes left to set again.</div>\n";
+			$disable	= " disabled";
+		}
+		$temp17 = ShowError($message);
+echo <<<P18
+	<div style="margin:15px">
+	{$temp17}
+	<form action="?menu=rank" method="post">
+	<h4>排行榜(Ranking) - <a href="?rank">查看排名</a> <a href="?manual#ranking" target="_blank" class="a0">?</a></h4>
+P18;
+
+		$CanRankBattle	= $this->CanRankBattle();
+		if($CanRankBattle !== true) {
+			print('<p>Time left to Next : <span class="bold">');
+			print($CanRankBattle[0].":".sprintf("%02d",$CanRankBattle[1]).":".sprintf("%02d",$CanRankBattle[2]));
+			print("</span></p>\n");
+			$disableRB	= " disabled";
+		}
+
+		print("<div style=\"width:100%;padding-left:30px\">\n");
+		print("<div style=\"float:left;width:50%\">\n");
+		print("<div class=\"u\">TOP 5</div>\n");
+		$Ranking->ShowRanking(0,4);
+		print("</div>\n");
+		print("<div style=\"float:right;width:50%\">\n");
+		print("<div class=\"u\">NEAR 5</div>\n");
+		$Ranking->ShowRankingRange($this->id,5);
+		print("</div>\n");
+		print("<div style=\"clear:both\"></div>\n");
+		print("</div>\n");
+
+		$temp18 = $this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_rank));
+		$temp19 = floor(RANK_TEAM_SET_TIME/(60*60));
+echo <<<P19
+	<input type="submit" class="btn" value="挑战！" name="ChallengeRank" style="width:160px"{$disableRB} />
+	</form>
+	<form action="?menu=rank" method="post">
+	<h4>队伍设置(Team Setting)</h4>
+	<p>排名战队伍设定。<br />
+	这里设置排名战队伍。</p>
+	</div>
+	{$temp18}
+
+	<div style="margin:15px">
+	{$left_mes}
+	<input type="submit" class="btn" style="width:160px" value="设定队伍" {$disable} />
+	<input type="hidden" name="SetRankTeam" value="1" />
+	<p>设定后{$temp19}小时后才能再设置。<br />Team setting disabled after {$temp19}hours once set.</p>
+	</form>
+	</div>
+P19;
+	}
+
+	function RecruitProcess() {
+
+		if( MAX_CHAR <= __count($this->char) )
+			return false;
+
+		include(DATA_BASE_CHAR);
+		if(__POST("recruit")) {
+			switch(__POST("recruit_no")) {
+				case "1": $hire = 2000; $charNo	= 1; break;
+				case "2": $hire = 2000; $charNo	= 2; break;
+				case "3": $hire = 2500; $charNo	= 3; break;
+				case "4": $hire = 4000; $charNo	= 4; break;
+				default:
+					ShowError("未选择人物","margin15");
+					return false;
+			}
+			if(__POST("recruit_name")) {
+				if(is_numeric(strpos(__POST("recruit_name"),"\t")))
+					return "error.";
+				$name	= trim(__POST("recruit_name"));
+				$name	= stripslashes($name);
+				$len	= strlen($name);
+				if ( 0 == $len || 16 < $len ) {
+					ShowError("名称太短或太长","margin15");
+					return false;
+				}
+				$name	= htmlspecialchars($name,ENT_QUOTES);
+			} else {
+				ShowError("名称不能是空","margin15");
+				return false;
+			}
+			if( !__POST("recruit_gend") ) {
+				ShowError("未选定性別","margin15");
+				return false;
+			} else {
+				$Gender	= __POST("recruit_gend")?"♀":"♂";
+			}
+			
+			$plus	= array("name"=>"$name","gender"=>__POST("recruit_gend"));
+			$char	= new char();
+			$char->SetCharData(array_merge(BaseCharStatus($charNo),$plus));
+			if($hire <= $this->money) {
+				$this->TakeMoney($hire);
+			} else {
+				ShowError("您没有足够的钱","margin15");
+				return false;
+			}
+			$char->SaveCharData($this->id);
+			ShowResult($char->Name()."($char->job_name:{$Gender}) 加为同伴！","margin15");
+			return true;
+		}
+	}
+
+
+	function RecruitShow() {
+		if( MAX_CHAR <= $this->CharCount() ) {
+
+echo <<<P20
+	<div style="margin:15px">
+	<p>Maximum characters.<br>
+	Need to make a space to recruit new character.</p>
+	<p>人物上限数达到。<br>
+	要添加新的空间来雇用新人（？）。</p>
+	</div>
+P20;
+			return false;
+		}
+		include_once(CLASS_MONSTER);
+		$char[0]	= new char();
+		$char[0]->SetCharData(array_merge(BaseCharStatus("1"),array("gender"=>"0")));
+		$char[1]	= new char();
+		$char[1]->SetCharData(array_merge(BaseCharStatus("1"),array("gender"=>"1")));
+		$char[2]	= new char();
+		$char[2]->SetCharData(array_merge(BaseCharStatus("2"),array("gender"=>"0")));
+		$char[3]	= new char();
+		$char[3]->SetCharData(array_merge(BaseCharStatus("2"),array("gender"=>"1")));
+		$char[4]	= new char();
+		$char[4]->SetCharData(array_merge(BaseCharStatus("3"),array("gender"=>"0")));
+		$char[5]	= new char();
+		$char[5]->SetCharData(array_merge(BaseCharStatus("3"),array("gender"=>"1")));
+		$char[6]	= new char();
+		$char[6]->SetCharData(array_merge(BaseCharStatus("4"),array("gender"=>"0")));
+		$char[7]	= new char();
+		$char[7]->SetCharData(array_merge(BaseCharStatus("4"),array("gender"=>"1")));
+
+		$temp20 = $char[0]->ShowImage();
+		$temp21 = $char[1]->ShowImage();
+		$temp22 = MoneyFormat(2000);
+		$temp23 = $char[2]->ShowImage();
+		$temp24 = $char[3]->ShowImage();
+		$temp25 = MoneyFormat(2000);
+		$temp26 = $char[4]->ShowImage();
+		$temp27 = $char[5]->ShowImage();
+		$temp28 = MoneyFormat(2500);
+		$temp29 = $char[6]->ShowImage();
+		$temp30 = $char[7]->ShowImage();
+		$temp31 = MoneyFormat(4000);
+echo <<<P21
+	<form action="?recruit" method="post" style="margin:15px">
+	<h4>新人物的职业</h4>
+	<table cellspacing="0"><tbody><tr>
+	<td class="td1" style="text-align:center">
+	{$temp20}
+	{$temp21}<br>
+	<input type="radio" name="recruit_no" value="1" style="margin:3px"><br>
+	{$temp22}</td>
+	<td class="td1" style="text-align:center">
+	{$temp23}
+	{$temp24}<br>
+	<input type="radio" name="recruit_no" value="2" style="margin:3px"><br>
+	{$temp25}</td>
+	<td class="td1" style="text-align:center">
+	{$temp26}
+	{$temp27}<br>
+	<input type="radio" name="recruit_no" value="3" style="margin:3px"><br>
+	{$temp28}</td>
+	<td class="td1" style="text-align:center">
+	{$temp29}
+	{$temp30}<br>
+	<input type="radio" name="recruit_no" value="4" style="margin:3px"><br>
+	{$temp31}</td>
+	</tr><tr>
+	<td class="td4" style="text-align:center">
+	战士</td>
+	<td class="td5" style="text-align:center">
+	法师</td>
+	<td class="td4" style="text-align:center">
+	牧师</td>
+	<td class="td5" style="text-align:center">
+	猎人</td>
+	</tr>
+	</tbody></table>
+
+	<h4>新人物的性别</h4>
+	<table><tbody><tr><td valign="top">
+	<input type="text" class="text" name="recruit_name" style="width:160px" maxlength="16"><br>
+	<div style="margin:5px 0px">
+	<input type="radio" class="vcent" name="recruit_gend" value="0">男
+	<input type="radio" class="vcent" name="recruit_gend" value="1" style="margin-left:15px;">女</div>
+	<input type="submit" class="btn" name="recruit" value="雇佣">
+	<input type="hidden" class="btn" name="recruit" value="Recruit">
+	</td><td valign="top">
+	<p>1 to 16 letters.<br>
+	Chinese characters count as 2.<br>
+	1个汉字 = 2 letter.
+	</p>
+	</td></tr></tbody></table>
+	</form>
+P21;
+
+	}
+
+	function SmithyRefineHeader() {
+		$temp32 = IMG_CHAR;
+echo <<<P22
+<div style="margin:15px">
+<h4>精炼工房(Refine)</h4>
+
+<div style="width:600px">
+<div style="float:left;width:80px;">
+<img src="{$temp32}mon_053r.gif" />
+</div>
+<div style="float:right;width:520px;">
+在这里 可以进行物品的精炼！<br />
+选择需要精练的物品以及精练的次数。<br />
+不过加工坏了我们不负责。<br />
+弟弟在管理的 <span class="bold">制作工房</span> 在<a href="?menu=create">这边</a>。
+</div>
+<div style="clear:both"></div>
+</div>
+<h4>精炼道具<a name="refine"></a></h4>
+<div style="margin:0 20px">
+P22;
+	}
+
+	function SmithyRefineProcess() {
+		if(!__POST("refine"))
+			return false;
+		if(!__POST("item_no")) {
+			ShowError("Select Item.");
+			return false;
+		}
+		if(!$item	= LoadItemData(__POST("item_no"))) {
+			ShowError("Failed to load item data.");
+			return false;
+		}
+		if(!$this->item[__POST("item_no")]) {
+			ShowError("Item \"{$item[name]}\" doesn't exists.");
+			return false;
+		}
+		if(__POST("timesA") < __POST("timesB"))
+			$times	= __POST("timesB");
+		else
+			$times	= __POST("timesA");
+		if(!$times || $times < 1 || (REFINE_LIMIT) < $times ) {
+			ShowError("times?");
+			return false;
+		}
+		include(CLASS_SMITHY);
+		$obj_item	= new Item(__POST("item_no"));
+		if(!$obj_item->CanRefine()) {
+			ShowError("Cant refine \"{$item[name]}\"");
+			return false;
+		}
+		$this->DeleteItem(__POST("item_no"));
+		$Price	= round($item["buy"]/2);
+		if( REFINE_LIMIT < ($item["refine"] + $times) ) {
+			$times	= REFINE_LIMIT - $item["refine"];
+		}
+		$Trys	= 0;
+		for($i=0; $i<$times; $i++) {
+			if($this->TakeMoney($Price)) {
+				$MoneySum	+= $Price;
+				$Trys++;
+				if(!$obj_item->ItemRefine()) {
+					break;
+				}
+			} else {
+				ShowError("Not enough money.<br />\n");
+				$this->AddItem($obj_item->ReturnItem());
+				break;
+			}
+			if($i == ($times - 1)) {
+				$this->AddItem($obj_item->ReturnItem());
+			}
+		}
+		print("Money Used : ".MoneyFormat($Price)." x ".$Trys." = ".MoneyFormat($MoneySum)."<br />\n");
+		$this->SaveUserItem();
+		return true;
+		
+	}
+
+	function SmithyRefineShow() {
+		if($this->item) {
+			include(CLASS_JS_ITEMLIST);
+			$possible	= CanRefineType();
+			$possible	= array_flip($possible);
+			$possible[key($possible)]++;
+
+			$goods	= new JS_ItemList();
+			$goods->SetID("my");
+			$goods->SetName("type");
+
+			$goods->ListTable("<table cellspacing=\"0\">");
+			$goods->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">精炼费</td><td class=\"align-center td9\">Item</td></tr>"); 
+
+			if($this->no_JS_itemlist)
+				$goods->NoJS();
+			foreach($this->item as $no => $val) {
+				$item	= LoadItemData($no);
+				if(!$possible[$item["type"]])
+					continue;
+				$price	= $item["buy"]/2;
+
+				$string	= '<tr>';
+				$string	.= '<td class="td7"><input type="radio" class="vcent" name="item_no" value="'.$no.'">';
+				$string	.= '</td><td class="td7">'.MoneyFormat($price).'</td><td class="td8">'.ShowItemDetail($item,$val,1)."<td>";
+				$string	.= "</tr>";
+
+				$goods->AddItem($item,$string);
+			}
+			print($goods->GetJavaScript("list"));
+			print('可以精炼的名单');
+			print($goods->ShowSelect());
+			print('<form action="?menu=refine" method="post">'."\n");
+			print('<input type="submit" value="Refine" name="refine" class="btn">'."\n");
+			print('回数 : <select name="timesA">'."\n");
+			for($i=1; $i<11; $i++) {
+				print('<option value="'.$i.'">'.$i.'</option>');
+			}
+			print('</select>'."\n");
+			print('<div id="list">'.$goods->ShowDefault().'</div>'."\n");
+			print('<input type="submit" value="Refine" name="refine" class="btn">'."\n");
+			print('<input type="hidden" value="1" name="refine">'."\n");
+			print('回数 : <select name="timesB">'."\n");
+			for($i=1; $i<(REFINE_LIMIT+1); $i++) {
+				print('<option value="'.$i.'">'.$i.'</option>');
+			}
+			print('</select>'."\n");
+			print('</form>'."\n");
+		} else {
+			print("No items<br />\n");
+		}
+		print("</div>\n");
+		print("</div>");
+	}
+
+	function SmithyCreateHeader() {
+		$temp33 = IMG_CHAR;
+echo <<<P23
+<div style="margin:15px">
+<h4>制作工房(Create)<a name="sm"></a></h4>
+<div style="width:600px">
+<div style="float:left;width:80px;">
+<img src="{$temp33}mon_053rz.gif" />
+</div>
+<div style="float:right;width:520px;">
+在这里 可以进行物品的制作！<br />
+只要你有素材就可以制作装备。<br />
+加入特殊素材的话可以制作特殊的武器。<br />
+哥哥在管理的 <span class="bold">精炼工房</span> 在<a href="?menu=refine">这边</a>。<br />
+<a href="#mat">所持素材一览</a>
+</div>
+<div style="clear:both"></div>
+</div>
+<h4>道具制作<a name="refine"></a></h4>
+<div style="margin:0 15px">
+P23;
+	}
+
+	function SmithyCreateProcess() {
+		if(!__POST("Create")) return false;
+
+		if(!__POST("ItemNo")) {
+			ShowError("请选择一个道具制造");
+			return false;
+		}
+
+		if(!$item	= LoadItemData(__POST("ItemNo"))) {
+			ShowError("error12291703");
+			return false;
+		}
+
+		if(!HaveNeeds($item,$this->item)) {
+			ShowError($item["name"]." 您没有足够的原料生产。");
+			return false;
+		}
+
+		if(__POST("AddMaterial")) {
+			if(!$this->item[__POST("AddMaterial")]) {
+				ShowError("该素材不能追加。");
+				return false;
+			}
+			$ADD	= LoadItemData(__POST("AddMaterial"));
+			$this->DeleteItem(__POST("AddMaterial"));
+		}
+
+		$Price	= 0;
+		if(!$this->TakeMoney($Price)) {
+			ShowError("您没有足够的钱。需要".MoneyFormat($Price)."。");
+			return false;
+		}
+		foreach($item["need"] as $M_item => $M_amount) {
+			$this->DeleteItem($M_item,$M_amount);
+		}
+		include(CLASS_SMITHY);
+		$item	= new item(__POST("ItemNo"));
+		$item->CreateItem();
+		if($ADD["Add"])
+			$item->AddSpecial($ADD["Add"]);
+		$done	= $item->ReturnItem();
+		$this->AddItem($done);
+		$this->SaveUserItem();
+
+		print("<p>");
+		print(ShowItemDetail(LoadItemData($done)));
+		
+		print("\n<br />好了！</p>\n");
+		return true;
+	}
+
+	function SmithyCreateShow() {
+
+		$CanCreate	= CanCreate($this);
+		include(CLASS_JS_ITEMLIST);
+		$CreateList	= new JS_ItemList();
+		$CreateList->SetID("create");
+		$CreateList->SetName("type_create");
+
+		$CreateList->ListTable("<table cellspacing=\"0\">");
+		$CreateList->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">制作费用</td><td class=\"align-center td9\">Item</td></tr>"); 
+
+		if($this->no_JS_itemlist)
+			$CreateList->NoJS();
+		foreach($CanCreate as $item_no) {
+			$item	= LoadItemData($item_no);
+			if(!HaveNeeds($item,$this->item))
+				continue;
+			$CreatePrice	= 0;
+			$head	= '<tr><td class="td7"><input type="radio" name="ItemNo" value="'.$item_no.'"></td>';
+			$head	.= '<td class="td7">'.MoneyFormat($CreatePrice).'</td><td class="td8">'.ShowItemDetail($item,false,1,$this->item)."</td>";
+			$CreateList->AddItem($item,$head);
+		}
+		if($head) {
+			print($CreateList->GetJavaScript("list"));
+			print($CreateList->ShowSelect());
+			
+			$temp34 = $CreateList->ShowDefault();
+echo <<<P24
+<form action="?menu=create" method="post">
+<div id="list">{$temp34}</div>
+<input type="submit" class="btn" name="Create" value="만들다">
+<input type="reset" class="btn" value="다시 놓기">
+<input type="hidden" name="Create" value="1"><br />
+P24;
+		print('<div class="bold u" style="margin-top:15px">추가 자료</div>'."\n");
+		for($item_no=7000; $item_no<7200; $item_no++) {
+			if(!$this->item["$item_no"])
+				continue;
+			if($item	= LoadItemData($item_no)) {
+				print('<input type="radio" name="AddMaterial" value="'.$item_no.'" class="vcent">');
+				print(ShowItemDetail($item,$this->item["$item_no"],1)."<br />\n");
+			}
+		}
+echo <<<P25
+<input type="submit" class="btn" name="Create" value="만들다">
+<input type="reset" class="btn" value="다시 놓기">
+</form>
+P25;
+		} else {
+			print("현재 우리가 가지고 있는 자료로는 아무것도 할 수 없습니다.");
+		}
+
+		print("</div>\n");
+		print("<h4>所持素材一览<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
+		print("<div style=\"margin:0 15px\">");
+		for($i=6000; $i<7000; $i++) {
+			if(!$this->item["$i"])
+				continue;
+			$item	= LoadItemData($i);
+			ShowItemDetail($item,$this->item["$i"]);
+			print("<br />\n");
+		}
+		
+echo <<<P26
+</div>
+</div>
+P26;
+		return $result;
+	}
+
+	function AuctionJoinMember() {
+		if(!__POST("JoinMember"))
+			return false;
+		if($this->item["9000"]) {
+			return false;
+		}
+		if(!$this->TakeMoney(round(START_MONEY * 1.10))) {
+			ShowError("您没有足够的钱<br />\n");
+			return false;
+		}
+		$this->AddItem(9000);
+		$this->SaveUserItem();
+		$this->SaveData();
+		ShowResult("拍卖会的成员。<br />\n");
+		return true;
+	}
+
+	function AuctionEnter() {
+		if($this->item["9000"])
+			return true;
+		else
+			return false;
+	}
+
+	function AuctionHeader() {
+		$temp35 = IMG_CHAR;
+echo <<<P27
+<div style="margin:15px 0 0 15px">
+<h4>拍卖(Auction)</h4>
+<div style="margin-left:20px">
+
+<div style="width:500px">
+<div style="float:left;width:50px;">
+<img src="{$temp35}ori_003.gif" />
+</div>
+<div style="float:right;width:450px;">
+P27;
+
+		$this->AuctionJoinMember();
+		if($this->AuctionEnter()) {
+			print("您有会员卡么。<br />\n");
+			print("欢迎您到拍卖场。<br />\n");
+			print("<a href=\"#log\">回顾记录</a>\n");
+		} else {
+			print("想在拍卖会拍卖那您要加入会员啊。<br />\n");
+			print("入会费用可要 ".MoneyFormat(round(START_MONEY * 1.10))." 呢。<br />\n");
+			print("入会么?<br />\n");
+			print('<form action="" method="post">'."\n");
+			print('<input type="submit" value="入会" name="JoinMember" class="btn"/>'."\n");
+			print("</form>\n");
+		}
+		if(!AUCTION_TOGGLE)
+			ShowError("功能暂停");
+		if(!AUCTION_EXHIBIT_TOGGLE)
+			ShowError("暂停拍卖");
+
+echo <<<P28
+</div>
+<div style="clear:both"></div>
+</div>
+</div>
+<h4>道具拍卖(Item Auction)</h4>
+<div style="margin-left:20px">
+P28;
+	}
+
+	function AuctionFoot(&$ItemAuction) {
+		$temp36 = $ItemAuction->ShowLog();
+echo <<<P29
+</div>
+<a name="log"></a>
+<h4>拍卖纪录(AuctionLog)</h4>
+<div style="margin-left:20px">
+{$temp36}
+</div>
+P29;
+	}
+
+	function AuctionItemBiddingProcess(&$ItemAuction) {
+		if(!$this->AuctionEnter())
+			return false;
+		if(!__POST("ArticleNo"))
+			return false;
+
+		$ArticleNo	= __POST("ArticleNo");
+		$BidPrice	= (int)__POST("BidPrice");
+		if($BidPrice < 1) {
+			ShowError("输入的是个错误的价格。");
+			return false;
+		}
+		if(!$ItemAuction->ItemArticleExists($ArticleNo)) {
+			ShowError("这个拍卖品的卖方无法确认。");
+			return false;
+		}
+		if(!$ItemAuction->ItemBidRight($ArticleNo,$this->id)) {
+			ShowError("No.".$ArticleNo." 卖方是否已经招标");
+			return false;
+		}
+		$Bottom	= $ItemAuction->ItemBottomPrice($ArticleNo);
+		if($BidPrice < $Bottom) {
+			ShowError("低于最低投标价");
+			ShowError("目前出价:".MoneyFormat($BidPrice)." 最低出价:".MoneyFormat($Bottom));
+			return false;
+		}
+		if(!$this->TakeMoney($BidPrice)) {
+			ShowError("您的资金不足。");
+			return false;
+		}
+
+		if($ItemAuction->ItemBid($ArticleNo,$BidPrice,$this->id,$this->name)) {
+			ShowResult("No:{$ArticleNo}  ".MoneyFormat($BidPrice)." 被收购。<br />\n");
+			return true;
+		}
+	}
+
+	function AuctionItemBiddingForm(&$ItemAuction) {
+
+		if(!AUCTION_TOGGLE)
+			return false;
+
+		if($this->AuctionEnter()) {
+		if(AUCTION_EXHIBIT_TOGGLE) {
+				print("<form action=\"?menu=auction\" method=\"post\">\n");
+				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print("</form>\n");
+			}
+			$ItemAuction->ItemSortBy(__GET("sort"));
+			$ItemAuction->ItemShowArticle2(true);
+
+			if(AUCTION_EXHIBIT_TOGGLE) {
+				print("<form action=\"?menu=auction\" method=\"post\">\n");
+				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print("</form>\n");
+			}
+
+		} else {
+			$ItemAuction->ItemShowArticle2(false);
+		}
+	}
+
+	function AuctionItemExhibitProcess(&$ItemAuction) {
+
+		if(!AUCTION_EXHIBIT_TOGGLE)
+			return "BIDFORM";
+
+		if(!$this->AuctionEnter())
+			return "BIDFORM";
+		if(!__POST("PutAuction"))
+			return "BIDFORM";
+
+		if(!__POST("item_no")) {
+			ShowError("Select Item.");
+			return false;
+		}
+		$SessionLeft	= 30 - (time() - __SESSION("AuctionExhibit"));
+		if(__SESSION("AuctionExhibit") && 0 < $SessionLeft) {
+			ShowError("Wait {$SessionLeft}seconds to ReExhibit.");
+			return false;
+		}
+		if(AUCTION_MAX <= $ItemAuction->ItemAmount()) {
+			ShowError("拍卖数量已达到极限。(".$ItemAuction->ItemAmount()."/".AUCTION_MAX.")");
+			return false;
+		}
+		if(!$this->TakeMoney(500)) {
+			ShowError("Need ".MoneyFormat(500)." to exhibit auction.");
+			return false;
+		}
+		if(!$item	= LoadItemData(__POST("item_no"))) {
+			ShowError("Failed to load item data.");
+			return false;
+		}
+		if(!$this->item[__POST("item_no")]) {
+			ShowError("Item \"{$item[name]}\" doesn't exists.");
+			return false;
+		}
+		$possible	= CanExhibitType();
+		if(!$possible[$item["type"]]) {
+			ShowError("Cant put \"{$item[name]}\" to the Auction");
+			return false;
+		}
+		if(	!(	__POST("ExhibitTime") === '1' ||
+				__POST("ExhibitTime") === '3' ||
+				__POST("ExhibitTime") === '6' ||
+				__POST("ExhibitTime") === '12' ||
+				__POST("ExhibitTime") === '18' ||
+				__POST("ExhibitTime") === '24') ) {
+			var_dump($_POST);
+			ShowError("time?");
+			return false;
+		}
+		if(preg_match("/^[0-9]/",__POST("Amount"))) {
+			$amount	= (int)__POST("Amount");
+			if($amount == 0)
+				$amount	= 1;
+		} else {
+			$amount	= 1;
+		}
+		$_SESSION["AuctionExhibit"]	= time();
+		$amount	= $this->DeleteItem(__POST("item_no"),$amount);
+		$this->SaveUserItem();
+
+		$ItemAuction->ItemAddArticle(__POST("item_no"),$amount,$this->id,__POST("ExhibitTime"),__POST("StartPrice"),__POST("Comment"));
+		print($item["name"]."{$amount}个 展览品。");
+		return true;
+	}
+
+	function AuctionItemExhibitForm() {
+
+		if(!AUCTION_EXHIBIT_TOGGLE)
+			return false;
+
+		include(CLASS_JS_ITEMLIST);
+		$possible	= CanExhibitType();
+
+echo <<<P30
+<div class="u bold">如何参展</div>
+<ol>
+<li>选择一种道具，拍卖。</li>
+<li>如果要拍卖超过两个以上是要输入数量。</li>
+<li>指定拍卖的时间。</li>
+<li>指定起拍价(不输入的话为0)</li>
+<li>输入您的描述。</li>
+<li>发送。</li>
+</ol>
+<div class="u bold">注意事项</div>
+<ul>
+<li>拍卖要交$500的手续费。</li>
+<li>负责拍卖工作的人似乎不会认真帮你办事的样子</li>
+</ul>
+<a href="?menu=auction">查看所有拍卖物</a>
+</div>
+<h4>出售</h4>
+<div style="margin-left:20px">
+<div class="u bold">可以拍卖的道具</div>
+P30;
+		if(!$this->item) {
+			print("No items<br />\n");
+			return false;
+		}
+		$ExhibitList	= new JS_ItemList();
+		$ExhibitList->SetID("auc");
+		$ExhibitList->SetName("type_auc");
+		if($this->no_JS_itemlist)
+			$ExhibitList->NoJS();
+		foreach($this->item as $no => $amount) {
+			$item	= LoadItemData($no);
+			if(!$possible[$item["type"]])
+				continue;
+			$head	= '<input type="radio" name="item_no" value="'.$no.'" class="vcent">';
+			$head	.= ShowItemDetail($item,$amount,1)."<br />";
+			$ExhibitList->AddItem($item,$head);
+		}
+		print($ExhibitList->GetJavaScript("list"));
+		print($ExhibitList->ShowSelect());
+		$temp37 = $ExhibitList->ShowDefault();
+echo <<<P31
+<form action="?menu=auction" method="post">
+<div id="list">{$temp37}</div>
+<table><tr><td style="text-align:right">
+数量(Amount) :</td><td><input type="text" name="Amount" class="text" style="width:60px" value="1" /><br />
+</td></tr><tr><td style="text-align:right">
+时间(Time) :</td><td>
+<select name="ExhibitTime">
+<option value="24" selected>24 hour</option>
+<option value="18">18 hour</option>
+<option value="12">12 hour</option>
+<option value="6">6 hour</option>
+<option value="3">3 hour</option>
+<option value="1">1 hour</option>
+</select>
+</td></tr><tr><td>
+起拍价(Start Price) :</td><td><input type="text" name="StartPrice" class="text" style="width:240px" maxlength="10"><br />
+</td></tr><tr><td style="text-align:right">
+描述(Comment) :</td><td>
+<input type="text" name="Comment" class="text" style="width:240px" maxlength="40">
+</td></tr><tr><td></td><td>
+<input type="submit" class="btn" value="Put Auction" name="PutAuction" style="width:240px"/>
+<input type="hidden" name="PutAuction" value="1">
+</td></tr></table>
+</form>
+P31;
+
+		
+	}
+
+	function UnionProcess() {
+
+		if($this->CanUnionBattle() !== true) {
+			$host  = __SERVER('HTTP_HOST');
+			$uri   = rtrim(dirname(__SERVER('PHP_SELF')));
+			$extra = INDEX;
+			header("Location: http://$host$uri/$extra?hunt");
+			exit;
+		}
+
+		if(!__POST("union_battle"))
+			return false;
+		$Union	= new union();
+		if(!$Union->UnionNumber(__GET("union")) || !$Union->is_Alive()) {
+			return false;
+		}
+		$UnionMob	= CreateMonster($Union->MonsterNumber);
+		$this->MemorizeParty();
+		foreach($this->char as $key => $val) {
+			if(__POST("char_".$key)) {
+				$MyParty[]	= $this->char[$key];
+				$TotalLevel	+= $this->char[$key]->level;
+			}
+		}
+		if($UnionMob["LevelLimit"] < $TotalLevel) {
+			ShowError('合计级别水平('.$TotalLevel.'/'.$UnionMob["LevelLimit"].')',"margin15");
+			return false;
+		}
+		if( __count($MyParty) === 0) {
+			ShowError('战斗至少要一个人参加',"margin15");
+			return false;
+		} else if(5 < __count($MyParty)) {
+			ShowError('战斗最多只能上五个人',"margin15");
+			return false;
+		}
+		if(!$this->WasteTime(UNION_BATTLE_TIME)) {
+			ShowError('Time Shortage.',"margin15");
+			return false;
+		}
+
+		if($UnionMob["SlaveAmount"])
+			$EneNum	= $UnionMob["SlaveAmount"] + 1;
+		else
+			$EneNum	= 5;
+
+		if($UnionMob["SlaveSpecify"])
+			$EnemyParty	= $this->EnemyParty($EneNum-1, $Union->Slave, $UnionMob["SlaveSpecify"]);
+		else
+			$EnemyParty	= $this->EnemyParty($EneNum-1, $Union->Slave, $UnionMob["SlaveSpecify"]);
+
+		array_splice($EnemyParty,floor(__count($EnemyParty)/2),0,array($Union));
+
+		$this->UnionSetTime();
+
+		include(CLASS_BATTLE);
+		$battle	= new battle($MyParty,$EnemyParty);
+		$battle->SetUnionBattle();
+		$battle->SetBackGround($Union->UnionLand);
+		$battle->SetTeamName($this->name,$UnionMob["UnionName"]);
+		$battle->Process();
+
+		$battle->SaveCharacters();
+			list($UserMoney)	= $battle->ReturnMoney();
+			$this->GetMoney($UserMoney);
+			$battle->RecordLog("UNION");
+			if($itemdrop	= $battle->ReturnItemGet(0)) {
+				$this->LoadUserItem();
+				foreach($itemdrop as $itemno => $amount)
+					$this->AddItem($itemno,$amount);
+				$this->SaveUserItem();
+			}
+
+		return true;
+	}
+
+	function UnionShow() {
+		if($this->CanUnionBattle() !== true) {
+			$host  = __SERVER('HTTP_HOST');
+			$uri   = rtrim(dirname(__SERVER('PHP_SELF')));
+			$extra = INDEX;
+			header("Location: http://$host$uri/$extra?hunt");
+			exit;
+		}
+		print('<div style="margin:15px">'."\n");
+		print("<h4>Union Monster</h4>\n");
+		$Union	= new union();
+		if(!$Union->UnionNumber(__GET("union")) || !$Union->is_Alive()) {
+			ShowError("Defeated or not Exists.");
+			return false;
+		}
+		print('</div>');
+		$this->ShowCharacters(array($Union),false,"sea");
+		print('<div style="margin:15px">'."\n");
+		print("<h4>Teams</h4>\n");
+		print("</div>");
+		print('<form action="'.INDEX.'?union='.__GET("union").'" method="post">');
+		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
+
+echo <<<P32
+	<div style="margin:15px;text-align:center">
+	<input type="submit" class="btn" value="대결!">
+	<input type="hidden" name="union_battle" value="1">
+	<input type="reset" class="btn" value="다시 놓기"><br>
+	保存此队伍:<input type="checkbox" name="memory_party" value="1">
+	</div></form>
+P32;
+	}
+
+	function TownShow() {
+		include(DATA_TOWN);
+		print('<div style="margin:15px">'."\n");
+		print("<h4>街</h4>");
+		print('<div class="town">'."\n");
+		print("<ul>\n");
+		$PlaceList	= TownAppear($this);
+		if($PlaceList["Shop"]) {
+
+echo <<<P33
+<li>店(Shop)
+<ul>
+<li><a href="?menu=buy">买(Buy)</a></li>
+<li><a href="?menu=sell">卖(Sell)</a></li>
+<li><a href="?menu=work">打工</a></li>
+</ul>
+</li>
+P33;
+		}
+		if($PlaceList["Recruit"])
+			print("<li><p><a href=\"?recruit\">人材斡旋所(Recruit)</a></p></li>");
+		if($PlaceList["Smithy"]) {
+
+echo <<<P34
+<li>锻冶屋(Smithy)
+<ul>
+<li><a href="?menu=refine">精炼工房(Refine)</a></li>
+<li><a href="?menu=create">制作工房(Create)</a></li>
+</ul>
+</li>
+P34;
+		}
+		if($PlaceList["Auction"] && AUCTION_TOGGLE)
+			print("<li><a href=\"?menu=auction\">拍卖会場(Auction)</li>");
+		if($PlaceList["Colosseum"])
+			print("<li><a href=\"?menu=rank\">竞技场(Colosseum)</a></li>");
+		print("</ul>\n");
+		print("</div>\n");
+		print("<h4>广场</h4>");
+		$this->TownBBS();
+		print("</div>\n");
+	}
+
+
+	function TownBBS() {
+		$file	= BBS_TOWN;
+echo <<<P35
+<form action="?town" method="post">
+<input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
+<input type="submit" value="post" class="btn" style="width:100px" />
+</form>
+P35;
+
+		if(!file_exists($file))
+			return false;
+		$log	= file($file);
+		if(__POST("message") && strlen(__POST("message")) < 121) {
+			$_POST["message"]	= htmlspecialchars(__POST("message"),ENT_QUOTES);
+			$_POST["message"]	= stripslashes(__POST("message"));
+
+			$name	= "<span class=\"bold\">{$this->name}</span>";
+			$message	= $name." > ".__POST("message");
+			if($this->UserColor)
+				$message	= "<span style=\"color:{$this->UserColor}\">".$message."</span>";
+			$message	.= " <span class=\"light\">(".date("Mj G:i").")</span>\n";
+			array_unshift($log,$message);
+			while(50 < __count($log))
+				array_pop($log);
+			WriteFile($file,implode(null,$log));
+		}
+		foreach($log as $mes)
+			print(nl2br($mes));
+	}
+
+	function SettingProcess() {
+		if(__POST("NewName")) {
+			$NewName	= __POST("NewName");
+			if(is_numeric(strpos($NewName,"\t"))) {
+				ShowError('error1');
+				return false;
+			}
+			$NewName	= trim($NewName);
+			$NewName	= stripslashes($NewName);
+			if (!$NewName) {
+				ShowError('Name is blank.');
+				return false;
+			}
+			$length	= strlen($NewName);
+			if ( 0 == $length || 16 < $length) {
+				ShowError('1 to 16 letters?');
+				return false;
+			}
+			$userName	= userNameLoad();
+			if(in_array($NewName,$userName)) {
+				ShowError("该名称已被使用。","margin15");
+				return false;
+			}
+			if(!$this->TakeMoney(NEW_NAME_COST)) {
+				ShowError('money not enough');
+				return false;
+			}
+			$OldName	= $this->name;
+			$NewName	= htmlspecialchars($NewName,ENT_QUOTES);
+			if($this->ChangeName($NewName)) {
+				ShowResult("Name Changed ({$OldName} -> {$NewName})","margin15");
+				userNameAdd($NewName);
+				return true;
+			} else {
+				ShowError("?");
+				return false;
+			}
+		}
+
+		if(__POST("setting01")) {
+			if(__POST("record_battle_log"))
+				$this->record_btl_log	= 1;
+			else
+				$this->record_btl_log	= false;
+
+			if(__POST("no_JS_itemlist"))
+				$this->no_JS_itemlist	= 1;
+			else
+				$this->no_JS_itemlist	= false;
+		}
+		if(__POST("color")) {
+			if(	strlen(__POST("color")) != 6 &&
+				!preg_match("/^[0369cf]{6}/",__POST("color")))
+				return "error 12072349";
+			$this->UserColor	= __POST("color");
+			ShowResult("Setting changed.","margin15");
+			return true;
+		}
+	}
+
+	function SettingShow() {
+		print('<div style="margin:15px">'."\n");
+		if($this->record_btl_log) $record_btl_log	= " checked";
+		if($this->no_JS_itemlist) $no_JS_itemlist	= " checked";
+		
+		$temp38 = INDEX;
+		$temp39 = MoneyFormat(NEW_NAME_COST);
+echo <<<P36
+<h4>设置</h4>
+<form action="?setting" method="post">
+<table><tbody>
+<tr><td><input type="checkbox" name="record_battle_log" value="1" {$record_btl_log}></td><td>战斗记录</td></tr>
+<tr><td><input type="checkbox" name="no_JS_itemlist" value="1" {$no_JS_itemlist}></td><td>道具列表不使用javascript</td></tr>
+</tbody></table>
+颜色: 
+<SELECT class=bgcolor name=color>
+<OPTION style="COLOR: #ffffff" value=ffffff selected>SampleColor</OPTION>
+<OPTION style="COLOR: #ffffcc" value=ffffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #ffff99" value=ffff99>SampleColor</OPTION>
+<OPTION style="COLOR: #ffff66" value=ffff66>SampleColor</OPTION>
+<OPTION style="COLOR: #ffff33" value=ffff33>SampleColor</OPTION>
+<OPTION style="COLOR: #ffff00" value=ffff00>SampleColor</OPTION>
+<OPTION style="COLOR: #ffccff" value=ffccff>SampleColor</OPTION>
+<OPTION style="COLOR: #ffcccc" value=ffcccc>SampleColor</OPTION>
+<OPTION style="COLOR: #ffcc99" value=ffcc99>SampleColor</OPTION>
+<OPTION style="COLOR: #ffcc66" value=ffcc66>SampleColor</OPTION>
+<OPTION style="COLOR: #ffcc33" value=ffcc33>SampleColor</OPTION>
+<OPTION style="COLOR: #ffcc00" value=ffcc00>SampleColor</OPTION>
+<OPTION style="COLOR: #ff99ff" value=ff99ff>SampleColor</OPTION>
+<OPTION style="COLOR: #ff99cc" value=ff99cc>SampleColor</OPTION>
+<OPTION style="COLOR: #ff9999" value=ff9999>SampleColor</OPTION>
+<OPTION style="COLOR: #ff9966" value=ff9966>SampleColor</OPTION>
+<OPTION style="COLOR: #ff9933" value=ff9933>SampleColor</OPTION>
+<OPTION style="COLOR: #ff9900" value=ff9900>SampleColor</OPTION>
+<OPTION style="COLOR: #ff66ff" value=ff66ff>SampleColor</OPTION>
+<OPTION style="COLOR: #ff66cc" value=ff66cc>SampleColor</OPTION>
+<OPTION style="COLOR: #ff6699" value=ff6699>SampleColor</OPTION>
+<OPTION style="COLOR: #ff6666" value=ff6666>SampleColor</OPTION>
+<OPTION style="COLOR: #ff6633" value=ff6633>SampleColor</OPTION>
+<OPTION style="COLOR: #ff6600" value=ff6600>SampleColor</OPTION>
+<OPTION style="COLOR: #ff33ff" value=ff33ff>SampleColor</OPTION>
+<OPTION style="COLOR: #ff33cc" value=ff33cc>SampleColor</OPTION>
+<OPTION style="COLOR: #ff3399" value=ff3399>SampleColor</OPTION>
+<OPTION style="COLOR: #ff3366" value=ff3366>SampleColor</OPTION>
+<OPTION style="COLOR: #ff3333" value=ff3333>SampleColor</OPTION>
+<OPTION style="COLOR: #ff3300" value=ff3300>SampleColor</OPTION>
+<OPTION style="COLOR: #ff00ff" value=ff00ff>SampleColor</OPTION>
+<OPTION style="COLOR: #ff00cc" value=ff00cc>SampleColor</OPTION>
+<OPTION style="COLOR: #ff0099" value=ff0099>SampleColor</OPTION>
+<OPTION style="COLOR: #ff0066" value=ff0066>SampleColor</OPTION>
+<OPTION style="COLOR: #ff0033" value=ff0033>SampleColor</OPTION>
+<OPTION style="COLOR: #ff0000" value=ff0000>SampleColor</OPTION>
+<OPTION style="COLOR: #ccffff" value=ccffff>SampleColor</OPTION>
+<OPTION style="COLOR: #ccffcc" value=ccffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #ccff99" value=ccff99>SampleColor</OPTION>
+<OPTION style="COLOR: #ccff66" value=ccff66>SampleColor</OPTION>
+<OPTION style="COLOR: #ccff33" value=ccff33>SampleColor</OPTION>
+<OPTION style="COLOR: #ccff00" value=ccff00>SampleColor</OPTION>
+<OPTION style="COLOR: #ccccff" value=ccccff>SampleColor</OPTION>
+<OPTION style="COLOR: #cccccc" value=cccccc>SampleColor</OPTION>
+<OPTION style="COLOR: #cccc99" value=cccc99>SampleColor</OPTION>
+<OPTION style="COLOR: #cccc66" value=cccc66>SampleColor</OPTION>
+<OPTION style="COLOR: #cccc33" value=cccc33>SampleColor</OPTION>
+<OPTION style="COLOR: #cccc00" value=cccc00>SampleColor</OPTION>
+<OPTION style="COLOR: #cc99ff" value=cc99ff>SampleColor</OPTION>
+<OPTION style="COLOR: #cc99cc" value=cc99cc>SampleColor</OPTION>
+<OPTION style="COLOR: #cc9999" value=cc9999>SampleColor</OPTION>
+<OPTION style="COLOR: #cc9966" value=cc9966>SampleColor</OPTION>
+<OPTION style="COLOR: #cc9933" value=cc9933>SampleColor</OPTION>
+<OPTION style="COLOR: #cc9900" value=cc9900>SampleColor</OPTION>
+<OPTION style="COLOR: #cc66ff" value=cc66ff>SampleColor</OPTION>
+<OPTION style="COLOR: #cc66cc" value=cc66cc>SampleColor</OPTION>
+<OPTION style="COLOR: #cc6699" value=cc6699>SampleColor</OPTION>
+<OPTION style="COLOR: #cc6666" value=cc6666>SampleColor</OPTION>
+<OPTION style="COLOR: #cc6633" value=cc6633>SampleColor</OPTION>
+<OPTION style="COLOR: #cc6600" value=cc6600>SampleColor</OPTION>
+<OPTION style="COLOR: #cc33ff" value=cc33ff>SampleColor</OPTION>
+<OPTION style="COLOR: #cc33cc" value=cc33cc>SampleColor</OPTION>
+<OPTION style="COLOR: #cc3399" value=cc3399>SampleColor</OPTION>
+<OPTION style="COLOR: #cc3366" value=cc3366>SampleColor</OPTION>
+<OPTION style="COLOR: #cc3333" value=cc3333>SampleColor</OPTION>
+<OPTION style="COLOR: #cc3300" value=cc3300>SampleColor</OPTION>
+<OPTION style="COLOR: #cc00ff" value=cc00ff>SampleColor</OPTION>
+<OPTION style="COLOR: #cc00cc" value=cc00cc>SampleColor</OPTION>
+<OPTION style="COLOR: #cc0099" value=cc0099>SampleColor</OPTION>
+<OPTION style="COLOR: #cc0066" value=cc0066>SampleColor</OPTION>
+<OPTION style="COLOR: #cc0033" value=cc0033>SampleColor</OPTION>
+<OPTION style="COLOR: #cc0000" value=cc0000>SampleColor</OPTION>
+<OPTION style="COLOR: #99ffff" value=99ffff>SampleColor</OPTION>
+<OPTION style="COLOR: #99ffcc" value=99ffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #99ff99" value=99ff99>SampleColor</OPTION>
+<OPTION style="COLOR: #99ff66" value=99ff66>SampleColor</OPTION>
+<OPTION style="COLOR: #99ff33" value=99ff33>SampleColor</OPTION>
+<OPTION style="COLOR: #99ff00" value=99ff00>SampleColor</OPTION>
+<OPTION style="COLOR: #99ccff" value=99ccff>SampleColor</OPTION>
+<OPTION style="COLOR: #99cccc" value=99cccc>SampleColor</OPTION>
+<OPTION style="COLOR: #99cc99" value=99cc99>SampleColor</OPTION>
+<OPTION style="COLOR: #99cc66" value=99cc66>SampleColor</OPTION>
+<OPTION style="COLOR: #99cc33" value=99cc33>SampleColor</OPTION>
+<OPTION style="COLOR: #99cc00" value=99cc00>SampleColor</OPTION>
+<OPTION style="COLOR: #9999ff" value=9999ff>SampleColor</OPTION>
+<OPTION style="COLOR: #9999cc" value=9999cc>SampleColor</OPTION>
+<OPTION style="COLOR: #999999" value=999999>SampleColor</OPTION>
+<OPTION style="COLOR: #999966" value=999966>SampleColor</OPTION>
+<OPTION style="COLOR: #999933" value=999933>SampleColor</OPTION>
+<OPTION style="COLOR: #999900" value=999900>SampleColor</OPTION>
+<OPTION style="COLOR: #9966ff" value=9966ff>SampleColor</OPTION>
+<OPTION style="COLOR: #9966cc" value=9966cc>SampleColor</OPTION>
+<OPTION style="COLOR: #996699" value=996699>SampleColor</OPTION>
+<OPTION style="COLOR: #996666" value=996666>SampleColor</OPTION>
+<OPTION style="COLOR: #996633" value=996633>SampleColor</OPTION>
+<OPTION style="COLOR: #996600" value=996600>SampleColor</OPTION>
+<OPTION style="COLOR: #9933ff" value=9933ff>SampleColor</OPTION>
+<OPTION style="COLOR: #9933cc" value=9933cc>SampleColor</OPTION>
+<OPTION style="COLOR: #993399" value=993399>SampleColor</OPTION>
+<OPTION style="COLOR: #993366" value=993366>SampleColor</OPTION>
+<OPTION style="COLOR: #993333" value=993333>SampleColor</OPTION>
+<OPTION style="COLOR: #993300" value=993300>SampleColor</OPTION>
+<OPTION style="COLOR: #9900ff" value=9900ff>SampleColor</OPTION>
+<OPTION style="COLOR: #9900cc" value=9900cc>SampleColor</OPTION>
+<OPTION style="COLOR: #990099" value=990099>SampleColor</OPTION>
+<OPTION style="COLOR: #990066" value=990066>SampleColor</OPTION>
+<OPTION style="COLOR: #990033" value=990033>SampleColor</OPTION>
+<OPTION style="COLOR: #990000" value=990000>SampleColor</OPTION>
+<OPTION style="COLOR: #66ffff" value=66ffff>SampleColor</OPTION>
+<OPTION style="COLOR: #66ffcc" value=66ffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #66ff99" value=66ff99>SampleColor</OPTION>
+<OPTION style="COLOR: #66ff66" value=66ff66>SampleColor</OPTION>
+<OPTION style="COLOR: #66ff33" value=66ff33>SampleColor</OPTION>
+<OPTION style="COLOR: #66ff00" value=66ff00>SampleColor</OPTION>
+<OPTION style="COLOR: #66ccff" value=66ccff>SampleColor</OPTION>
+<OPTION style="COLOR: #66cccc" value=66cccc>SampleColor</OPTION>
+<OPTION style="COLOR: #66cc99" value=66cc99>SampleColor</OPTION>
+<OPTION style="COLOR: #66cc66" value=66cc66>SampleColor</OPTION>
+<OPTION style="COLOR: #66cc33" value=66cc33>SampleColor</OPTION>
+<OPTION style="COLOR: #66cc00" value=66cc00>SampleColor</OPTION>
+<OPTION style="COLOR: #6699ff" value=6699ff>SampleColor</OPTION>
+<OPTION style="COLOR: #6699cc" value=6699cc>SampleColor</OPTION>
+<OPTION style="COLOR: #669999" value=669999>SampleColor</OPTION>
+<OPTION style="COLOR: #669966" value=669966>SampleColor</OPTION>
+<OPTION style="COLOR: #669933" value=669933>SampleColor</OPTION>
+<OPTION style="COLOR: #669900" value=669900>SampleColor</OPTION>
+<OPTION style="COLOR: #6666ff" value=6666ff>SampleColor</OPTION>
+<OPTION style="COLOR: #6666cc" value=6666cc>SampleColor</OPTION>
+<OPTION style="COLOR: #666699" value=666699>SampleColor</OPTION>
+<OPTION style="COLOR: #666666" value=666666>SampleColor</OPTION>
+<OPTION style="COLOR: #666633" value=666633>SampleColor</OPTION>
+<OPTION style="COLOR: #666600" value=666600>SampleColor</OPTION>
+<OPTION style="COLOR: #6633ff" value=6633ff>SampleColor</OPTION>
+<OPTION style="COLOR: #6633cc" value=6633cc>SampleColor</OPTION>
+<OPTION style="COLOR: #663399" value=663399>SampleColor</OPTION>
+<OPTION style="COLOR: #663366" value=663366>SampleColor</OPTION>
+<OPTION style="COLOR: #663333" value=663333>SampleColor</OPTION>
+<OPTION style="COLOR: #663300" value=663300>SampleColor</OPTION>
+<OPTION style="COLOR: #6600ff" value=6600ff>SampleColor</OPTION>
+<OPTION style="COLOR: #6600cc" value=6600cc>SampleColor</OPTION>
+<OPTION style="COLOR: #660099" value=660099>SampleColor</OPTION>
+<OPTION style="COLOR: #660066" value=660066>SampleColor</OPTION>
+<OPTION style="COLOR: #660033" value=660033>SampleColor</OPTION>
+<OPTION style="COLOR: #660000" value=660000>SampleColor</OPTION>
+<OPTION style="COLOR: #33ffff" value=33ffff>SampleColor</OPTION>
+<OPTION style="COLOR: #33ffcc" value=33ffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #33ff99" value=33ff99>SampleColor</OPTION>
+<OPTION style="COLOR: #33ff66" value=33ff66>SampleColor</OPTION>
+<OPTION style="COLOR: #33ff33" value=33ff33>SampleColor</OPTION>
+<OPTION style="COLOR: #33ff00" value=33ff00>SampleColor</OPTION>
+<OPTION style="COLOR: #33ccff" value=33ccff>SampleColor</OPTION>
+<OPTION style="COLOR: #33cccc" value=33cccc>SampleColor</OPTION>
+<OPTION style="COLOR: #33cc99" value=33cc99>SampleColor</OPTION>
+<OPTION style="COLOR: #33cc66" value=33cc66>SampleColor</OPTION>
+<OPTION style="COLOR: #33cc33" value=33cc33>SampleColor</OPTION>
+<OPTION style="COLOR: #33cc00" value=33cc00>SampleColor</OPTION>
+<OPTION style="COLOR: #3399ff" value=3399ff>SampleColor</OPTION>
+<OPTION style="COLOR: #3399cc" value=3399cc>SampleColor</OPTION>
+<OPTION style="COLOR: #339999" value=339999>SampleColor</OPTION>
+<OPTION style="COLOR: #339966" value=339966>SampleColor</OPTION>
+<OPTION style="COLOR: #339933" value=339933>SampleColor</OPTION>
+<OPTION style="COLOR: #339900" value=339900>SampleColor</OPTION>
+<OPTION style="COLOR: #3366ff" value=3366ff>SampleColor</OPTION>
+<OPTION style="COLOR: #3366cc" value=3366cc>SampleColor</OPTION>
+<OPTION style="COLOR: #336699" value=336699>SampleColor</OPTION>
+<OPTION style="COLOR: #336666" value=336666>SampleColor</OPTION>
+<OPTION style="COLOR: #336633" value=336633>SampleColor</OPTION>
+<OPTION style="COLOR: #336600" value=336600>SampleColor</OPTION>
+<OPTION style="COLOR: #3333ff" value=3333ff>SampleColor</OPTION>
+<OPTION style="COLOR: #3333cc" value=3333cc>SampleColor</OPTION>
+<OPTION style="COLOR: #333399" value=333399>SampleColor</OPTION>
+<OPTION style="COLOR: #333366" value=333366>SampleColor</OPTION>
+<OPTION style="COLOR: #333333" value=333333>SampleColor</OPTION>
+<OPTION style="COLOR: #333300" value=333300>SampleColor</OPTION>
+<OPTION style="COLOR: #3300ff" value=3300ff>SampleColor</OPTION>
+<OPTION style="COLOR: #3300cc" value=3300cc>SampleColor</OPTION>
+<OPTION style="COLOR: #330099" value=330099>SampleColor</OPTION>
+<OPTION style="COLOR: #330066" value=330066>SampleColor</OPTION>
+<OPTION style="COLOR: #330033" value=330033>SampleColor</OPTION>
+<OPTION style="COLOR: #330000" value=330000>SampleColor</OPTION>
+<OPTION style="COLOR: #00ffff" value=00ffff>SampleColor</OPTION>
+<OPTION style="COLOR: #00ffcc" value=00ffcc>SampleColor</OPTION>
+<OPTION style="COLOR: #00ff99" value=00ff99>SampleColor</OPTION>
+<OPTION style="COLOR: #00ff66" value=00ff66>SampleColor</OPTION>
+<OPTION style="COLOR: #00ff33" value=00ff33>SampleColor</OPTION>
+<OPTION style="COLOR: #00ff00" value=00ff00>SampleColor</OPTION>
+<OPTION style="COLOR: #00ccff" value=00ccff>SampleColor</OPTION>
+<OPTION style="COLOR: #00cccc" value=00cccc>SampleColor</OPTION>
+<OPTION style="COLOR: #00cc99" value=00cc99>SampleColor</OPTION>
+<OPTION style="COLOR: #00cc66" value=00cc66>SampleColor</OPTION>
+<OPTION style="COLOR: #00cc33" value=00cc33>SampleColor</OPTION>
+<OPTION style="COLOR: #00cc00" value=00cc00>SampleColor</OPTION>
+<OPTION style="COLOR: #0099ff" value=0099ff>SampleColor</OPTION>
+<OPTION style="COLOR: #0099cc" value=0099cc>SampleColor</OPTION>
+<OPTION style="COLOR: #009999" value=009999>SampleColor</OPTION>
+<OPTION style="COLOR: #009966" value=009966>SampleColor</OPTION>
+<OPTION style="COLOR: #009933" value=009933>SampleColor</OPTION>
+<OPTION style="COLOR: #009900" value=009900>SampleColor</OPTION>
+<OPTION style="COLOR: #0066ff" value=0066ff>SampleColor</OPTION>
+<OPTION style="COLOR: #0066cc" value=0066cc>SampleColor</OPTION>
+<OPTION style="COLOR: #006699" value=006699>SampleColor</OPTION>
+<OPTION style="COLOR: #006666" value=006666>SampleColor</OPTION>
+<OPTION style="COLOR: #006633" value=006633>SampleColor</OPTION>
+<OPTION style="COLOR: #006600" value=006600>SampleColor</OPTION>
+<OPTION style="COLOR: #0033ff" value=0033ff>SampleColor</OPTION>
+<OPTION style="COLOR: #0033cc" value=0033cc>SampleColor</OPTION>
+<OPTION style="COLOR: #003399" value=003399>SampleColor</OPTION>
+<OPTION style="COLOR: #003366" value=003366>SampleColor</OPTION>
+<OPTION style="COLOR: #003333" value=003333>SampleColor</OPTION>
+<OPTION style="COLOR: #003300" value=003300>SampleColor</OPTION>
+<OPTION style="COLOR: #0000ff" value=0000ff>SampleColor</OPTION>
+<OPTION style="COLOR: #0000cc" value=0000cc>SampleColor</OPTION>
+<OPTION style="COLOR: #000099" value=000099>SampleColor</OPTION>
+<OPTION style="COLOR: #000066" value=000066>SampleColor</OPTION>
+<OPTION style="COLOR: #000033" value=000033>SampleColor</OPTION>
+<OPTION style="COLOR: #000000" value=000000>SampleColor</OPTION>
+</SELECT><br />
+<input type="submit" class="btn" name="setting01" value="修改" style="width:100px">
+<input type="hidden" name="setting01" value="1">
+</form>
+<h4>注销</h4>
+<form action="{$temp38}" method="post">
+<input type="submit" class="btn" name="logout" value="注销" style="width:100px">
+</form>
+<h4>变更队伍名</h4>
+<form action="?setting" method="post">
+費用 : {$temp39}<br />
+16个字符(全角=2字符)<br />
+新的名称 : <input type="text" class="text" name="NewName" size="20">
+<input type="submit" class="btn" value="变更" style="width:100px">
+</form>
+<h4>世界尽头</h4>
+<div class="u">※自杀用</div>
+<form action="?setting" method="post">
+PassWord : <input type="text" class="text" name="deletepass" size="20">
+<input type="submit" class="btn" name="delete" value="我要自杀了..." style="width:100px">
+</form>
+</div>
+P36;
+		return $Result;
+	}
+
+	function MemorizeParty() {
+		if(__POST("memory_party")) {
+			foreach($this->char as $key => $val) {
+				if(__POST("char_".$key))
+					$PartyMemo[]	= $key;
+			}
+			if(0 < __count($PartyMemo) && __count($PartyMemo) < 6)
+				$this->party_memo	= implode("<>",$PartyMemo);
+		}
+	}
+
+	function LoginMain() {
+		$this->ShowTutorial();
+		$this->ShowMyCharacters();
+		RegularControl($this->id);
+	}
+
+	function ShowTutorial() {
+		$last	= $this->last;
+		$start	= substr($this->start,0,10);
+		$term	= 60*60*1;
+		if( ($last - $start) < $term) {
+
+echo <<<P37
+	<div style="margin:5px 15px">
+	<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+	</div>
+P37;
+
+		}
+	}
+
+
+	function ShowMyCharacters($array=NULL) {
+		if(!$this->char) return false;
+		$divide	= (__count($this->char)<CHAR_ROW ? count($this->char) : CHAR_ROW);
+		$width	= floor(100/$divide);
+
+		print('<table cellspacing="0" style="width:100%"><tbody><tr>');
+		foreach($this->char as $val) {
+			if( $i%CHAR_ROW==0 && $i != 0 )
+				print("\t</tr><tr>\n");
+			print("\t<td valign=\"bottom\" style=\"width:{$width}%\">");
+			$val->ShowCharLink($array);
+			print("</td>\n");
+			$i++;
+		}
+		print("</tr></tbody></table>");
+	}
+
+	function ShowCharacters($characters,$type=null,$checked=null) {
+		if(!$characters) return false;
+		$divide	= (__count($characters)<CHAR_ROW ? count($characters) : CHAR_ROW);
+		$width	= floor(100/$divide);
+
+		if($type == "CHECKBOX") {
+print <<< HTML
+<script type="text/javascript">
+<!--
+function toggleCheckBox(id) {
+id0 = "box" + id;
+\$("box" + id).checked = \$("box" + id).checked?false:true;
+Element.toggleClassName("text"+id,'unselect');
+}
+// -->
+</script>
+HTML;
+		}
+
+		print('<table cellspacing="0" style="width:100%"><tbody><tr>');
+		foreach($characters as $char) {
+			if( $i%CHAR_ROW==0 && $i != 0 )
+				print("\t</tr><tr>\n");
+			print("\t<td valign=\"bottom\" style=\"width:{$width}%\">");
+
+			switch(1) {
+				case ($type === MONSTER):
+					$char->ShowCharWithLand($checked); break;
+				case ($type === CHECKBOX):
+					if(!is_array($checked)) $checked = array();
+					if(in_array($char->birth,$checked))
+						$char->ShowCharRadio($char->birth," checked");
+					else
+						$char->ShowCharRadio($char->birth);
+					break;
+				default:
+					$char->ShowCharLink();
+			}
+
+			print("</td>\n");
+			$i++;
+		}
+		print("</tr></tbody></table>");
+	}
+
+
+	function DeleteMyData() {
+		if($this->pass == $this->CryptPassword(__POST("deletepass")) ) {
+			$this->DeleteUser();
+			$this->name	= NULL;
+			$this->pass	= NULL;
+			$this->id	= NULL;
+			$this->islogin= false;
+			unset($_SESSION["id"]);
+			unset($_SESSION["pass"]);
+			setcookie("NO","");
+			$this->LoginForm();
+			return true;
+		}
+	}
+
+
+	function Debug() {
+		if(DEBUG)
+			print("<pre>".print_r(get_object_vars($this),1)."</pre>");
+	}
+
+
+	function ShowSession() {
+		echo "this->id:{$this->id}<br>";
+		echo "this->pass:{$this->pass}<br>";
+		echo "SES[id]:".__SESSION('id')."<br>";
+		echo "SES[pass]:".__SESSION('pass')."<br>";
+		echo "SES[pass]:".$this->CryptPassword(__SESSION('pass'))."(crypted)<br>";
+		echo "CK[NO]:".__COOKIE('NO')."<br>";
+		echo "SES[NO]:".session_id();
+		dump($_COOKIE);
+		dump($_SESSION);
+	}
+
+
+	function RenewLoginTime() {
+		$this->login	= time();
+	}
+
+
+	function CheckLogin() {
+		if(__POST("logout")) {
+			unset($_SESSION["pass"]);
+			return false;
+		}
+
+		$file=USER.$this->id."/".DATA;
+		if ($data = $this->LoadData()) {
+			if($this->pass == NULL)
+				return false;
+			if ($data["pass"] === $this->pass) {
+				$this->DataUpDate($data);
+				$this->SetData($data);
+				if(RECORD_IP)
+					$this->SetIp(__SERVER('REMOTE_ADDR'));
+				$this->RenewLoginTime();
+
+				$pass	= (__POST("pass"))?__POST("pass"):__GET("pass");
+				if ($pass) {
+					$_SESSION["id"]	= $this->id;
+					$_SESSION["pass"]	= $pass;
+					setcookie("NO",session_id(),time()+COOKIE_EXPIRE);
+				}
+
+				$this->islogin	= true;
+				return true;
+			} else
+				return "Wrong password!";
+		} else {
+			if(__POST("id"))
+				return "ID \"{$this->id}\" doesnt exists.";
+		}
+	}
+
+
+	function RecordRegister($id) {
+		$fp=fopen(REGISTER,"a");
+		flock($fp,2);
+		fputs($fp,"$id\n");
+		fclose($fp);
+	}
+
+
+	function Set_ID_PASS() {
+		$id	= (__POST("id"))?__POST("id"):__GET("id");
+		if($id) {
+				$this->id	= $id;
+			if (is_registered(__POST("id"))) {
+				$_SESSION["id"]	= $this->id;
+			}
+		} else if(__SESSION("id"))
+			$this->id	= __SESSION("id");
+
+		$pass	= (__POST("pass"))?__POST("pass"):__GET("pass");
+		if($pass)
+			$this->pass	= $pass;
+		else if(__SESSION("pass"))
+			$this->pass	= __SESSION("pass");
+
+		if($this->pass)
+			$this->pass	= $this->CryptPassword($this->pass);
+	}
+
+
+	function SessionSwitch() {
+		session_cache_expire(COOKIE_EXPIRE/60);
+		if(__COOKIE("NO"))
+			session_id(__COOKIE("NO"));
+
+		session_start();
+		if(!SESSION_SWITCH)
+			return false;
+		$OldID	= session_id();
+		$temp	= serialize($_SESSION);
+
+		session_regenerate_id();
+		$NewID	= session_id();
+		setcookie("NO",$NewID,time()+COOKIE_EXPIRE);
+		$_COOKIE["NO"]=$NewID;
+
+		if (session_status() == PHP_SESSION_NONE) {
+			session_id($OldID);
+			session_start();
+		}
+
+		if($_SESSION):
+			foreach($_SESSION as $key => $val)
+				unset($_SESSION["$key"]);
+		endif;
+
+		if (session_status() == PHP_SESSION_NONE) {
+			session_id($NewID);
+			session_start();
+		}
+		$_SESSION	= unserialize($temp);
+	}
+
+	function MakeNewData() {
+		if(MAX_USERS <= __count(glob(USER."*")))
+			return array(false,"Maximum users.<br />已达到最大用户数量。");
+		if(__POST("Newid"))
+			trim($_POST["Newid"]);
+		if(empty(__POST("Newid")))
+			return array(false,"Enter ID.");
+
+		if(!preg_match("/[0-9a-zA-Z]{4,16}/",__POST("Newid"))||
+			preg_match("/[^0-9a-zA-Z]+/",__POST("Newid")))
+			return array(false,"Bad ID");
+
+		if(strlen(__POST("Newid")) < 4 || 16 < strlen(__POST("Newid")))
+			return array(false,"Bad ID");
+
+		if(is_registered(__POST("Newid")))
+			return array(false,"This ID has been already used.");
+
+		$file = USER.__POST("Newid")."/".DATA;
+		if(empty(__POST("pass1")) || empty(__POST("pass2")))
+			return array(false,"Enter both Password.");
+
+		if(!preg_match("/[0-9a-zA-Z]{4,16}/",__POST("pass1")) || preg_match("/[^0-9a-zA-Z]+/",__POST("pass1")))
+			return array(false,"Bad Password 1");
+		if(strlen(__POST("pass1")) < 4 || 16 < strlen(__POST("pass1")))
+			return array(false,"Bad Password 1");
+		if(!preg_match("/[0-9a-zA-Z]{4,16}/",__POST("pass2")) || preg_match("/[^0-9a-zA-Z]+/",__POST("pass2")))
+			return array(false,"Bad Password 2");
+		if(strlen(__POST("pass2")) < 4 || 16 < strlen(__POST("pass2")))
+			return array(false,"Bad Password 2");
+
+		if(__POST("pass1") !== __POST("pass2"))
+			return array(false,"Password dismatch.");
+
+		$pass = $this->CryptPassword(__POST("pass1"));
+		if(!file_exists($file)){
+			mkdir(USER.__POST("Newid"), 0705);
+			$this->RecordRegister(__POST("Newid"));
+			$fp=fopen("$file","w");
+			flock($fp,LOCK_EX);
+				$now	= time();
+				fputs($fp,"id=".__POST('Newid')."\n");
+				fputs($fp,"pass=$pass\n");
+				fputs($fp,"last=".$now."\n");
+				fputs($fp,"login=".$now."\n");
+				fputs($fp,"start=".$now.substr(microtime(),2,6)."\n");
+				fputs($fp,"money=".START_MONEY."\n");
+				fputs($fp,"time=".START_TIME."\n");
+				fputs($fp,"record_btl_log=1\n");
+			fclose($fp);
+			$_SESSION["id"]=__POST("Newid");
+			setcookie("NO",session_id(),time()+COOKIE_EXPIRE);
+			$success	= "<div class=\"recover\">ID : ".__POST('Newid')." 注册成功. 请登录吧</div>";
+			return array(true,$success);
+		}
+	}
+
+
+	function NewForm($error=NULL) {
+		if(MAX_USERS <= __count(glob(USER."*"))) {
+
+echo <<<P38
+	<div style="margin:15px">
+	Maximum users.<br />
+	用户数已达到最大。
+	</div>
+P38;
+			return false;
+		}
+		$idset=(__POST("Newid") ? " value=".__POST('Newid')."" : NULL);
+
+		$temp40 = ShowError($error);
+		$temp41 = INDEX;
+echo <<<P39
+	<div style="margin:15px">
+	{$temp40}
+	<h4>注册!</h4>
+	<form action="{$temp41}" method="post">
+
+	<table><tbody>
+	<tr><td colspan="2">ID & PASS must be 4 to 16 letters.<br />letters allowed a-z,A-Z,0-9<br />
+	ID 和 PASS在 4-16 个字以内。半角英数字。</td></tr>
+	<tr><td><div style="text-align:right">ID:</div></td>
+	<td><input type="text" maxlength="16" class="text" name="Newid" style="width:240px"{$idset}></td></tr>
+	<tr><td colspan="2"><br />Password,Re-enter.<br />PASS 以及再输入 确认用。</td></tr>
+	<tr><td><div style="text-align:right">PASS:</div></td>
+	<td><input type="password" maxlength="16" class="text" name="pass1" style="width:240px"></td></tr>
+
+	<tr><td></td>
+	<td><input type="password" maxlength="16" class="text" name="pass2" style="width:240px">(verify)</td></tr>
+
+	<tr><td></td><td><input type="submit" class="btn" name="Make" value="确定" style="width:160px"></td></tr>
+
+	</tbody></table>
+	</form>
+	</div>
+P39;
+	}
+	function LoginForm($message = NULL) {
+		
+		$temp42 = INDEX;
+		$temp43 = ((__SESSION("id")) ? " value=\"".__SESSION('id')."\"" : NULL);
+echo <<<P40
+<div style="width:730px;">
+<div style="width:350px;float:right">
+<h4 style="width:350px">登录</h4>
+{$message}
+<form action="{$temp42}" method="post" style="padding-left:20px">
+<table><tbody>
+<tr>
+<td><div style="text-align:right">ID:</div></td>
+<td><input type="text" maxlength="16" class="text" name="id" style="width:160px"{$temp43}></td>
+</tr>
+<tr>
+<td><div style="text-align:right">PASS:</div></td>
+<td><input type="password" maxlength="16" class="text" name="pass" style="width:160px"></td>
+</tr>
+<tr><td></td><td>
+<input type="submit" class="btn" name="Login" value="登录" style="width:80px"> 
+<a href="?newgame">新玩家?</a>
+</td></tr>
+</tbody></table>
+</form>
+
+<h4 style="width:350px">排行榜</h4>
+P40;
+	include_once(CLASS_RANKING);
+	$Rank	= new Ranking();
+	$Rank->ShowRanking(0,4);
+
+	$temp44 = UserAmount();
+	$temp45 = MAX_USERS;
+echo <<<P41
+</div>
+<div style="width:350px;padding:5px;float:left;">
+<div style="width:350px;text-align:center">
+<img src="./image/top01.gif" style="margin-bottom:20px" />
+</div>
+<div style="margin-left:20px">
+<DIV class=u>这到底是什么游戏?</DIV>
+<UL>
+<LI>游戏的目的是得到第一、<BR>并且保持住第一的位置。 
+<LI>虽然没有冒险的要素、<BR>但有点深奥的战斗系统。 </LI></UL>
+<DIV class=u>战斗的感觉是什么?</DIV>
+<UL>
+<LI>5人的人物构成队伍 。 
+<LI>各人物各持不同模式、<BR>根据战斗的状况来使用技能。 
+<LI><A class=a0 href="?log">这边</A>可以回览战斗记录。 </LI></UL></DIV></DIV>
+
+<div class="c-both"></div>
+</div>
+
+
+<div style="margin:15px">
+<h4>提示</h4>
+用户数: {$temp44} / {$temp45}<br />
+P41;
+	$Abandon	= ABANDONED;
+	print(floor($Abandon/(60*60*24))."日中数据没变化的话数据将消失。");
+print("</div>\n");
+	}
+
+
+	function MyMenu() {
+		if($this->name && $this->islogin) { 
+			print('<div id="menu">'."\n");
+			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>');
+			print('<a href="?hunt">狩猎</a><span class="divide"></span>');
+			print('<a href="?item">道具</a><span class="divide"></span>');
+			print('<a href="?town">城镇</a><span class="divide"></span>');
+			print('<a href="?setting">设置</a><span class="divide"></span>');
+			print('<a href="?log">记录</a><span class="divide"></span>');
+			if(BBS_OUT)
+				print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");
+			print('</div><div id="menu2">'."\n");
+				
+			$temp46 = MoneyFormat($this->money);
+			$temp47 = floor($this->time);
+			$temp48 = MAX_TIME;
+echo <<<P42
+	<div style="width:100%">
+	<div style="width:30%;float:left">{$this->name}</div>
+	<div style="width:60%;float:right">
+	<div style="width:40%;float:left"><span class="bold">资金</span> : {$temp46}</div>
+	<div style="width:40%;float:right"><span class="bold">时间</span> : {$temp47}/{$temp48}</div>
+	</div>
+	<div class="c-both"></div>
+	</div>
+P42;
+			print('</div>');
+		} else if(!$this->name && $this->islogin) {
+			print('<div id="menu">');
+			print("First login. Thankyou for the entry.");
+			print('</div><div id="menu2">');
+			print("fill the blanks. 来吧，请填写。");
+			print('</div>');
+		} else { 
+			print('<div id="menu">');
+			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>'."\n");
+			print('<a href="?newgame">新注册</a><span class="divide"></span>'."\n");
+			print('<a href="?manual">规则和手册</a><span class="divide"></span>'."\n");
+			print('<a href="?gamedata=job">游戏数据</a><span class="divide"></span>'."\n");
+			print('<a href="?log">战斗记录</a><span class="divide"></span>'."\n");
+			if(BBS_OUT)
+			print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");			
+			print('</div><div id="menu2">');
+			print("欢迎来到 [ ".TITLE." ]");
+			print('</div>');
+		}
+	}
+
+
+	function Head() {
+		$temp49 = $this->HtmlScript();
+		$temp50 = TITLE;
+		$temp51 = $this->MyMenu();
+echo <<<P43
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+{$temp49}
+<title>{$temp50}</title>
+</head>
+<body><a name="top"></a>
+<div id="main_frame">
+<div id="title"><img src="./image/title03.gif"></div>
+{$temp51}<div id="contents">
+P43;
+	}
+
+
+	function HtmlScript() {
+echo <<<P44
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<link rel="stylesheet" href="./basis.css" type="text/css">
+<link rel="stylesheet" href="./style.css" type="text/css">
+<script type="text/javascript" src="prototype.js"></script>
+P44;
+	}
+
+
+	function Foot() {
+
+echo <<<P45
+</div>
+<div style="clear: both;"></div>
+<div id="foot">
+<a href="?update">UpDate</a> - 
+P45;
+	if(BBS_BOTTOM_TOGGLE)
+		print('<a href="'.BBS_OUT.'" target="_blank">BBS</a> - '."\n");
+
+echo <<<P46
+<a href="?manual">手册</a> - 
+<a href="?tutorial">教学</a> - 
+<a href="?gamedata=job">游戏数据</a> - 
+<a href="#top">Top</a><br>
+Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
+汉化 By <a href="#">FiringSquad中文网</a> 2006-2008.<br>
+</div>
+</div>
+</body>
+</html>
+P46;
+	}
+
+
+	function FirstLogin() {
+		$error = '';
+		if ($this->name)
+			return false;
+
+		do {
+			if (!__POST("Done"))
+				break;
+			if(is_numeric(strpos(__POST("name"),"\t"))) {
+				$error	= 'error1';
+				break;
+			}
+			if(is_numeric(strpos(__POST("name"),"\n"))) {
+				$error	= 'error';
+				break;
+			}
+			$_POST["name"]	= trim(__POST("name"));
+			$_POST["name"]	= stripslashes(__POST("name"));
+			if (!__POST("name")) {
+				$error	= 'Name is blank.';
+				break;
+			}
+			$length	= strlen(__POST("name"));
+			if ( 0 == $length || 16 < $length) {
+				$error	= '1 to 16 letters?';
+				break;
+			}
+			$userName	= userNameLoad();
+			if(in_array(__POST("name"),$userName)) {
+				$error	= '该名字已被使用。';
+				break;
+			}
+			$_POST["first_name"]	= trim(__POST("first_name"));
+			$_POST["first_name"]	= stripslashes(__POST("first_name"));
+			if(is_numeric(strpos(__POST("first_name"),"\t"))) {
+				$error	= 'error';
+				break;
+			}
+			if(is_numeric(strpos(__POST("first_name"),"\n"))) {
+				$error	= 'error';
+				break;
+			}
+			if (!__POST("first_name")) {
+				$error	= 'Character name is blank.';
+				break;
+			}
+			$length	= strlen(__POST("first_name"));
+			if ( 0 == $length || 16 < $length) {
+				$error	= '1 to 16 letters?';
+				break;
+			}
+			if(!__POST("fjob")) {
+				$error	= 'Select characters job.';
+				break;
+			}
+			$_POST["name"]	= htmlspecialchars(__POST("name"),ENT_QUOTES);
+			$_POST["first_name"]	= htmlspecialchars(__POST("first_name"),ENT_QUOTES);
+
+			$this->name	= __POST("name");
+			userNameAdd($this->name);
+			$this->SaveData();
+			switch(__POST("fjob")){
+				case "1":
+					$job = 1; $gend = 0; break;
+				case "2":
+					$job = 1; $gend = 1; break;
+				case "3":
+					$job = 2; $gend = 0; break;
+				default:
+					$job = 2; $gend = 1;
+			}
+			include(DATA_BASE_CHAR);
+			$char	= new char();
+			$char->SetCharData(array_merge(BaseCharStatus($job),array("name"=>__POST('first_name'),"gender"=>"$gend")));
+			$char->SaveCharData($this->id);
+			return false;
+		}while(0);
+
+		include(DATA_BASE_CHAR);
+		
+		$mr1 = array("gender"=>"0");
+		$mr2 = array_merge(BaseCharStatus("1"),$mr1);
+		$war_male	= new char();
+		$war_male->SetCharData($mr2);
+		
+		$mr3 = array("gender"=>"1");
+		$mr4 = array_merge(BaseCharStatus("1"),$mr3);
+		$war_female	= new char();
+		$war_female->SetCharData($mr4);
+		
+		$mr5 = array("gender"=>"0");
+		$mr6 = array_merge(BaseCharStatus("2"),$mr5);
+		$sor_male	= new char();
+		$sor_male->SetCharData($mr6);
+		
+		$mr7 = array("gender"=>"1");
+		$mr8 = array_merge(BaseCharStatus("2"),$mr7);
+		$sor_female	= new char();
+		$sor_female->SetCharData($mr8);
+
+		$temp52 = INDEX;
+		$temp53 = ShowError($error);
+		$temp54 = (__POST("name")?"value=\"".__POST('name')."\"":"");
+		$temp55 = $war_male->ShowImage();
+		$temp56 = $war_female->ShowImage();
+		$temp57 = $sor_male->ShowImage();
+		$temp58 = $sor_female->ShowImage();
+echo <<<P47
+	<form action="{$temp52}" method="post" style="margin:15px">
+	{$temp53}
+	<h4>Name of Team</h4>
+	<p>Decide the Name of the team.<br />
+	It should be more than 1 and less than 16 letters.<br />
+	Japanese characters count as 2 letters.</p>
+	<p>1-16字符的队伍名。<br /></p>
+	<div class="bold u">TeamName</div>
+	<input class="text" style="width:160px" maxlength="16" name="name" {$temp54}>
+	<h4>First Character</h4>
+	<p>Decide the name of Your First Charactor.<br>
+	more than 1 and less than 16 letters.</p>
+	<p>第一个人物的名称。</p>
+	<div class="bold u">CharacterName</div>
+	<input class="text" type="text" name="first_name" maxlength="16" style="width:160px;margin-bottom:10px">
+	<table cellspacing="0" style="width:400px"><tbody>
+	<tr><td class="td1" valign="bottom"><div style="text-align:center">{$temp55}<br><input type="radio" name="fjob" value="1" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center">{$temp56}<br><input type="radio" name="fjob" value="2" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center">{$temp57}<br><input type="radio" name="fjob" value="3" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center">{$temp58}<br><input type="radio" name="fjob" value="4" style="margin:3px"></div></td></tr>
+	<tr><td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td>
+	<td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td></tr>
+	<tr><td colspan="2" class="td4"><div style="text-align:center">Warrior</div></td><td colspan="2" class="td4"><div style="text-align:center">Socerer</div></td></tr>
+	</tbody></table>
+	<p>Choose your first character's job & Gender.</p>
+	<p>最初的人物性别与职业</p>
+	<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
+	<input type="hidden" value="1" name="Done">
+	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
+P47;
+
+			return true;
+	}
+
+	function bbs01() {
+		if(!BBS_BOTTOM_TOGGLE)
+			return false;
+		$file	= BBS_BOTTOM;
+
+echo <<<P48
+<div style="margin:15px">
+<h4>one line bbs</h4>
+错误报告或意见，对这里的开发建议
+<form action="?bbs" method="post">
+<input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
+<input type="submit" value="post" class="btn" style="width:100px" />
+</form>
+P48;
+		if(!file_exists($file))
+			return false;
+		$log	= file($file);
+		if(__POST("message") && strlen(__POST("message")) < 121) {
+			$_POST["message"]	= htmlspecialchars(__POST("message"),ENT_QUOTES);
+			$_POST["message"]	= stripslashes(__POST("message"));
+
+			$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>":"无名");
+			$message	= $name." > ".__POST("message");
+			if($this->UserColor)
+				$message	= "<span style=\"color:{$this->UserColor}\">".$message."</span>";
+			$message	.= " <span class=\"light\">(".date("Mj G:i").")</span>\n";
+			array_unshift($log,$message);
+			while(150 < __count($log))
+				array_pop($log);
+			WriteFile($file,implode(null,$log));
+		}
+		foreach($log as $mes)
+			print(nl2br($mes));
+		print('</div>');
+	}
+}
+?>
