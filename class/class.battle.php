@@ -109,7 +109,7 @@ class battle extends ClassSkillEffect{
 		if($notice) {
 print <<< HTML
 	<tr><td colspan="2" class="break break-top bold" style="text-align:center;padding:20px 0;">
-	超出战斗回合数.
+	전투 라운드 수 초과
 	</td></tr>
 HTML;
 		}
@@ -234,10 +234,10 @@ HTML;
 			} else if($this->BattleResultType == 1) {	
 				$team0Alive	= CountAliveChars($this->team0);
 				$team1Alive	= CountAliveChars($this->team1);
-				if($team1存活 < $team0Alive) {
+				if($team1Alive < $team0Alive) {
 					$this->result	= TEAM_0;
 					return "team0";
-				} else if($team0存活 < $team1Alive) {
+				} else if($team0Alive < $team1Alive) {
 					$this->result	= TEAM_1;
 					return "team1";
 				} else {
@@ -246,12 +246,12 @@ HTML;
 				}
 			} else {
 				$this->result	= DRAW;
-				print("error321708.<br />请报告出错了...（？）。");
+				print("error321708.<br />무엇이 잘못되었는지 알려주세요...?.");
 				return "draw";
 			}
 
 			$this->result	= DRAW;
-			print("error321709.<br />请报告出错了...（？）。");
+			print("error321709.<br />무엇이 잘못되었는지 알려주세요...?.");
 			return "draw";
 		}
 	}
@@ -276,16 +276,16 @@ HTML;
 
 		if($this->NoResult) {
 			print('<tr><td colspan="2" style="text-align:center;padding:10px 0px" class="break break-top">');
-			print("模拟战结束");
+			print("시뮬레이션 전투가 종료됩니다");
 			print("</td></tr>\n");
 			print('<tr><td class="teams break">'."\n");
-			print("残留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
-			print("存活 : {$TotalAlive2}/".__count($this->team1)."<br />\n");
-			print("总伤害 : {$this->team1_dmg}<br />\n");
+			print("잔여 HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
+			print("생존 : {$TotalAlive2}/".__count($this->team1)."<br />\n");
+			print("총 피해량 : {$this->team1_dmg}<br />\n");
 			print('</td><td class="teams break">'."\n");
-			print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
-			print("存活 : {$TotalAlive1}/".__count($this->team0)."<br />\n");
-			print("总伤害 : {$this->team0_dmg}<br />\n");
+			print("잔여 HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+			print("생존 : {$TotalAlive1}/".__count($this->team0)."<br />\n");
+			print("총 피해량 : {$this->team0_dmg}<br />\n");
 			print("</td></tr>\n");
 			return false;
 		}
@@ -294,25 +294,25 @@ HTML;
 		print('<tr><td colspan="2" style="text-align:center;padding:10px 0px" class="break'.$BreakTop.'">'."\n");
 		print("<a name=\"s{$this->Scroll}\"></a>\n");
 		if($result == "draw") {
-			print("<span style=\"font-size:150%\">平局</span><br />\n");
+			print("<span style=\"font-size:150%\">무승부</span><br />\n");
 		} else {
 			$Team	= &$this->{$result};
 			$TeamName	= $this->{$result."_name"};
-			print("<span style=\"font-size:200%\">{$TeamName} 胜利!</span><br />\n");
+			print("<span style=\"font-size:200%\">{$TeamName} 이 승리했습니다!</span><br />\n");
 		}
 
 		print('<tr><td class="teams">'."\n");
-		print("残留HP : ");
+		print("잔여 HP : ");
 		print($this->UnionBattle?"????/????":"{$TotalHp2}/{$TotalMaxHp2}");
 		print("<br />\n");
-		print("存活 : {$TotalAlive2}/".__count($this->team1)."<br />\n");
-		print("总伤害 : {$this->team1_dmg}<br />\n");
+		print("생존 : {$TotalAlive2}/".__count($this->team1)."<br />\n");
+		print("총 피해량 : {$this->team1_dmg}<br />\n");
 		if($this->team1_exp)
-			print("总经验值 : ".$this->team1_exp."<br />\n");
+			print("총 경험치 : ".$this->team1_exp."<br />\n");
 		if($this->team1_money)
-			print("金钱 : ".MoneyFormat($this->team1_money)."<br />\n");
+			print("돈 : ".MoneyFormat($this->team1_money)."<br />\n");
 		if($this->team1_item) {
-			print("<div class=\"bold\">道具</div>\n");
+			print("<div class=\"bold\">아이템</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
@@ -321,13 +321,13 @@ HTML;
 		}
 
 		print('</td><td class="teams">');
-		print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
-		print("存活 : {$TotalAlive1}/".__count($this->team0)."<br />\n");
-		print("总伤害 : {$this->team0_dmg}<br />\n");
+		print("잔여 HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+		print("생존 : {$TotalAlive1}/".__count($this->team0)."<br />\n");
+		print("총 피해량 : {$this->team0_dmg}<br />\n");
 		if($this->team0_exp)
-			print("总经验值 : ".$this->team0_exp."<br />\n");
+			print("총 경험치 : ".$this->team0_exp."<br />\n");
 		if($this->team0_money)
-			print("金钱 : ".MoneyFormat($this->team0_money)."<br />\n");
+			print("돈 : ".MoneyFormat($this->team0_money)."<br />\n");
 		if($this->team0_item) {
 			print("<div class=\"bold\">Items</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
@@ -393,7 +393,7 @@ HTML;
 		if($skill) {
 			$this->UseSkill($skill,$return,$char,$MyTeam,$EnemyTeam);
 		} else {
-			print($char->Name(bold)." 陷入沉思结果忘了行动.<br />(无更多行动模式)<br />\n");
+			print($char->Name(bold). " 생각에 잠겨 행동하는 것을 잊어버렸습니다.<br />(더 이상 액션 모드가 없습니다)<br />\n");
 			$char->DelayReset();
 		}
 
@@ -417,18 +417,18 @@ HTML;
 		if($skill["limit"] && !$My->monster) {
 			if(!$skill["limit"][$My->WEAPON]) {
 				print('<span class="u">'.$My->Name(bold));
-				print('<span class="dmg"> 失败</span> 因为 ');
+				print('<span class="dmg">실패</span> 이유는 다음과 같습니다');
 				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
 				print($skill[name]."</span><br />\n");
-				print("(武器类型不符)<br />\n");
+				print("(무기 종류가 일치하지 않습니다)<br />\n");
 				$My->DelayReset();
 				return true;
 			}
 		}
 
 		if($My->SP < $skill["sp"]) {
-			print($My->Name(bold).$skill["name"]."失败(SP不足)");
+			print($My->Name(bold).$skill["name"]."실패(SP 부족)");
 			if($My->expect) {
 				$My->ResetExpect();
 			}
@@ -438,10 +438,10 @@ HTML;
 
 		if($skill["charge"]["0"] && $My->expect === false) {
 			if($skill["type"] == 0) {
-				print('<span class="charge">'.$My->Name(bold).' 开始蓄力.</span>');
+				print('<span class="charge">'.$My->Name(bold).'이 충전을 시작합니다.</span>');
 				$My->expect_type	= CHARGE;
 			} else {
-				print('<span class="charge">'.$My->Name(bold).' 开始咏唱.</span>');
+				print('<span class="charge">'.$My->Name(bold).'으로 주문이 시작됩니다.</span>');
 				$My->expect_type	= CAST;
 			}
 			$My->expect	= $skill_no;
@@ -461,9 +461,9 @@ HTML;
 			if($skill["MagicCircleDeleteTeam"])
 			{
 				if($this->MagicCircleDelete($My->team,$skill["MagicCircleDeleteTeam"])) {
-					print($My->Name(bold).'<span class="charge"> 使用魔法阵 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
+					print($My->Name(bold).'<span class="charge"> 마법진 사용 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
 				} else {
-					print('<span class="dmg">失败!(魔法阵不足)</span><br />'."\n");
+					print('<span class="dmg">실패! (마법진 부족)</span><br />'."\n");
 					$My->DelayReset();
 					return true;
 				}
@@ -510,7 +510,7 @@ HTML;
 		} else if($skill["target"]["1"] == "all") {
 			foreach($candidate as $key => $char) {
 				$target	= &$candidate[$key];
-				if($skill["priority"] != "死亡") {
+				if($skill["priority"] != "사망") {
 					if($char->STATE === DEAD) continue;
 				}
 				for($i=0; $i<$skill["target"]["2"]; $i++) {
@@ -538,7 +538,7 @@ HTML;
 
 		if($skill["charge"]["1"]) {
 			$My->DelayReset();
-			print($My->Name(bold)." 行动推迟了");
+			print($My->Name(bold)." 는 행동이 지연되었다.");
 			$My->DelayByRate($skill["charge"]["1"],$this->delay,1);
 			print("<br />\n");
 			return false;
@@ -561,11 +561,11 @@ function GetExp($exp,&$team) {
 	$Alive	= CountAliveChars($team);
 	if($Alive=== 0) return false;
 	$ExpGet	= ceil($exp/$Alive);
-	print("存活者获得 {$ExpGet} 经验.<br />\n");
+	print("생존자는 {$ExpGet}의 경험치를 얻습니다.<br />\n");
 	foreach($team as $key => $char) {
 		if($char->STATE === 1) continue;
 		if($team[$key]->GetExp($ExpGet))
-			print("<span class=\"levelup\">".$char->Name()." 升级!</span><br />\n");
+			print("<span class=\"levelup\">".$char->Name()." 는 레벨 업!</span><br />\n");
 	}
 }
 
@@ -630,7 +630,7 @@ function GetExp($exp,&$team) {
 					$defender	= &$fore["$key"];
 			}
 			if($defender) {
-				print('<span class="bold">'.$defender->name.'</span> 保护<span class="bold">'.$target->name.'</span>!<br />'."\n");
+				print('<span class="bold">'.$defender->name.'</span> 보호<span class="bold">'.$target->name.'</span>!<br />'."\n");
 				return $defender;
 			}
 		}
@@ -642,7 +642,7 @@ function GetExp($exp,&$team) {
 				$exp	+= $target[$key]->HpDifferenceEXP();
 			}
 			if($target[$key]->CharJudgeDead()) {
-				print("<span class=\"dmg\">".$target[$key]->Name(bold)." 被打倒.</span><br />\n");
+				print("<span class=\"dmg\">".$target[$key]->Name(bold)." 가 패배했습니다.</span><br />\n");
 
 				$exp	+= $target[$key]->DropExp();
 
@@ -651,7 +651,7 @@ function GetExp($exp,&$team) {
 				if($item = $target[$key]->DropItem()) {
 					$itemdrop["$item"]++;
 					$item	= LoadItemData($item);
-					print($char->Name("bold")." 掉落了");
+					print($char->Name("bold")." 가 삭제되었습니다");
 					print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\"/>\n");
 					print("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
 				}
@@ -871,13 +871,13 @@ function GetExp($exp,&$team) {
 		echo <<<P1
 		<table style="width:100%;" cellspacing="0"><tbody>
 		<tr><td class="teams"><div class="bold">{$this->team1_name}</div>
-		总级别 : {$team1_total_lv}<br>
-		平均级别 : {$team1_avelv}<br>
-		总HP : {$team1_total_hp}/{$team1_total_maxhp}
+		전체 수준 : {$team1_total_lv}<br>
+		평균 수준 : {$team1_avelv}<br>
+		총 HP : {$team1_total_hp}/{$team1_total_maxhp}
 		</td><td class="teams ttd1"><div class="bold">{$this->team0_name}</div>
-		总级别 : {$team0_total_lv}<br>
-		平均级别 : {$team0_avelv}<br>
-		总HP : {$team0_total_hp}/{$team0_total_maxhp}
+		전체 수준 : {$team0_total_lv}<br>
+		평균 수준 : {$team0_avelv}<br>
+		총 HP : {$team0_total_hp}/{$team0_total_maxhp}
 		</td></tr> 
 		P1;
 	}
@@ -1016,10 +1016,10 @@ function GetExp($exp,&$team) {
 		if(!$money) return false;
 		$money	= ceil($money * MONEY_RATE);
 		if($team === $this->team0) {
-			print("{$this->team0_name} 获得 ".MoneyFormat($money).".<br />\n");
+			print("{$this->team0_name} 는 ".MoneyFormat($money)."를 얻습니다.<br />\n");
 			$this->team0_money	+= $money;
 		} else if($team === $this->team1) {
-			print("{$this->team1_name} 获得 ".MoneyFormat($money).".<br />\n");
+			print("{$this->team1_name} 는 ".MoneyFormat($money)."를 얻습니다.<br />\n");
 			$this->team1_money	+= $money;
 		}
 	}

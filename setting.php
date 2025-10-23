@@ -10,7 +10,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 */
 
 // game setting
-define("TITLE","荣誉圣殿RPG城版 （Hall of Fame）已经翻译为中文版");// 타이트루~
+define("TITLE","명예의 전당 RPG 타운 버전(이었던것)");// 타이트루~
 define("MAX_TIME",150000);// 최대 시간
 define("TIME_GAIN_DAY",30000);// 하루에 회복하는 총 시간
 define("MAX_CHAR",40); // 최대 소지 캐릭터 수

@@ -466,11 +466,11 @@ class main extends user {
 				break;
 			case(__POST("remove")):
 				if(!__POST("spot")) {
-					ShowError("제거할 장비가 선택되지 않았습니다.","margin15");
+					ShowError("제거할 아이템이 선택되지 않았습니다.","margin15");
 					return false;
 				}
 				if(!$char->{__POST("spot")}) {
-					ShowError("지정된 위치에 장비가 없습니다","margin15");
+					ShowError("지정된 위치에 아이템이 없습니다","margin15");
 					return false;
 				}
 				$item	= LoadItemData($char->{__POST("spot")});
@@ -490,7 +490,7 @@ class main extends user {
 					if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
 					$this->SaveUserItem();
 					$char->SaveCharData($this->id);
-					ShowResult("모든 ".$char->Name()." 장비가 제거되었습니다.","margin15");
+					ShowResult("모든 ".$char->Name()." 아이템이 제거되었습니다.","margin15");
 					return true;
 				}	break;
 			case(__POST("equip_item")):
@@ -582,7 +582,7 @@ EOD;
 						$this->SaveUserItem();
 						return true;
 					} else {
-						ShowError("장비 없음.","margin15");
+						ShowError("아이템이 없음.","margin15");
 						return false;
 					}
 					return true;
@@ -590,7 +590,7 @@ EOD;
 			case(__POST("showreset")):
 				$Name	= $char->Name();
 				print('<div class="margin15">'."\n");
-				print("장비 사용하기<br />\n");
+				print("아이템 사용하기<br />\n");
 				print('<form action="?char='.__GET("char").'" method="post">'."\n");
 				print('<select name="itemUse">'."\n");
 				$resetItem	= array(7510,7511,7512,7513,7520);
@@ -627,7 +627,7 @@ EOD;
 				}
 				if(__POST("itemUse") == 6000) {
 					if($this->DeleteItem(6000) == 0) {
-						ShowError("장비가 없어요.","margin15");
+						ShowError("아이템이 없어요.","margin15");
 						return false;
 					}
 					if(1 < $char->spd) {
@@ -642,7 +642,7 @@ EOD;
 				}
 				if($lowLimit) {
 					if(!$this->item[__POST("itemUse")]) {
-						ShowError("장비가 없어요.","margin15");
+						ShowError("아이템이 없어요.","margin15");
 						return false;
 					}
 					if($lowLimit < $char->str) {$dif = $char->str - $lowLimit; $char->str -= $dif; $pointBack += $dif;}
@@ -652,7 +652,7 @@ EOD;
 					if($lowLimit < $char->luk) {$dif = $char->luk - $lowLimit; $char->luk -= $dif; $pointBack += $dif;}
 					if($pointBack) {
 						if($this->DeleteItem(__POST("itemUse")) == 0) {
-							ShowError("장비가 없어요.","margin15");
+							ShowError("아이템이 없어요.","margin15");
 							return false;
 						}
 						$char->statuspoint	+= $pointBack;
@@ -661,7 +661,7 @@ EOD;
 							if($char->shield)	{ $this->AddItem($char->shield);	$char->shield	=NULL; }
 							if($char->armor)	{ $this->AddItem($char->armor);		$char->armor	=NULL; }
 							if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
-							ShowResult($char->Name()." 의 모든 장비가 제거되었습니다.","margin15");
+							ShowResult($char->Name()." 의 모든 아이템이 제거되었습니다.","margin15");
 						}
 						$char->SaveCharData($this->id);
 						$this->SaveUserItem();
@@ -674,7 +674,7 @@ EOD;
 				}
 				if($skillReset) {
 					if(!$this->item[__POST("itemUse")]) {
-						ShowError("장비가 없어요.","margin15");
+						ShowError("아이템이 없어요.","margin15");
 						return false;
 					}
 					if($skillReset = true)
@@ -684,7 +684,7 @@ EOD;
 				else {$dif = ($char->level - 1) * 2 - $char->skillpoint; $char->skill ="2300<>2310"; $pointBack += $dif;}
 					if($pointBack) {
 						if($this->DeleteItem(__POST("itemUse")) == 0) {
-							ShowError("장비가 없어요.","margin15");
+							ShowError("아이템이 없어요.","margin15");
 							return false;
 						}
 						$char->skillpoint	+= $pointBack;
@@ -705,7 +705,7 @@ EOD;
 				$message = <<< HTML_BYEBYE
 <div class="margin15">
 {$Name} 를 해고 하겠습니까?<br>
-<form action="?char={}" method="post">
+<form action="?char={$temp_a}" method="post">
 <input type="submit" class="btn" name="kick" value="Yes">
 <input type="submit" class="btn" value="No">
 </form>
@@ -725,7 +725,7 @@ HTML_BYEBYE;
 	}
 	
 	function CharStatShow() {
-		$char	= &$this->char[__GET("char")];
+		$char	= $this->char[__GET("char")];
 		if(!$char) {
 			print("Not exists");
 			return false;
@@ -901,7 +901,7 @@ echo <<<P7
 	갑옷:</td><td><input type="radio" class="vcent" name="spot" value="armor">
 	{$temp9}
 	</td></tr><tr><td class="align-right">
-	장비 : </td><td><input type="radio" class="vcent" name="spot" value="item">
+	아이템 : </td><td><input type="radio" class="vcent" name="spot" value="item">
 	{$temp10}
 	</td></tr></tbody>
 	</table>
@@ -942,7 +942,7 @@ P7;
 			print('<input type="submit" class="btn" name="equip_item" value="장비">'."\n");
 			print("</form>\n");
 		} else {
-			print("아직 장비가 없습니다.<br />\n");
+			print("아직 아이템이 없습니다.<br />\n");
 		}
 		print("</div>\n");
 
@@ -1068,7 +1068,7 @@ echo <<<P11
 	<div style="margin:15px;text-align:center">
 	<input type="submit" class="btn" name="simu_battle" value="대결!">
 	<input type="reset" class="btn" value="다시 놓기"><br>
-	이 팀을 저장하세요 : <input type="checkbox" name="memory_party" value="1">
+	이 팀을 기억하기 : <input type="checkbox" name="memory_party" value="1">
 	</div></form>
 P11;
 	}
@@ -1153,7 +1153,7 @@ echo <<<P12
 	<input type="submit" class="btn" name="monster_battle_multiply" value="대결! (테스트 중) (실패하면 클릭하지 마세요)">
 	<input type="submit" class="btn" name="monster_battle" value="대결!">
 	<input type="reset" class="btn" value="다시 놓기"><br>
-	이 팀을 저장하세요 : <input type="checkbox" name="memory_party" value="1">
+	이 팀을 기억하기 : <input type="checkbox" name="memory_party" value="1">
 	</div></form>
 P12;
 		include(DATA_MONSTER);
@@ -1227,13 +1227,14 @@ P12;
 
 
 	function ItemProcess() {
+		// ㅇㅅㅇ...?
 	}
 
 
 	function ItemShow() {
 echo <<<P13
 		<div style="margin:15px">
-		<h4>장비</h4>
+		<h4>아이템</h4>
 		<div style="margin:0 20px">
 P13;
 		if($this->item) {
@@ -1371,7 +1372,7 @@ P15;
 
 		print('<form action="?shop" method="post">'."\n");
 		print('<div id="list_buy">'.$goods->ShowDefault().'</div>'."\n");
-		print('<input type="submit" class="btn" name="shop_buy" value="买">'."\n");
+		print('<input type="submit" class="btn" name="shop_buy" value="사기">'."\n");
 		print('Amount <input type="text" name="amount" style="width:60px" class="text vcent">(input if 2 or more)<br />'."\n");
 		print('<input type="hidden" name="shop_buy" value="1">');
 		print('</form></div>'."\n");
@@ -1424,10 +1425,10 @@ P16;
 
 		print("<div style=\"margin:15px\">");
 		print("<table cellspacing=\"0\">\n");
-		print('<tr><td class="td6" style="text-align:center">价格</td>'.
-		'<td class="td6" style="text-align:center">数</td>'.
-		'<td class="td6" style="text-align:center">共计</td>'.
-		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
+		print('<tr><td class="td6" style="text-align:center">가격</td>'.
+		'<td class="td6" style="text-align:center">갯수</td>'.
+		'<td class="td6" style="text-align:center">합계</td>'.
+		'<td class="td6" style="text-align:center">아이템</td></tr>'."\n");
 		$moneyNeed	= 0;
 		$ShopList	= ShopList();
 		foreach($ShopList as $itemNo) {
@@ -1453,21 +1454,21 @@ P16;
 			print("</td></tr>\n");
 			$this->AddItem($itemNo,$amount);
 		}
-		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($moneyNeed)."</td></tr>");
+		print("<tr><td colspan=\"4\" class=\"td8\">합계 : ".MoneyFormat($moneyNeed)."</td></tr>");
 		print("</table>\n");
 		print("</div>");
 		if($this->TakeMoney($moneyNeed)) {
 			$this->SaveUserItem();
 			return true;
 		} else {
-			ShowError("您没有足够的钱","margin15");
+			ShowError("당신은 충분한 돈이 없습니다.","margin15");
 			return false;
 		}
 	}
 
 	function ShopBuyShow() {
 		print('<div style="margin:15px">'."\n");
-		print("<h4>购买</h4>\n");
+		print("<h4>구매하기</h4>\n");
 
 print <<< JS_HTML
 <script type="text/javascript">
@@ -1495,9 +1496,9 @@ JS_HTML;
 		print('<form action="?menu=buy" method="post">'."\n");
 		print("<table cellspacing=\"0\">\n");
 		print('<tr><td class="td6"></td>'.
-		'<td style="text-align:center" class="td6">价格</td>'.
-		'<td style="text-align:center" class="td6">数</td>'.
-		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
+		'<td style="text-align:center" class="td6">가격</td>'.
+		'<td style="text-align:center" class="td6">갯수</td>'.
+		'<td style="text-align:center" class="td6">아이템</td></tr>'."\n");
 		$ShopList	= ShopList();
 		foreach($ShopList as $itemNo) {
 			$item	= LoadItemData($itemNo);
@@ -1514,7 +1515,7 @@ JS_HTML;
 			print("</td></tr>\n");
 		}
 		print("</table>\n");
-		print('<input type="submit" name="ItemBuy" value="买" class="btn">'."\n");
+		print('<input type="submit" name="ItemBuy" value="구입" class="btn">'."\n");
 		print("</form>\n");
 
 		print("</div>\n");
@@ -1527,10 +1528,10 @@ JS_HTML;
 		$GetMoney	= 0;
 		print("<div style=\"margin:15px\">");
 		print("<table cellspacing=\"0\">\n");
-		print('<tr><td class="td6" style="text-align:center">价格</td>'.
-		'<td class="td6" style="text-align:center">数</td>'.
-		'<td class="td6" style="text-align:center">共计</td>'.
-		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
+		print('<tr><td class="td6" style="text-align:center">가격</td>'.
+		'<td class="td6" style="text-align:center">갯수</td>'.
+		'<td class="td6" style="text-align:center">합계</td>'.
+		'<td class="td6" style="text-align:center">아이템</td></tr>'."\n");
 		foreach($this->item as $itemNo => $amountHave) {
 			if(!__POST("check_".$itemNo))
 				continue;
@@ -1553,7 +1554,7 @@ JS_HTML;
 			print(ShowItemDetail($item)."\n");
 			print("</td></tr>\n");
 		}
-		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($getMoney)."</td></tr>");
+		print("<tr><td colspan=\"4\" class=\"td8\">합계 : ".MoneyFormat($getMoney)."</td></tr>");
 		print("</table>\n");
 		print("</div>");
 		$this->SaveUserItem();
@@ -1563,7 +1564,7 @@ JS_HTML;
 
 	function ShopSellShow() {
 		print('<div style="margin:15px">'."\n");
-		print("<h4>出售</h4>\n");
+		print("<h4>매각하기</h4>\n");
 
 print <<< JS_HTML
 <script type="text/javascript">
@@ -1591,9 +1592,9 @@ JS_HTML;
 		print('<form action="?menu=sell" method="post">'."\n");
 		print("<table cellspacing=\"0\">\n");
 		print('<tr><td class="td6"></td>'.
-		'<td style="text-align:center" class="td6">价格</td>'.
-		'<td style="text-align:center" class="td6">数</td>'.
-		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
+		'<td style="text-align:center" class="td6">가격</td>'.
+		'<td style="text-align:center" class="td6">갯수</td>'.
+		'<td style="text-align:center" class="td6">아이템</td></tr>'."\n");
 		foreach($this->item as $itemNo => $amount) {
 			$item	= LoadItemData($itemNo);
 			if(!$item) continue;
@@ -1624,10 +1625,10 @@ JS_HTML;
 		$temp16 = MoneyFormat(500);
 echo <<<P17
 <div style="margin:15px">
-<h4>一份兼职工作！</h4>
+<h4>파트타임 일자리!</h4>
 <form method="post" action="?menu=work">
-<p>1回 100Time<br />
-給与 : {$temp16}/回</p>
+<p>1회 100Time<br />
+급부 : {$temp16}/회</p>
 <select name="amount">
 <option value="1">1</option>
 <option value="2">2</option>
@@ -1640,7 +1641,7 @@ echo <<<P17
 <option value="9">9</option>
 <option value="10">10</option>
 </select><br />
-<input type="submit" value="打工" class="btn"/>
+<input type="submit" value="일하기" class="btn"/>
 </form>
 </div>
 P17;
@@ -1650,12 +1651,12 @@ P17;
 
 		if(__POST("ChallengeRank")) {
 			if(!$this->party_rank) {
-				ShowError("小队尚未设定","margin15");
+				ShowError("팀 설정 안 함","margin15");
 				return false;
 			}
 			$result	= $this->CanRankBattle();
 			if(is_array($result)) {
-				ShowError("仍需等待时间（？）","margin15");
+				ShowError("아직 기다려야 (?)","margin15");
 				return false;
 			}
 
@@ -1672,7 +1673,7 @@ P17;
 				$hour	= floor($left / 3600)%24;
 				$min	= floor(($left % 3600)/60);
 				$sec	= floor(($left % 3600)%60);
-				ShowError("离再设定队伍还需 {$day}日 と {$hour}小时 {$min}分 {$sec}秒","margin15");
+				ShowError("팀을 재설정하는 데 {$day}일, {$hour}시간, {$min}분, {$sec}초가 소요됩니다.","margin15");
 				return false;
 			}
 			foreach($this->char as $key => $val) {
@@ -1680,13 +1681,13 @@ P17;
 					$checked[]	= $key;
 			}
 			if(__count($checked) == 0 || 5 < __count($checked)) {
-				ShowError("队伍人数应大于1人小于5人","margin15");
+				ShowError("팀 규모는 1명 이상 5명 이하로 구성되어야 합니다.","margin15");
 				return false;
 			}
 
 			$this->party_rank	= implode("<>",$checked);
 			$this->rank_set_time	= $now;
-			ShowResult("队伍设定完成","margin15");
+			ShowResult("팀 설정 완료","margin15");
 			return true;
 		}
 	}
@@ -1706,7 +1707,7 @@ echo <<<P18
 	<div style="margin:15px">
 	{$temp17}
 	<form action="?menu=rank" method="post">
-	<h4>排行榜(Ranking) - <a href="?rank">查看排名</a> <a href="?manual#ranking" target="_blank" class="a0">?</a></h4>
+	<h4>랭킹(Ranking) - <a href="?rank">순위 보기</a> <a href="?manual#ranking" target="_blank" class="a0">?</a></h4>
 P18;
 
 		$CanRankBattle	= $this->CanRankBattle();
@@ -1732,20 +1733,20 @@ P18;
 		$temp18 = $this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_rank));
 		$temp19 = floor(RANK_TEAM_SET_TIME/(60*60));
 echo <<<P19
-	<input type="submit" class="btn" value="挑战！" name="ChallengeRank" style="width:160px"{$disableRB} />
+	<input type="submit" class="btn" value="도전!!" name="ChallengeRank" style="width:160px"{$disableRB} />
 	</form>
 	<form action="?menu=rank" method="post">
-	<h4>队伍设置(Team Setting)</h4>
-	<p>排名战队伍设定。<br />
-	这里设置排名战队伍。</p>
+	<h4>팀 설정(Team Setting)</h4>
+	<p>순위전대 설정.<br />
+	여기에 순위전대를 배치합니다.</p>
 	</div>
 	{$temp18}
 
 	<div style="margin:15px">
 	{$left_mes}
-	<input type="submit" class="btn" style="width:160px" value="设定队伍" {$disable} />
+	<input type="submit" class="btn" style="width:160px" value="대열 설정" {$disable} />
 	<input type="hidden" name="SetRankTeam" value="1" />
-	<p>设定后{$temp19}小时后才能再设置。<br />Team setting disabled after {$temp19}hours once set.</p>
+	<p>설정 후 {$temp19}시간 후에 재설정이 가능합니다.<br />Team setting disabled after {$temp19}hours once set.</p>
 	</form>
 	</div>
 P19;
@@ -1764,7 +1765,7 @@ P19;
 				case "3": $hire = 2500; $charNo	= 3; break;
 				case "4": $hire = 4000; $charNo	= 4; break;
 				default:
-					ShowError("未选择人物","margin15");
+					ShowError("선택 반전","margin15");
 					return false;
 			}
 			if(__POST("recruit_name")) {
@@ -1774,16 +1775,16 @@ P19;
 				$name	= stripslashes($name);
 				$len	= strlen($name);
 				if ( 0 == $len || 16 < $len ) {
-					ShowError("名称太短或太长","margin15");
+					ShowError("이름이 너무 짧거나 깁니다","margin15");
 					return false;
 				}
 				$name	= htmlspecialchars($name,ENT_QUOTES);
 			} else {
-				ShowError("名称不能是空","margin15");
+				ShowError("이름은 비워 둘 수 없습니다.","margin15");
 				return false;
 			}
 			if( !__POST("recruit_gend") ) {
-				ShowError("未选定性別","margin15");
+				ShowError("선택되지 않은 성별","margin15");
 				return false;
 			} else {
 				$Gender	= __POST("recruit_gend")?"♀":"♂";
@@ -1795,11 +1796,11 @@ P19;
 			if($hire <= $this->money) {
 				$this->TakeMoney($hire);
 			} else {
-				ShowError("您没有足够的钱","margin15");
+				ShowError("당신은 충분한 돈이 없습니다.","margin15");
 				return false;
 			}
 			$char->SaveCharData($this->id);
-			ShowResult($char->Name()."($char->job_name:{$Gender}) 加为同伴！","margin15");
+			ShowResult($char->Name()."($char->job_name:{$Gender}) 동반자 추가!","margin15");
 			return true;
 		}
 	}
@@ -1812,8 +1813,8 @@ echo <<<P20
 	<div style="margin:15px">
 	<p>Maximum characters.<br>
 	Need to make a space to recruit new character.</p>
-	<p>人物上限数达到。<br>
-	要添加新的空间来雇用新人（？）。</p>
+	<p>글자 수 제한에 도달했습니다.<br>
+	새로운 사람을 채용하기 위한 공간을 추가하고 있습니다(?).</p>
 	</div>
 P20;
 			return false;
@@ -1850,7 +1851,7 @@ P20;
 		$temp31 = MoneyFormat(4000);
 echo <<<P21
 	<form action="?recruit" method="post" style="margin:15px">
-	<h4>新人物的职业</h4>
+	<h4>새로운 인물의 직업</h4>
 	<table cellspacing="0"><tbody><tr>
 	<td class="td1" style="text-align:center">
 	{$temp20}
@@ -1874,28 +1875,28 @@ echo <<<P21
 	{$temp31}</td>
 	</tr><tr>
 	<td class="td4" style="text-align:center">
-	战士</td>
+	전사</td>
 	<td class="td5" style="text-align:center">
-	法师</td>
+	법사</td>
 	<td class="td4" style="text-align:center">
-	牧师</td>
+	성직자</td>
 	<td class="td5" style="text-align:center">
-	猎人</td>
+	사냥꾼</td>
 	</tr>
 	</tbody></table>
 
-	<h4>新人物的性别</h4>
+	<h4>새로운 인물의 성별</h4>
 	<table><tbody><tr><td valign="top">
 	<input type="text" class="text" name="recruit_name" style="width:160px" maxlength="16"><br>
 	<div style="margin:5px 0px">
-	<input type="radio" class="vcent" name="recruit_gend" value="0">男
-	<input type="radio" class="vcent" name="recruit_gend" value="1" style="margin-left:15px;">女</div>
-	<input type="submit" class="btn" name="recruit" value="雇佣">
+	<input type="radio" class="vcent" name="recruit_gend" value="0">남
+	<input type="radio" class="vcent" name="recruit_gend" value="1" style="margin-left:15px;">여</div>
+	<input type="submit" class="btn" name="recruit" value="고용하기">
 	<input type="hidden" class="btn" name="recruit" value="Recruit">
 	</td><td valign="top">
 	<p>1 to 16 letters.<br>
-	Chinese characters count as 2.<br>
-	1个汉字 = 2 letter.
+	Other characters count as 2.<br>
+	1문자 = 2 letter.
 	</p>
 	</td></tr></tbody></table>
 	</form>
@@ -1907,21 +1908,21 @@ P21;
 		$temp32 = IMG_CHAR;
 echo <<<P22
 <div style="margin:15px">
-<h4>精炼工房(Refine)</h4>
+<h4>정련 공방(Refine)</h4>
 
 <div style="width:600px">
 <div style="float:left;width:80px;">
 <img src="{$temp32}mon_053r.gif" />
 </div>
 <div style="float:right;width:520px;">
-在这里 可以进行物品的精炼！<br />
-选择需要精练的物品以及精练的次数。<br />
-不过加工坏了我们不负责。<br />
-弟弟在管理的 <span class="bold">制作工房</span> 在<a href="?menu=create">这边</a>。
+여기서 아이템 정제가 가능합니다!<br />
+정련이 필요한 물건과 정련 횟수를 선택합니다.<br />
+하지만 가공이 망가지면 저희는 책임지지 않습니다.<br />
+동생이 관리하고 있는 <span class="bold">제작 공방</span>은 <a href="?menu=create">이쪽</a>에 있습니다.
 </div>
 <div style="clear:both"></div>
 </div>
-<h4>精炼道具<a name="refine"></a></h4>
+<h4>정제 도구<a name="refine"></a></h4>
 <div style="margin:0 20px">
 P22;
 	}
@@ -1995,7 +1996,7 @@ P22;
 			$goods->SetName("type");
 
 			$goods->ListTable("<table cellspacing=\"0\">");
-			$goods->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">精炼费</td><td class=\"align-center td9\">Item</td></tr>"); 
+			$goods->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">정련비</td><td class=\"align-center td9\">Item</td></tr>"); 
 
 			if($this->no_JS_itemlist)
 				$goods->NoJS();
@@ -2013,11 +2014,11 @@ P22;
 				$goods->AddItem($item,$string);
 			}
 			print($goods->GetJavaScript("list"));
-			print('可以精炼的名单');
+			print('정제할 수 있는 리스트');
 			print($goods->ShowSelect());
 			print('<form action="?menu=refine" method="post">'."\n");
 			print('<input type="submit" value="Refine" name="refine" class="btn">'."\n");
-			print('回数 : <select name="timesA">'."\n");
+			print('횟수 : <select name="timesA">'."\n");
 			for($i=1; $i<11; $i++) {
 				print('<option value="'.$i.'">'.$i.'</option>');
 			}
@@ -2025,7 +2026,7 @@ P22;
 			print('<div id="list">'.$goods->ShowDefault().'</div>'."\n");
 			print('<input type="submit" value="Refine" name="refine" class="btn">'."\n");
 			print('<input type="hidden" value="1" name="refine">'."\n");
-			print('回数 : <select name="timesB">'."\n");
+			print('횟수 : <select name="timesB">'."\n");
 			for($i=1; $i<(REFINE_LIMIT+1); $i++) {
 				print('<option value="'.$i.'">'.$i.'</option>');
 			}
@@ -2042,21 +2043,21 @@ P22;
 		$temp33 = IMG_CHAR;
 echo <<<P23
 <div style="margin:15px">
-<h4>制作工房(Create)<a name="sm"></a></h4>
+<h4>제작 공방(Create)<a name="sm"></a></h4>
 <div style="width:600px">
 <div style="float:left;width:80px;">
 <img src="{$temp33}mon_053rz.gif" />
 </div>
 <div style="float:right;width:520px;">
-在这里 可以进行物品的制作！<br />
-只要你有素材就可以制作装备。<br />
-加入特殊素材的话可以制作特殊的武器。<br />
-哥哥在管理的 <span class="bold">精炼工房</span> 在<a href="?menu=refine">这边</a>。<br />
-<a href="#mat">所持素材一览</a>
+물품 제작은 여기서 가능합니다!<br />
+소재만 있으면 장비를 만들 수 있습니다.<br />
+특수 소재를 넣으면 특수 무기를 만들 수 있습니다.<br />
+제 동생이 관리하는 <span class="bold">정련 공방</span>은 <a href="?menu=refine">여기</a>에 있습니다.<br />
+<a href="#mat">소지 소재 일람</a>
 </div>
 <div style="clear:both"></div>
 </div>
-<h4>道具制作<a name="refine"></a></h4>
+<h4>장비 제작<a name="refine"></a></h4>
 <div style="margin:0 15px">
 P23;
 	}
@@ -2065,7 +2066,7 @@ P23;
 		if(!__POST("Create")) return false;
 
 		if(!__POST("ItemNo")) {
-			ShowError("请选择一个道具制造");
+			ShowError("아이템 하나를 선택하여 만드십시오");
 			return false;
 		}
 
@@ -2075,13 +2076,13 @@ P23;
 		}
 
 		if(!HaveNeeds($item,$this->item)) {
-			ShowError($item["name"]." 您没有足够的原料生产。");
+			ShowError($item["name"]." 는 충분한 원료를 생산하지 못했습니다.");
 			return false;
 		}
 
 		if(__POST("AddMaterial")) {
 			if(!$this->item[__POST("AddMaterial")]) {
-				ShowError("该素材不能追加。");
+				ShowError("해당 소재는 추가할 수 없습니다.");
 				return false;
 			}
 			$ADD	= LoadItemData(__POST("AddMaterial"));
@@ -2090,7 +2091,7 @@ P23;
 
 		$Price	= 0;
 		if(!$this->TakeMoney($Price)) {
-			ShowError("您没有足够的钱。需要".MoneyFormat($Price)."。");
+			ShowError("당신은 충분한 돈이 없습니다.".MoneyFormat($Price)." 가 필요합니다.");
 			return false;
 		}
 		foreach($item["need"] as $M_item => $M_amount) {
@@ -2108,7 +2109,7 @@ P23;
 		print("<p>");
 		print(ShowItemDetail(LoadItemData($done)));
 		
-		print("\n<br />好了！</p>\n");
+		print("\n<br />완료되었습니다!</p>\n");
 		return true;
 	}
 
@@ -2121,7 +2122,7 @@ P23;
 		$CreateList->SetName("type_create");
 
 		$CreateList->ListTable("<table cellspacing=\"0\">");
-		$CreateList->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">制作费用</td><td class=\"align-center td9\">Item</td></tr>"); 
+		$CreateList->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">생산 비용</td><td class=\"align-center td9\">Item</td></tr>"); 
 
 		if($this->no_JS_itemlist)
 			$CreateList->NoJS();
@@ -2165,7 +2166,7 @@ P25;
 		}
 
 		print("</div>\n");
-		print("<h4>所持素材一览<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
+		print("<h4>소지 소재 일람<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
 		print("<div style=\"margin:0 15px\">");
 		for($i=6000; $i<7000; $i++) {
 			if(!$this->item["$i"])
@@ -2189,13 +2190,13 @@ P26;
 			return false;
 		}
 		if(!$this->TakeMoney(round(START_MONEY * 1.10))) {
-			ShowError("您没有足够的钱<br />\n");
+			ShowError("당신은 충분한 돈이 없습니다.<br />\n");
 			return false;
 		}
 		$this->AddItem(9000);
 		$this->SaveUserItem();
 		$this->SaveData();
-		ShowResult("拍卖会的成员。<br />\n");
+		ShowResult("경매장 회원들.<br />\n");
 		return true;
 	}
 
@@ -2210,7 +2211,7 @@ P26;
 		$temp35 = IMG_CHAR;
 echo <<<P27
 <div style="margin:15px 0 0 15px">
-<h4>拍卖(Auction)</h4>
+<h4>경매(Auction)</h4>
 <div style="margin-left:20px">
 
 <div style="width:500px">
@@ -2222,28 +2223,28 @@ P27;
 
 		$this->AuctionJoinMember();
 		if($this->AuctionEnter()) {
-			print("您有会员卡么。<br />\n");
-			print("欢迎您到拍卖场。<br />\n");
-			print("<a href=\"#log\">回顾记录</a>\n");
+			print("회원 카드를 가지고 계십니까.<br />\n");
+			print("경매장에 오신 것을 환영합니다.<br />\n");
+			print("<a href=\"#log\">회고 기록</a>\n");
 		} else {
-			print("想在拍卖会拍卖那您要加入会员啊。<br />\n");
-			print("入会费用可要 ".MoneyFormat(round(START_MONEY * 1.10))." 呢。<br />\n");
-			print("入会么?<br />\n");
+			print("경매에서 경매하려면 회원가입을 하셔야 합니다.<br />\n");
+			print("회원 가입비는 ".MoneyFormat(round(START_MONEY * 1.10))."입니다.<br />\n");
+			print("입회하시겠습니까?<br />\n");
 			print('<form action="" method="post">'."\n");
-			print('<input type="submit" value="入会" name="JoinMember" class="btn"/>'."\n");
+			print('<input type="submit" value="가입하기" name="JoinMember" class="btn"/>'."\n");
 			print("</form>\n");
 		}
 		if(!AUCTION_TOGGLE)
-			ShowError("功能暂停");
+			ShowError("기능 일시 정지");
 		if(!AUCTION_EXHIBIT_TOGGLE)
-			ShowError("暂停拍卖");
+			ShowError("경매중지");
 
 echo <<<P28
 </div>
 <div style="clear:both"></div>
 </div>
 </div>
-<h4>道具拍卖(Item Auction)</h4>
+<h4>아이템 경매(Item Auction)</h4>
 <div style="margin-left:20px">
 P28;
 	}
@@ -2253,7 +2254,7 @@ P28;
 echo <<<P29
 </div>
 <a name="log"></a>
-<h4>拍卖纪录(AuctionLog)</h4>
+<h4>경매기록(AuctionLog)</h4>
 <div style="margin-left:20px">
 {$temp36}
 </div>
@@ -2269,30 +2270,30 @@ P29;
 		$ArticleNo	= __POST("ArticleNo");
 		$BidPrice	= (int)__POST("BidPrice");
 		if($BidPrice < 1) {
-			ShowError("输入的是个错误的价格。");
+			ShowError("잘못된 가격을 입력했습니다.");
 			return false;
 		}
 		if(!$ItemAuction->ItemArticleExists($ArticleNo)) {
-			ShowError("这个拍卖品的卖方无法确认。");
+			ShowError("이 경매품의 판매자는 확인할 수 없습니다.");
 			return false;
 		}
 		if(!$ItemAuction->ItemBidRight($ArticleNo,$this->id)) {
-			ShowError("No.".$ArticleNo." 卖方是否已经招标");
+			ShowError("No.".$ArticleNo." 판매자가 이미 입찰했습니까?");
 			return false;
 		}
 		$Bottom	= $ItemAuction->ItemBottomPrice($ArticleNo);
 		if($BidPrice < $Bottom) {
-			ShowError("低于最低投标价");
-			ShowError("目前出价:".MoneyFormat($BidPrice)." 最低出价:".MoneyFormat($Bottom));
+			ShowError("최저입찰가이하");
+			ShowError("현재 입찰가 : ".MoneyFormat($BidPrice)." 최저입찰가 : ".MoneyFormat($Bottom));
 			return false;
 		}
 		if(!$this->TakeMoney($BidPrice)) {
-			ShowError("您的资金不足。");
+			ShowError("당신의 자금이 부족합니다.");
 			return false;
 		}
 
 		if($ItemAuction->ItemBid($ArticleNo,$BidPrice,$this->id,$this->name)) {
-			ShowResult("No:{$ArticleNo}  ".MoneyFormat($BidPrice)." 被收购。<br />\n");
+			ShowResult("No:{$ArticleNo}  ".MoneyFormat($BidPrice)." 가 인수되었습니다.<br />\n");
 			return true;
 		}
 	}
@@ -2305,7 +2306,7 @@ P29;
 		if($this->AuctionEnter()) {
 		if(AUCTION_EXHIBIT_TOGGLE) {
 				print("<form action=\"?menu=auction\" method=\"post\">\n");
-				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print('<input type="submit" value="경매 품목" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
 				print("</form>\n");
 			}
 			$ItemAuction->ItemSortBy(__GET("sort"));
@@ -2313,7 +2314,7 @@ P29;
 
 			if(AUCTION_EXHIBIT_TOGGLE) {
 				print("<form action=\"?menu=auction\" method=\"post\">\n");
-				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print('<input type="submit" value="경매 품목" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
 				print("</form>\n");
 			}
 
@@ -2342,7 +2343,7 @@ P29;
 			return false;
 		}
 		if(AUCTION_MAX <= $ItemAuction->ItemAmount()) {
-			ShowError("拍卖数量已达到极限。(".$ItemAuction->ItemAmount()."/".AUCTION_MAX.")");
+			ShowError("경매 수량이 이미 한계에 도달했습니다.(".$ItemAuction->ItemAmount()."/".AUCTION_MAX.")");
 			return false;
 		}
 		if(!$this->TakeMoney(500)) {
@@ -2384,7 +2385,7 @@ P29;
 		$this->SaveUserItem();
 
 		$ItemAuction->ItemAddArticle(__POST("item_no"),$amount,$this->id,__POST("ExhibitTime"),__POST("StartPrice"),__POST("Comment"));
-		print($item["name"]."{$amount}个 展览品。");
+		print($item["name"]."에서 {$amount}개 전시되었습니다.");
 		return true;
 	}
 
@@ -2397,25 +2398,25 @@ P29;
 		$possible	= CanExhibitType();
 
 echo <<<P30
-<div class="u bold">如何参展</div>
+<div class="u bold">참여 방법</div>
 <ol>
-<li>选择一种道具，拍卖。</li>
-<li>如果要拍卖超过两个以上是要输入数量。</li>
-<li>指定拍卖的时间。</li>
-<li>指定起拍价(不输入的话为0)</li>
-<li>输入您的描述。</li>
-<li>发送。</li>
+<li>아이템 하나를 선택해서 경매.</li>
+<li>두 개 이상 경매하려면 수량을 입력해야 합니다.</li>
+<li>경매 시간을 지정합니다.</li>
+<li>경매 시작가 지정(입력하지 않으면 0)</li>
+<li>설명을 입력하십시오.</li>
+<li>발송합니다.</li>
 </ol>
-<div class="u bold">注意事项</div>
+<div class="u bold">주의사항</div>
 <ul>
-<li>拍卖要交$500的手续费。</li>
-<li>负责拍卖工作的人似乎不会认真帮你办事的样子</li>
+<li>경매는 $500의 수수료를 내야 합니다.</li>
+<li>경매 담당자가 열심히 도와주지 않을 모양입니다.</li>
 </ul>
-<a href="?menu=auction">查看所有拍卖物</a>
+<a href="?menu=auction">모든 경매물건 보기</a>
 </div>
-<h4>出售</h4>
+<h4>매각하기</h4>
 <div style="margin-left:20px">
-<div class="u bold">可以拍卖的道具</div>
+<div class="u bold">경매할 수 있는 소품</div>
 P30;
 		if(!$this->item) {
 			print("No items<br />\n");
@@ -2441,9 +2442,9 @@ echo <<<P31
 <form action="?menu=auction" method="post">
 <div id="list">{$temp37}</div>
 <table><tr><td style="text-align:right">
-数量(Amount) :</td><td><input type="text" name="Amount" class="text" style="width:60px" value="1" /><br />
+수량(Amount) :</td><td><input type="text" name="Amount" class="text" style="width:60px" value="1" /><br />
 </td></tr><tr><td style="text-align:right">
-时间(Time) :</td><td>
+시간(Time) :</td><td>
 <select name="ExhibitTime">
 <option value="24" selected>24 hour</option>
 <option value="18">18 hour</option>
@@ -2453,9 +2454,9 @@ echo <<<P31
 <option value="1">1 hour</option>
 </select>
 </td></tr><tr><td>
-起拍价(Start Price) :</td><td><input type="text" name="StartPrice" class="text" style="width:240px" maxlength="10"><br />
+시작 가격(Start Price) :</td><td><input type="text" name="StartPrice" class="text" style="width:240px" maxlength="10"><br />
 </td></tr><tr><td style="text-align:right">
-描述(Comment) :</td><td>
+설명(Comment) :</td><td>
 <input type="text" name="Comment" class="text" style="width:240px" maxlength="40">
 </td></tr><tr><td></td><td>
 <input type="submit" class="btn" value="Put Auction" name="PutAuction" style="width:240px"/>
@@ -2492,14 +2493,14 @@ P31;
 			}
 		}
 		if($UnionMob["LevelLimit"] < $TotalLevel) {
-			ShowError('合计级别水平('.$TotalLevel.'/'.$UnionMob["LevelLimit"].')',"margin15");
+			ShowError('합계 레벨('.$TotalLevel.'/'.$UnionMob["LevelLimit"].')',"margin15");
 			return false;
 		}
 		if( __count($MyParty) === 0) {
-			ShowError('战斗至少要一个人参加',"margin15");
+			ShowError('전투는 적어도 한 사람은 참가해야 합니다.',"margin15");
 			return false;
 		} else if(5 < __count($MyParty)) {
-			ShowError('战斗最多只能上五个人',"margin15");
+			ShowError('전투는 기껏해야 다섯 명만 할 수 있습니다.',"margin15");
 			return false;
 		}
 		if(!$this->WasteTime(UNION_BATTLE_TIME)) {
@@ -2570,7 +2571,7 @@ echo <<<P32
 	<input type="submit" class="btn" value="대결!">
 	<input type="hidden" name="union_battle" value="1">
 	<input type="reset" class="btn" value="다시 놓기"><br>
-	保存此队伍:<input type="checkbox" name="memory_party" value="1">
+	이 팀을 기억하기 : <input type="checkbox" name="memory_party" value="1">
 	</div></form>
 P32;
 	}
@@ -2578,42 +2579,42 @@ P32;
 	function TownShow() {
 		include(DATA_TOWN);
 		print('<div style="margin:15px">'."\n");
-		print("<h4>街</h4>");
+		print("<h4>거리</h4>");
 		print('<div class="town">'."\n");
 		print("<ul>\n");
 		$PlaceList	= TownAppear($this);
 		if($PlaceList["Shop"]) {
 
 echo <<<P33
-<li>店(Shop)
+<li>상점(Shop)
 <ul>
-<li><a href="?menu=buy">买(Buy)</a></li>
-<li><a href="?menu=sell">卖(Sell)</a></li>
-<li><a href="?menu=work">打工</a></li>
+<li><a href="?menu=buy">사기(Buy)</a></li>
+<li><a href="?menu=sell">팔기(Sell)</a></li>
+<li><a href="?menu=work">일하기</a></li>
 </ul>
 </li>
 P33;
 		}
 		if($PlaceList["Recruit"])
-			print("<li><p><a href=\"?recruit\">人材斡旋所(Recruit)</a></p></li>");
+			print("<li><p><a href=\"?recruit\">인재중재소(Recruit)</a></p></li>");
 		if($PlaceList["Smithy"]) {
 
 echo <<<P34
-<li>锻冶屋(Smithy)
+<li>제작소(Smithy)
 <ul>
-<li><a href="?menu=refine">精炼工房(Refine)</a></li>
-<li><a href="?menu=create">制作工房(Create)</a></li>
+<li><a href="?menu=refine">정련 공방(Refine)</a></li>
+<li><a href="?menu=create">제작 공방(Create)</a></li>
 </ul>
 </li>
 P34;
 		}
 		if($PlaceList["Auction"] && AUCTION_TOGGLE)
-			print("<li><a href=\"?menu=auction\">拍卖会場(Auction)</li>");
+			print("<li><a href=\"?menu=auction\">경매장(Auction)</li>");
 		if($PlaceList["Colosseum"])
-			print("<li><a href=\"?menu=rank\">竞技场(Colosseum)</a></li>");
+			print("<li><a href=\"?menu=rank\">경기장(Colosseum)</a></li>");
 		print("</ul>\n");
 		print("</div>\n");
-		print("<h4>广场</h4>");
+		print("<h4>광장</h4>");
 		$this->TownBBS();
 		print("</div>\n");
 	}
@@ -2669,7 +2670,7 @@ P35;
 			}
 			$userName	= userNameLoad();
 			if(in_array($NewName,$userName)) {
-				ShowError("该名称已被使用。","margin15");
+				ShowError("해당 이름은 이미 사용되고 있습니다.","margin15");
 				return false;
 			}
 			if(!$this->TakeMoney(NEW_NAME_COST)) {
@@ -2717,13 +2718,13 @@ P35;
 		$temp38 = INDEX;
 		$temp39 = MoneyFormat(NEW_NAME_COST);
 echo <<<P36
-<h4>设置</h4>
+<h4>설정</h4>
 <form action="?setting" method="post">
 <table><tbody>
-<tr><td><input type="checkbox" name="record_battle_log" value="1" {$record_btl_log}></td><td>战斗记录</td></tr>
-<tr><td><input type="checkbox" name="no_JS_itemlist" value="1" {$no_JS_itemlist}></td><td>道具列表不使用javascript</td></tr>
+<tr><td><input type="checkbox" name="record_battle_log" value="1" {$record_btl_log}></td><td>전투 기록</td></tr>
+<tr><td><input type="checkbox" name="no_JS_itemlist" value="1" {$no_JS_itemlist}></td><td>자바스크립트 없이 아이템 목록 만들기</td></tr>
 </tbody></table>
-颜色: 
+색상 : 
 <SELECT class=bgcolor name=color>
 <OPTION style="COLOR: #ffffff" value=ffffff selected>SampleColor</OPTION>
 <OPTION style="COLOR: #ffffcc" value=ffffcc>SampleColor</OPTION>
@@ -2942,25 +2943,25 @@ echo <<<P36
 <OPTION style="COLOR: #000033" value=000033>SampleColor</OPTION>
 <OPTION style="COLOR: #000000" value=000000>SampleColor</OPTION>
 </SELECT><br />
-<input type="submit" class="btn" name="setting01" value="修改" style="width:100px">
+<input type="submit" class="btn" name="setting01" value="수정" style="width:100px">
 <input type="hidden" name="setting01" value="1">
 </form>
-<h4>注销</h4>
+<h4>로그아웃</h4>
 <form action="{$temp38}" method="post">
-<input type="submit" class="btn" name="logout" value="注销" style="width:100px">
+<input type="submit" class="btn" name="logout" value="로그아웃" style="width:100px">
 </form>
-<h4>变更队伍名</h4>
+<h4>팀 이름 변경</h4>
 <form action="?setting" method="post">
-費用 : {$temp39}<br />
-16个字符(全角=2字符)<br />
-新的名称 : <input type="text" class="text" name="NewName" size="20">
-<input type="submit" class="btn" value="变更" style="width:100px">
+수수료 : {$temp39}<br />
+16자 (전각 문자 = 2자)<br />
+새로운 이름 : <input type="text" class="text" name="NewName" size="20">
+<input type="submit" class="btn" value="변경" style="width:100px">
 </form>
-<h4>世界尽头</h4>
-<div class="u">※自杀用</div>
+<h4>세상의 끝</h4>
+<div class="u">※내 존재를 없앱니다...(부활 불가능)</div>
 <form action="?setting" method="post">
 PassWord : <input type="text" class="text" name="deletepass" size="20">
-<input type="submit" class="btn" name="delete" value="我要自杀了..." style="width:100px">
+<input type="submit" class="btn" name="delete" value="잘있어라..." style="width:100px">
 </form>
 </div>
 P36;
@@ -2992,7 +2993,7 @@ P36;
 
 echo <<<P37
 	<div style="margin:5px 15px">
-	<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+	<a href="?tutorial">튜토리얼</a> - 전투의 기본 (로그인 후 1시간 이내에 표시)
 	</div>
 P37;
 
@@ -3202,7 +3203,7 @@ HTML;
 
 	function MakeNewData() {
 		if(MAX_USERS <= __count(glob(USER."*")))
-			return array(false,"Maximum users.<br />已达到最大用户数量。");
+			return array(false,"Maximum users.<br />최대 가입자 수에 도달했습니다.");
 		if(__POST("Newid"))
 			trim($_POST["Newid"]);
 		if(empty(__POST("Newid")))
@@ -3252,7 +3253,7 @@ HTML;
 			fclose($fp);
 			$_SESSION["id"]=__POST("Newid");
 			setcookie("NO",session_id(),time()+COOKIE_EXPIRE);
-			$success	= "<div class=\"recover\">ID : ".__POST('Newid')." 注册成功. 请登录吧</div>";
+			$success	= "<div class=\"recover\">ID : ".__POST('Newid')." 가입 완료. 로그인 해주세요</div>";
 			return array(true,$success);
 		}
 	}
@@ -3264,7 +3265,7 @@ HTML;
 echo <<<P38
 	<div style="margin:15px">
 	Maximum users.<br />
-	用户数已达到最大。
+	가입자 수가 최대에 도달했습니다.
 	</div>
 P38;
 			return false;
@@ -3276,22 +3277,22 @@ P38;
 echo <<<P39
 	<div style="margin:15px">
 	{$temp40}
-	<h4>注册!</h4>
+	<h4>등록하기</h4>
 	<form action="{$temp41}" method="post">
 
 	<table><tbody>
 	<tr><td colspan="2">ID & PASS must be 4 to 16 letters.<br />letters allowed a-z,A-Z,0-9<br />
-	ID 和 PASS在 4-16 个字以内。半角英数字。</td></tr>
+	ID와 PASS는 4~16자여야 합니다. 반각 영숫자를 사용하세요.</td></tr>
 	<tr><td><div style="text-align:right">ID:</div></td>
 	<td><input type="text" maxlength="16" class="text" name="Newid" style="width:240px"{$idset}></td></tr>
-	<tr><td colspan="2"><br />Password,Re-enter.<br />PASS 以及再输入 确认用。</td></tr>
+	<tr><td colspan="2"><br />Password,Re-enter.<br />PASS를 위해 다시 한번 확인을 눌러주세요.</td></tr>
 	<tr><td><div style="text-align:right">PASS:</div></td>
 	<td><input type="password" maxlength="16" class="text" name="pass1" style="width:240px"></td></tr>
 
 	<tr><td></td>
 	<td><input type="password" maxlength="16" class="text" name="pass2" style="width:240px">(verify)</td></tr>
 
-	<tr><td></td><td><input type="submit" class="btn" name="Make" value="确定" style="width:160px"></td></tr>
+	<tr><td></td><td><input type="submit" class="btn" name="Make" value="가입" style="width:160px"></td></tr>
 
 	</tbody></table>
 	</form>
@@ -3305,7 +3306,7 @@ P39;
 echo <<<P40
 <div style="width:730px;">
 <div style="width:350px;float:right">
-<h4 style="width:350px">登录</h4>
+<h4 style="width:350px">로그인</h4>
 {$message}
 <form action="{$temp42}" method="post" style="padding-left:20px">
 <table><tbody>
@@ -3318,13 +3319,13 @@ echo <<<P40
 <td><input type="password" maxlength="16" class="text" name="pass" style="width:160px"></td>
 </tr>
 <tr><td></td><td>
-<input type="submit" class="btn" name="Login" value="登录" style="width:80px"> 
-<a href="?newgame">新玩家?</a>
+<input type="submit" class="btn" name="Login" value="로그인" style="width:80px"> 
+<a href="?newgame">새로운 플레이어?</a>
 </td></tr>
 </tbody></table>
 </form>
 
-<h4 style="width:350px">排行榜</h4>
+<h4 style="width:350px">랭킹</h4>
 P40;
 	include_once(CLASS_RANKING);
 	$Rank	= new Ranking();
@@ -3339,26 +3340,25 @@ echo <<<P41
 <img src="./image/top01.gif" style="margin-bottom:20px" />
 </div>
 <div style="margin-left:20px">
-<DIV class=u>这到底是什么游戏?</DIV>
+<DIV class=u>이게 도대체 무슨 게임입니까?</DIV>
 <UL>
-<LI>游戏的目的是得到第一、<BR>并且保持住第一的位置。 
-<LI>虽然没有冒险的要素、<BR>但有点深奥的战斗系统。 </LI></UL>
-<DIV class=u>战斗的感觉是什么?</DIV>
+<LI>게임의 목적은 1등을 하고 <BR>1등을 유지하는 것입니다.  
+<LI>모험적인 요소는 없지만 <BR>약간 심오한 전투 시스템입니다. </LI></UL>
+<DIV class=u>전투 기분은 어떻습니까?</DIV>
 <UL>
-<LI>5人的人物构成队伍 。 
-<LI>各人物各持不同模式、<BR>根据战斗的状况来使用技能。 
-<LI><A class=a0 href="?log">这边</A>可以回览战斗记录。 </LI></UL></DIV></DIV>
+<LI>5인의 인물로 대오를 이루다. 
+<LI>각 인물은 각기 다른 모드를 가지고 있으며,<BR> 전투 상황에 따라 기술을 사용합니다.
+<LI><A class=a0 href="?log">이쪽</A>에서 전투 기록을 회람할 수 있습니다. </LI></UL></DIV></DIV>
 
 <div class="c-both"></div>
 </div>
 
-
 <div style="margin:15px">
-<h4>提示</h4>
-用户数: {$temp44} / {$temp45}<br />
+<h4>힌트</h4>
+사용자 수 : {$temp44} / {$temp45}<br />
 P41;
 	$Abandon	= ABANDONED;
-	print(floor($Abandon/(60*60*24))."日中数据没变化的话数据将消失。");
+	print(floor($Abandon/(60*60*24))."일 중 데이터 변화가 없으면 데이터가 사라집니다.(자동 세상의 끝...)");
 print("</div>\n");
 	}
 
@@ -3366,12 +3366,12 @@ print("</div>\n");
 	function MyMenu() {
 		if($this->name && $this->islogin) { 
 			print('<div id="menu">'."\n");
-			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>');
-			print('<a href="?hunt">狩猎</a><span class="divide"></span>');
-			print('<a href="?item">道具</a><span class="divide"></span>');
-			print('<a href="?town">城镇</a><span class="divide"></span>');
-			print('<a href="?setting">设置</a><span class="divide"></span>');
-			print('<a href="?log">记录</a><span class="divide"></span>');
+			print('<a href="'.INDEX.'">첫 페이지</a><span class="divide"></span>');
+			print('<a href="?hunt">전투</a><span class="divide"></span>');
+			print('<a href="?item">아이템</a><span class="divide"></span>');
+			print('<a href="?town">마을</a><span class="divide"></span>');
+			print('<a href="?setting">설정</a><span class="divide"></span>');
+			print('<a href="?log">기록</a><span class="divide"></span>');
 			if(BBS_OUT)
 				print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");
 			print('</div><div id="menu2">'."\n");
@@ -3383,8 +3383,8 @@ echo <<<P42
 	<div style="width:100%">
 	<div style="width:30%;float:left">{$this->name}</div>
 	<div style="width:60%;float:right">
-	<div style="width:40%;float:left"><span class="bold">资金</span> : {$temp46}</div>
-	<div style="width:40%;float:right"><span class="bold">时间</span> : {$temp47}/{$temp48}</div>
+	<div style="width:40%;float:left"><span class="bold">자금</span> : {$temp46}</div>
+	<div style="width:40%;float:right"><span class="bold">시간</span> : {$temp47}/{$temp48}</div>
 	</div>
 	<div class="c-both"></div>
 	</div>
@@ -3394,19 +3394,19 @@ P42;
 			print('<div id="menu">');
 			print("First login. Thankyou for the entry.");
 			print('</div><div id="menu2">');
-			print("fill the blanks. 来吧，请填写。");
+			print("fill the blanks. 자, 작성해주세요.");
 			print('</div>');
 		} else { 
 			print('<div id="menu">');
-			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>'."\n");
-			print('<a href="?newgame">新注册</a><span class="divide"></span>'."\n");
-			print('<a href="?manual">规则和手册</a><span class="divide"></span>'."\n");
-			print('<a href="?gamedata=job">游戏数据</a><span class="divide"></span>'."\n");
-			print('<a href="?log">战斗记录</a><span class="divide"></span>'."\n");
+			print('<a href="'.INDEX.'">첫 페이지</a><span class="divide"></span>'."\n");
+			print('<a href="?newgame">신규등록</a><span class="divide"></span>'."\n");
+			print('<a href="?manual">규칙과 매뉴얼</a><span class="divide"></span>'."\n");
+			print('<a href="?gamedata=job">게임 데이터</a><span class="divide"></span>'."\n");
+			print('<a href="?log">전투 기록</a><span class="divide"></span>'."\n");
 			if(BBS_OUT)
 			print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");			
 			print('</div><div id="menu2">');
-			print("欢迎来到 [ ".TITLE." ]");
+			print("어서 오세요 [ ".TITLE." ]");
 			print('</div>');
 		}
 	}
@@ -3453,12 +3453,13 @@ P45;
 		print('<a href="'.BBS_OUT.'" target="_blank">BBS</a> - '."\n");
 
 echo <<<P46
-<a href="?manual">手册</a> - 
-<a href="?tutorial">教学</a> - 
-<a href="?gamedata=job">游戏数据</a> - 
+<a href="?manual">메뉴얼</a> - 
+<a href="?tutorial">튜토리얼</a> - 
+<a href="?gamedata=job">게임 데이터</a> - 
 <a href="#top">Top</a><br>
 Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
-汉化 By <a href="#">FiringSquad中文网</a> 2006-2008.<br>
+汉化 By <a href="http://www.firingsquad.com.cn/">FiringSquad中文网</a> 2006-2008.<br>
+한국어와 약간의 개조 by <a href="http://blog.naver.com/dk00007">Kustale</a> 1993-2025 ^-^.<br>
 </div>
 </div>
 </body>
@@ -3496,7 +3497,7 @@ P46;
 			}
 			$userName	= userNameLoad();
 			if(in_array(__POST("name"),$userName)) {
-				$error	= '该名字已被使用。';
+				$error	= '이 이름은 이미 사용되고 있습니다.';
 				break;
 			}
 			$_POST["first_name"]	= trim(__POST("first_name"));
@@ -3580,14 +3581,14 @@ echo <<<P47
 	<h4>Name of Team</h4>
 	<p>Decide the Name of the team.<br />
 	It should be more than 1 and less than 16 letters.<br />
-	Japanese characters count as 2 letters.</p>
-	<p>1-16字符的队伍名。<br /></p>
+	Other characters count as 2 letters.</p>
+	<p>1-16자의 팀명입니다.<br /></p>
 	<div class="bold u">TeamName</div>
 	<input class="text" style="width:160px" maxlength="16" name="name" {$temp54}>
 	<h4>First Character</h4>
 	<p>Decide the name of Your First Charactor.<br>
 	more than 1 and less than 16 letters.</p>
-	<p>第一个人物的名称。</p>
+	<p>첫 번째 인물의 명칭.</p>
 	<div class="bold u">CharacterName</div>
 	<input class="text" type="text" name="first_name" maxlength="16" style="width:160px;margin-bottom:10px">
 	<table cellspacing="0" style="width:400px"><tbody>
@@ -3600,7 +3601,7 @@ echo <<<P47
 	<tr><td colspan="2" class="td4"><div style="text-align:center">Warrior</div></td><td colspan="2" class="td4"><div style="text-align:center">Socerer</div></td></tr>
 	</tbody></table>
 	<p>Choose your first character's job & Gender.</p>
-	<p>最初的人物性别与职业</p>
+	<p>최초의 성별과 직업</p>
 	<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
 	<input type="hidden" value="1" name="Done">
 	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
@@ -3617,7 +3618,7 @@ P47;
 echo <<<P48
 <div style="margin:15px">
 <h4>one line bbs</h4>
-错误报告或意见，对这里的开发建议
+잘못된 보고나 의견, 여기에 대한 개발 건의
 <form action="?bbs" method="post">
 <input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
 <input type="submit" value="post" class="btn" style="width:100px" />
@@ -3630,7 +3631,7 @@ P48;
 			$_POST["message"]	= htmlspecialchars(__POST("message"),ENT_QUOTES);
 			$_POST["message"]	= stripslashes(__POST("message"));
 
-			$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>":"无名");
+			$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>":"이름 없는");
 			$message	= $name." > ".__POST("message");
 			if($this->UserColor)
 				$message	= "<span style=\"color:{$this->UserColor}\">".$message."</span>";
