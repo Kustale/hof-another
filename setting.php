@@ -147,9 +147,10 @@ define("UNION","./union/");
 define("DATA","data.dat");
 define("ITEM","item.dat");
 
-define("LOG_BATTLE_NORMAL","./log/normal/");
-define("LOG_BATTLE_RANK","./log/rank/");
-define("LOG_BATTLE_UNION","./log/union/");
+define("LOG_DIR","./log/");
+define("LOG_BATTLE_NORMAL",LOG_DIR."normal/");
+define("LOG_BATTLE_RANK",LOG_DIR."rank/");
+define("LOG_BATTLE_UNION",LOG_DIR."union/");
 
 // 상태 정의
 define("FRONT","front");
