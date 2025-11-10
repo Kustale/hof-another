@@ -104,13 +104,13 @@ class char{
 	function AutoRegeneration() {
 		if($this->SPECIAL["HpRegen"]) {
 			$Regen	= round($this->MAXHP * $this->SPECIAL["HpRegen"]/100);
-			print('<span class="recover">* </span>'.$this->Name(bold)."<span class=\"recover\"> 自动回复 <span class=\"bold\">".$Regen." HP</span></span> ");
+			print('<span class="recover">* </span>'.$this->Name(bold)."<span class=\"recover\"> 자동 회신 <span class=\"bold\">".$Regen." HP</span></span> ");
 			$this->HpRecover($Regen);
 			print("<br />\n");
 		}
 		if($this->SPECIAL["SpRegen"]) {
 			$Regen	= round($this->MAXSP * $this->SPECIAL["SpRegen"]/100);
-			print('<span class="support">* </span>'.$this->Name(bold)."<span class=\"support\"> 自动回复 <span class=\"bold\">".$Regen." SP</span></span> ");
+			print('<span class="support">* </span>'.$this->Name(bold)."<span class=\"support\"> 자동 회신 <span class=\"bold\">".$Regen." SP</span></span> ");
 			$this->SpRecover($Regen);
 			print("<br />\n");
 		}
@@ -145,13 +145,13 @@ class char{
 		</td><td valign="top">
 		P1;
 		if($this->SPECIAL["PoisonResist"])
-			print("毒抵抗 +".$this->SPECIAL["PoisonResist"]."%<br />\n");
+			print("독 저항성 +".$this->SPECIAL["PoisonResist"]."%<br />\n");
 		if($this->SPECIAL["Pierce"]["0"])
-			print("无视物理防御伤害 +".$this->SPECIAL["Pierce"]["0"]."<br />\n");
+			print("물리 방어력 무시 +".$this->SPECIAL["Pierce"]["0"]."<br />\n");
 		if($this->SPECIAL["Pierce"]["1"])
-			print("无视魔法防御伤害 +".$this->SPECIAL["Pierce"]["1"]."<br />\n");
+			print("마법 방어력 무시 +".$this->SPECIAL["Pierce"]["1"]."<br />\n");
 		if($this->SPECIAL["Summon"])
-			print("召喚力 +".$this->SPECIAL["Summon"]."%<br />\n");
+			print("소환의 힘 +".$this->SPECIAL["Summon"]."%<br />\n");
 		print <<<P2
 		</td></tr></table>
 		P2;
@@ -172,12 +172,12 @@ class char{
 			if($this->POSITION == "front")
 				return false;
 			$this->POSITION = "front";
-			print($this->Name(bold)." 移到前排.<br />\n");
+			print($this->Name(bold)." 이 앞줄로 이동되었습니다.<br />\n");
 		} else {
 			if($this->POSITION != "front")
 				return false;
 			$this->POSITION = "back";
-			print($this->Name(bold)." 移到后排.<br />\n");
+			print($this->Name(bold)." 이 뒷줄로 이동되었습니다.<br />\n");
 		}
 	}
 
@@ -324,104 +324,104 @@ class char{
 	function KnockBack($no=1) {
 		if($this->POSITION == "front") {
 			$this->POSITION = "back";
-			print($this->Name(bold)."敲到后排!<br />\n");
+			print($this->Name(bold)."는 뒷줄에 입력해야 합니다!<br />\n");
 		}
 	}
 
 	function PlusSTR($no) {
 		$this->STR	+= $no;
-		print($this->Name(bold)." STR 提升 {$no}<br />\n");
+		print($this->Name(bold)." STR 증가 {$no}<br />\n");
 	}
 	function PlusINT($no) {
 		$this->INT	+= $no;
-		print($this->Name(bold)." INT 提升 {$no}<br />\n");
+		print($this->Name(bold)." INT 증가 {$no}<br />\n");
 	}
 	function PlusDEX($no) {
 		$this->DEX	+= $no;
-		print($this->Name(bold)." DEX 提升 {$no}<br />\n");
+		print($this->Name(bold)." DEX 증가 {$no}<br />\n");
 	}
 	function PlusSPD($no) {
 		$this->SPD	+= $no;
-		print($this->Name(bold)." SPD 提升 {$no}<br />\n");
+		print($this->Name(bold)." SPD 증가 {$no}<br />\n");
 	}
 	function PlusLUK($no) {
 		$this->LUK	+= $no;
-		print($this->Name(bold)." LUK 提升 {$no}<br />\n");
+		print($this->Name(bold)." LUK 증가 {$no}<br />\n");
 	}
 
 	function UpMAXHP($no) {
-		print($this->Name(bold)." MAXHP({$this->MAXHP}) 提升到 ");
+		print($this->Name(bold)." MAXHP({$this->MAXHP}) 증가 되었습니다 ");
 		$this->MAXHP	= round($this->MAXHP * (1 + $no/100));
 		print("{$this->MAXHP}<br />\n");
 	}
 	function UpMAXSP($no) {
-		print($this->Name(bold)." MAXSP({$this->MAXSP}) 提升到 ");
+		print($this->Name(bold)." MAXSP({$this->MAXSP}) 증가 되었습니다 ");
 		$this->MAXSP	= round($this->MAXSP * (1 + $no/100));
 		print("{$this->MAXSP}<br />\n");
 	}
 	function UpSTR($no) {
 		$this->STR	= round($this->STR * (1 + $no/100));
 		if(($this->str * MAX_STATUS_MAXIMUM/100) < $this->STR) {
-			print($this->Name(bold)." STR 提升到最大 (".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name(bold)." STR 가 최대치가 되었습니다 (".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->STR = round($this->str * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." STR 提升 {$no}%<br />\n");
+			print($this->Name(bold)." STR 증가 {$no}%<br />\n");
 		}
 	}
 	function UpINT($no) {
 		$this->INT	= round($this->INT * (1 + $no/100));
 		if(($this->int * MAX_STATUS_MAXIMUM/100) < $this->INT) {
-			print($this->Name(bold)." INT 提升到最大(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name(bold)." INT 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->INT = round($this->int * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." INT 提升 {$no}%<br />\n");
+			print($this->Name(bold)." INT 증가 {$no}%<br />\n");
 		}
 	}
 	function UpDEX($no) {
 		$this->DEX	= round($this->DEX * (1 + $no/100));
 		if(($this->dex * MAX_STATUS_MAXIMUM/100) < $this->DEX) {
-			print($this->Name(bold)." DEX 提升到最大(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name(bold)." DEX 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->DEX = round($this->dex * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." DEX 提升 {$no}%<br />\n");
+			print($this->Name(bold)." DEX 증가 {$no}%<br />\n");
 		}
 	}
 	function UpSPD($no) {
 		$this->SPD	= round($this->SPD * (1 + $no/100));
 		if(($this->spd * MAX_STATUS_MAXIMUM/100) < $this->SPD) {
-			print($this->Name(bold)." SPD 提升到最大(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name(bold)." SPD 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->SPD = round($this->spd * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." SPD 提升 {$no}%<br />\n");
+			print($this->Name(bold)." SPD 증가 {$no}%<br />\n");
 		}
 	}
 	function UpATK($no) {
 		$this->atk["0"]	= round($this->atk["0"] * (1 + $no/100));
-		print($this->Name(bold)." ATK 提升 {$no}%<br />\n");
+		print($this->Name(bold)." ATK 증가 {$no}%<br />\n");
 	}
 	function UpMATK($no) {
 		$this->atk["1"]	= round($this->atk["1"] * (1 + $no/100));
-		print($this->Name(bold)." MATK 提升 {$no}%<br />\n");
+		print($this->Name(bold)." MATK 증가 {$no}%<br />\n");
 	}
 	function UpDEF($no) {
 		$up	= floor((100 - $this->def["0"]) * ($no/100) );
 		$this->def["0"]	+= $up;
-		print($this->Name(bold)." DEF 提升 {$no}%<br />\n");
+		print($this->Name(bold)." DEF 증가 {$no}%<br />\n");
 	}
 	function UpMDEF($no) {
 		$up	= floor((100 - $this->def["2"]) * ($no/100) );
-		print($this->Name(bold)." MDEF 提升 {$no}%<br />\n");
+		print($this->Name(bold)." MDEF 증가 {$no}%<br />\n");
 		$this->def["2"]	+= $up;
 	}
 	function DownMAXHP($no) {
-		print($this->Name(bold)." MAXHP({$this->MAXHP}) 下降到 ");
+		print($this->Name(bold)." MAXHP({$this->MAXHP}) 하락 되었습니다 ");
 		$this->MAXHP	= round($this->MAXHP * (1 - $no/100));
 		if($this->MAXHP < $this->HP)
 			$this->HP	= $this->MAXHP;
 		print("{$this->MAXHP}<br />\n");
 	}
 	function DownMAXSP($no) {
-		print($this->Name(bold)." MAXSP({$this->MAXSP}) 下降到 ");
+		print($this->Name(bold)." MAXSP({$this->MAXSP}) 하락 되었습니다 ");
 		$this->MAXSP	= round($this->MAXSP * (1 - $no/100));
 		if($this->MAXSP < $this->SP)
 			$this->SP	= $this->MAXSP;
@@ -429,35 +429,35 @@ class char{
 	}
 	function DownSTR($no) {
 		$this->STR	= round($this->STR * (1 - $no/100));
-		print($this->Name(bold)." STR 下降 {$no}%<br />\n");
+		print($this->Name(bold)." STR 하락 {$no}%<br />\n");
 	}
 	function DownINT($no) {
 		$this->INT	= round($this->INT * (1 - $no/100));
-		print($this->Name(bold)." INT 下降 {$no}%<br />\n");
+		print($this->Name(bold)." INT 하락 {$no}%<br />\n");
 	}
 	function DownDEX($no) {
 		$this->DEX	= round($this->DEX * (1 - $no/100));
-		print($this->Name(bold)." DEX 下降 {$no}%<br />\n");
+		print($this->Name(bold)." DEX 하락 {$no}%<br />\n");
 	}
 	function DownSPD($no) {
 		$this->SPD	= round($this->SPD * (1 - $no/100));
-		print($this->Name(bold)." SPD 下降 {$no}%<br />\n");
+		print($this->Name(bold)." SPD 하락 {$no}%<br />\n");
 	}
 	function DownATK($no) {
 		$this->atk["0"]	= round($this->atk["0"] * (1 - $no/100));
-		print($this->Name(bold)." ATK 下降 {$no}%<br />\n");
+		print($this->Name(bold)." ATK 하락 {$no}%<br />\n");
 	}
 	function DownMATK($no) {
 		$this->atk["1"]	= round($this->atk["1"] * (1 - $no/100));
-		print($this->Name(bold)." MATK 下降 {$no}%<br />\n");
+		print($this->Name(bold)." MATK 하락 {$no}%<br />\n");
 	}
 	function DownDEF($no) {
 		$this->def["0"]	= round($this->def["0"] * (1 - $no/100));
-		print($this->Name(bold)." DEF 下降 {$no}%<br />\n");
+		print($this->Name(bold)." DEF 하락 {$no}%<br />\n");
 	}
 	function DownMDEF($no) {
 		$this->def["2"]	= round($this->def["2"] * (1 - $no/100));
-		print($this->Name(bold)." MDEF 下降 {$no}%<br />\n");
+		print($this->Name(bold)." MDEF 하락 {$no}%<br />\n");
 	}
 
 	function MaxPatterns() {
@@ -523,8 +523,8 @@ class char{
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." 由于中毒受到 ");
-		print("<span class=\"bold\">$poison</span> 伤害.\n");
+		print("<span class=\"spdmg\">".$this->Name(bold)." 는 중독의 영향을 받았습니다 ");
+		print("<span class=\"bold\">$poison</span> 피해.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
 	}
@@ -688,19 +688,19 @@ class char{
 		$return	= array();
 
 		switch($item["type"]) {
-			case "剑":
-			case "匕首":
-			case "矛":
-			case "短柄斧":
-			case "魔杖":
-			case "锤":
-			case "双手剑":
-			case "枪":
-			case "斧":
-			case "杖":
-			case "弓":
-			case "十字弓":
-			case "鞭":
+			case "Sword":
+			case "Dagger":
+			case "Pike":
+			case "Hatchet":
+			case "Wand":
+			case "Mace":
+			case "TwoHandSword":
+			case "Spear":
+			case "Axe":
+			case "Staff":
+			case "Bow":
+			case "CrossBow":
+			case "Whip":
 				if($this->weapon)
 					$return[]	= $this->weapon;
 				if($item["dh"] && $this->shield) {
@@ -709,9 +709,9 @@ class char{
 				}
 				$this->weapon	= $item["no"];
 				break;
-			case "盾":
+			case "Shield":
 			case "MainGauche":
-			case "书":
+			case "Book":
 				if($this->weapon) {
 					$weapon	= LoadItemData($this->weapon);
 					if($weapon["dh"]) {
@@ -723,14 +723,14 @@ class char{
 					$return[]	= $this->shield;
 				$this->shield	= $item["no"];
 				break;
-			case "甲":
-			case "衣服":
-			case "长袍":
+			case "Armor":
+			case "Cloth":
+			case "Robe":
 				if($this->armor)
 					$return[]	= $this->armor;
 				$this->armor	= $item["no"];
 				break;
-			case "道具":
+			case "Item":
 				if($this->item)
 					$return[]	= $this->item;
 				$this->item	= $item["no"];
@@ -769,13 +769,13 @@ class char{
 			return true;
 		if($this->STATE === DEAD) {
 			if($mes)
-				print($this->Name(bold).' <span class="recover">复活</span>!<br />'."\n");
+				print($this->Name(bold).' <span class="recover">부활</span>!<br />'."\n");
 			$this->STATE = 0;
 			return true;
 		}
 		if($this->STATE === POISON) {
 			if($mes)
-				print($this->Name(bold)."的 <span class=\"spdmg\">中毒</span> 被治愈.<br />\n");
+				print($this->Name(bold)."의 <span class=\"spdmg\">중독</span> 이 치료되었습니다.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
@@ -788,9 +788,9 @@ class char{
 			$sub	= " spdmg";
 		print("<span class=\"bold{$sub}\">{$this->name}</span>\n");
 		if($this->expect_type === 0)
-			print('<span class="charge">(蓄力)</span>'."\n");
+			print('<span class="charge">(축적된 힘)</span>'."\n");
 		else if($this->expect_type === 1)
-			print('<span class="charge">(咏唱)</span>'."\n");
+			print('<span class="charge">(영창)</span>'."\n");
 		print("<div class=\"hpsp\">\n");
 		$sub	= $this->STATE === 1 ? "dmg":"recover";
 		print("<span class=\"{$sub}\">HP : {$this->HP}/{$this->MAXHP}</span><br />\n");
@@ -1123,15 +1123,15 @@ P6;
 		$tree	= LoadSkillTree($this);
 
 		if(!in_array(__POST("newskill"),$tree))
-			return array(false,"没有技能树");
+			return array(false,"스킬 트리 없음");
 		$skill	= LoadSKillData($no);
 		if(in_array($no,$this->skill))
-			return array(false,"{$skill[name]} 已经习得.");
+			return array(false,"{$skill['name']}은 이미 학습되었습니다.");
 		if($this->UseSkillPoint($skill["learn"])) {
 			$this->GetNewSkill($skill["no"]);
-			return array(true,$this->Name()."  {$skill[name]} 已经习得。");
+			return array(true,$this->Name()."는 {$skill['name']}을 배웠습니다.");
 		} else
-			return array(false,"技能点数不足");
+			return array(false,"스킬 포인트가 부족합니다");
 	}
 
 	function GetNewSkill($no) {

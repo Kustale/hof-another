@@ -39,13 +39,13 @@ class Ranking {
 		if(!$this->Ranking) {
 			$this->JoinRanking($id);
 			$this->SaveRanking();
-			$message	= "排名开始."; 
+			$message	= "순위가 시작됩니다."; 
 			return array($message,true);
 		}
 
 		$MyRank	= $this->SearchID($id);
 		if($MyRank === 0) {
-			$message	= "第一名不可再挑战.";
+			$message	= "1위는 다시 도전받을 수 없습니다.";
 			return array($message,true);
 		}
 
@@ -90,20 +90,20 @@ class Ranking {
 		$Party_Challenger	= $challenger->RankParty();
 		$Party_Defender		= $defender->RankParty();
 		if($Party_Defender == "NOID") {
-			$message	= "没有用户...<br />(自动胜利)";
+			$message	= "사용자가 없습니다...<br />(자동 승리)";
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
 			return array($message,true);
 		}
 
 		if($Party_Challenger === false) {
-			$message	= "设置战斗队伍!<br />(如果被挑下马的话排名也就没了)";
+			$message	= "전투팀을 구성하세요!<br />(말에서 떨어지면 랭킹이 사라집니다.)";
 			return array($message,true);
 		}
 		if($Party_Defender === false) {
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
-			$message	= "{$defender->name} 没有排名战队伍<br />(自动胜利)";
+			$message	= "{$defender->name} 랭킹 팀 없음<br />(자동 승리)";
 			return array($message,true);
 		}
 
@@ -182,12 +182,12 @@ class Ranking {
 	function ShowRanking($from=false,$to=false,$bold=false) {
 		$last	= __count($this->Ranking) - 1;
 		if(__count($this->Ranking) < 1) {
-			print("<div class=\"bold\">没有排名.</div>\n");
+			print("<div class=\"bold\">순위가 없습니다.</div>\n");
 		} else if(is_numeric($from) && is_numeric($to)) {
 			for($from; $from<$to; $from++) {
 				$user	= new user($this->Ranking["$from"]["id"]);
-				$place	= ($from==$last?"位(最下位)":"位");
-				if($bold === $from) {
+				$place	= ($from==$last ? "순위 (가장 낮은 위치)":"순위");
+				if($bold === $from) { 
 					echo ($from+1)."{$place} : <span class=\"u\">".$user->name."</span><br />";
 					continue;
 				}
@@ -196,7 +196,7 @@ class Ranking {
 			}
 			foreach($this->Ranking as $key => $val) {
 				$user	= new user($val["id"]);
-				echo ($key+1)."位 : ".$user->name."<br />";
+				echo ($key+1)."위 : ".$user->name."<br />";
 			}
 		}
 	}

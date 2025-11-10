@@ -52,30 +52,30 @@ function __count($value){
 
 	function CanExhibitType() {
 		return array(
-		"剑"	=> "1",
-		"双手剑"	=> "1",
-		"匕首"	=> "1",
-		"魔杖"	=> "1",
-		"杖"	=> "1",
-		"弓"	=> "1",
-		"鞭"	=> "1",
-		"盾"	=> "1",
-		"书"	=> "1",
-		"甲"	=> "1",
-		"衣服"	=> "1",
-		"长袍"	=> "1",
-		"道具"	=> "1",
-		"材料"	=> "1",
+		"Sword"	=> "1",
+		"TwoHandSword"	=> "1",
+		"Dagger"	=> "1",
+		"Wand"	=> "1",
+		"Staff"	=> "1",
+		"Bow"	=> "1",
+		"Whip"	=> "1",
+		"Shield"	=> "1",
+		"Book"	=> "1",
+		"Armor"	=> "1",
+		"Cloth"	=> "1",
+		"Robe"	=> "1",
+		"Item"	=> "1",
+		"Material"	=> "1",
 		);
 	}
 
 	function CanRefineType() {
 		return array(
-		"剑","双手剑","匕首",
-		"魔杖","杖","弓",
-		"鞭",
-		"盾","书",
-		"甲","衣服","长袍",
+		"Sword","TwoHandSword","Dagger",
+		"Wand","Staff","Bow",
+		"Whip",
+		"Shield","Book",
+		"Armor","Cloth","Robe",
 		);
 	}
 
@@ -245,28 +245,28 @@ function __count($value){
 			return $list;
 		} else {
 		return array(
-1000, 1001, 1099, 1100, 1101,
-1105, 1106, 1110, 1111, 1121,
-1125, 1126, 1199, 1200, 1201,
-1205, 1206, 1210, 1211, 1221,
-1225, 1226, 1399, 1400, 1401,
-1405, 1406, 1410, 1449, 1450,
-1451, 1455, 1456, 1499, 1500,
-1501, 1505, 1506, 1510, 1511,
-1549, 1550, 1551, 1555, 1556,
-1560, 1561, 1599, 1600, 1610,
-1611, 1612, 1613, 
-1614, 1615, 1616, 1617, 1618,
-1699,
-1700, 1701, 1710, 1711, 1712,
-1715, 1716, 1717, 1749, 1750,
-1751, 1752, 1755, 1756, 1757,
-1799, 1800, 1801, 1805, 1819,
-1820, 1821, 1825, 1839, 1840,
-1841, 1845, 1849, 1850, 1851,
-1855, 1899, 1900, 1901, 1902,
-1919, 1920, 1939, 1940, 
-); 
+		1000, 1001, 1099, 1100, 1101,
+		1105, 1106, 1110, 1111, 1121,
+		1125, 1126, 1199, 1200, 1201,
+		1205, 1206, 1210, 1211, 1221,
+		1225, 1226, 1399, 1400, 1401,
+		1405, 1406, 1410, 1449, 1450,
+		1451, 1455, 1456, 1499, 1500,
+		1501, 1505, 1506, 1510, 1511,
+		1549, 1550, 1551, 1555, 1556,
+		1560, 1561, 1599, 1600, 1610,
+		1611, 1612, 1613, 
+		1614, 1615, 1616, 1617, 1618,
+		1699,
+		1700, 1701, 1710, 1711, 1712,
+		1715, 1716, 1717, 1749, 1750,
+		1751, 1752, 1755, 1756, 1757,
+		1799, 1800, 1801, 1805, 1819,
+		1820, 1821, 1825, 1839, 1840,
+		1841, 1845, 1849, 1850, 1851,
+		1855, 1899, 1900, 1901, 1902,
+		1919, 1920, 1939, 1940, 
+		); 
 		}
 
 	}
@@ -285,12 +285,12 @@ function __count($value){
 function ShowLogList() {
 	print("<div style=\"margin:15px\">\n");
 
-	print("<a href=\"?log\" class=\"a0\">全部</a> ");
-	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS战</a> ");
-	print("<a href=\"?rlog\">排行战</a>");
+	print("<a href=\"?log\" class=\"a0\">전부</a> ");
+	print("<a href=\"?clog\">보통</a> ");
+	print("<a href=\"?ulog\">보스전</a> ");
+	print("<a href=\"?rlog\">랭킹전</a>");
 
-	print("<h4>最近的战斗 - <a href=\"?clog\">全表示</a>(Recent Battles)</h4>\n");
+	print("<h4>최근의 전투 - <a href=\"?clog\">전부 표시</a>(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
@@ -300,7 +300,7 @@ function ShowLogList() {
 		}
 	}
 	$limit	= 0;
-	print("<h4>BOSS战 - <a href=\"?ulog\">全表示</a>(Union Battle Log)</h4>\n");
+	print("<h4>보스전 - <a href=\"?ulog\">전부 표시</a>(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"UNION");
@@ -310,7 +310,7 @@ function ShowLogList() {
 		}
 	}
 	$limit	= 0;
-	print("<h4>排名战 - <a href=\"?rlog\">全表示</a>(Rank Battle Log)</h4>\n");
+	print("<h4>랭킹전 - <a href=\"?rlog\">전부 표시</a>(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"RANK");
@@ -326,11 +326,11 @@ function ShowLogList() {
 function LogShowCommon() {
 	print("<div style=\"margin:15px\">\n");
 	
-	print("<a href=\"?log\">全部</a> ");
-	print("<a href=\"?clog\" class=\"a0\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS战</a> ");
-	print("<a href=\"?rlog\">排行战</a>");
-	print("<h4>最近的战斗 - 全记录(Recent Battles)</h4>\n");
+	print("<a href=\"?log\">전부</a> ");
+	print("<a href=\"?clog\" class=\"a0\">보통</a> ");
+	print("<a href=\"?ulog\">보스전</a> ");
+	print("<a href=\"?rlog\">랭킹전</a>");
+	print("<h4>최근 전투 - 전체 기록(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
@@ -341,11 +341,11 @@ function LogShowCommon() {
 function LogShowUnion() {
 	print("<div style=\"margin:15px\">\n");
 
-	print("<a href=\"?log\">全部</a> ");
-	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\" class=\"a0\">BOSS战</a> ");
-	print("<a href=\"?rlog\">排行战</a>");
-	print("<h4>BOSS战 - 全记录(Union Battle Log)</h4>\n");
+	print("<a href=\"?log\">전부</a> ");
+	print("<a href=\"?clog\">보통</a> ");
+	print("<a href=\"?ulog\" class=\"a0\">보스전</a> ");
+	print("<a href=\"?rlog\">랭킹전</a>");
+	print("<h4>보스전 - 전체 기록(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"UNION");
@@ -356,11 +356,11 @@ function LogShowUnion() {
 function LogShowRanking() {
 	print("<div style=\"margin:15px\">\n");
 
-	print("<a href=\"?log\">全部</a> ");
-	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS战</a> ");
-	print("<a href=\"?rlog\" class=\"a0\">排行战</a>");
-	print("<h4>排名赛-全记录(Rank Battle Log)</h4>\n");
+	print("<a href=\"?log\">전부</a> ");
+	print("<a href=\"?clog\">보통</a> ");
+	print("<a href=\"?ulog\">보스전</a> ");
+	print("<a href=\"?rlog\" class=\"a0\">랭킹전</a>");
+	print("<h4>랭킹전 - 전체기록(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"RANK");
@@ -660,7 +660,7 @@ function ShowBattleLog($no,$type=false) {
 			print("$update");
 			print('</textarea><br>');
 			print('<input type="submit" class="btn" value="update">');
-			print('<a href="?update">刷新<br>');
+			print('<a href="?update">새로 고침<br>');
 		}
 
 		print(nl2br($update)."\n");
@@ -687,9 +687,9 @@ echo <<<P1
 <div style="margin:15px">
 <h4>GameData</h4>
 <div style="margin:0 20px">
-| <a href="?gamedata=job">职业(Job)</a> | 
-<a href="?gamedata=item">道具(item)</a> | 
-<a href="?gamedata=judge">判定</a> | 
+| <a href="?gamedata=job">직업(Job)</a> | 
+<a href="?gamedata=item">어아탬(item)</a> | 
+<a href="?gamedata=judge">판정</a> | 
 </div>
 </div>
 P1; 
@@ -733,7 +733,7 @@ P1;
 
 	function RankAllShow() {
 		print('<div style="margin:15px">'."\n");
-		print('<h4>Ranking - '.date("Y年n月j日 G:i:s").'</h4>'."\n");
+		print('<h4>Ranking - '.date("Y년n월j일 G:i:s").'</h4>'."\n");
 		include(CLASS_RANKING);
 		$Rank	= new Ranking();
 		$Rank->ShowRanking();
@@ -756,17 +756,17 @@ P1;
 		$string	= trim($string);
 		$string	= stripslashes($string);
 		if(is_numeric(strpos($string,"\t"))) {
-			return array(false,"非法字符");
+			return array(false,"잘못된 문자");
 		}
 		if(is_numeric(strpos($string,"\n"))) {
-			return array(false,"非法字符");
+			return array(false,"잘못된 문자");
 		}
 		if (!$string) {
-			return array(false,"不能为空");
+			return array(false,"공허할 수 없음");
 		}
 		$length	= strlen($string);
 		if ( 0 == $length || $maxLength < $length) {
-			return array(false,"过短或过长");
+			return array(false,"너무 짧거나 너무 길거나");
 		}
 		$string	= htmlspecialchars($string,ENT_QUOTES);
 		return array(true,$string);

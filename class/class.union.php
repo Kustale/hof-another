@@ -41,8 +41,8 @@ class union extends char{
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." 由于中毒受到 ");
-		print("<span class=\"bold\">$poison</span> 伤害.\n");
+		print("<span class=\"spdmg\">".$this->Name(bold)." 는 ");
+		print("<span class=\"bold\">$poison</span> 의 중독으로 인해 피해를 입었습니다.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
 	}
@@ -65,7 +65,7 @@ class union extends char{
 		}
 		if($this->STATE === POISON) {
 			if($mes)
-				print($this->Name(bold)." 的<span class=\"spdmg\">毒</span> 被治愈.<br />\n");
+				print($this->Name(bold)." 는<span class=\"spdmg\">중독</span> 이 치료되었습니다.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
@@ -151,7 +151,7 @@ echo <<<P1
 	<div class="carpet_frame">
 	<div class="land" style="background-image : url({$temp1});">
 	<a href="?union={$this->UnionNo}">{$this->ShowImage()}</a></div>
-	<div class="bold dmg">{$this->UnionName}</div>限制级别:{$this->LevelLimit}级
+	<div class="bold dmg">{$this->UnionName}</div>제한 수준 : {$this->LevelLimit}급
 	</div>
 P1;	
 	}

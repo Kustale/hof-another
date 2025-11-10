@@ -33,12 +33,15 @@ class main extends user {
 			mkdir(USER, 0777);
 		if(!is_dir(UNION))
 			mkdir(UNION, 0777);
-		if(!is_dir(LOG_BATTLE_NORMAL) || !is_dir(LOG_BATTLE_RANK) || !is_dir(LOG_BATTLE_UNION)){
-			if(!is_dir(LOG_DIR)) mkdir(LOG_DIR,0777);
-			if(!is_dir(LOG_BATTLE_NORMAL)) mkdir(LOG_BATTLE_NORMAL,0777);
-			if(!is_dir(LOG_BATTLE_RANK)) mkdir(LOG_BATTLE_RANK,0777);
-			if(!is_dir(LOG_BATTLE_UNION)) mkdir(LOG_BATTLE_UNION,0777);
-		}
+		
+		if(!is_dir(LOG_DIR))
+			mkdir(LOG_DIR,0777);
+		if(!is_dir(LOG_BATTLE_NORMAL))
+			mkdir(LOG_BATTLE_NORMAL,0777);
+		if(!is_dir(LOG_BATTLE_RANK))
+			mkdir(LOG_BATTLE_RANK,0777);
+		if(!is_dir(LOG_BATTLE_UNION))
+			mkdir(LOG_BATTLE_UNION,0777);
 	}
 
 

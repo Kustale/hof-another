@@ -58,13 +58,13 @@ function HaveNeeds($item,$UserItem) {
 
 function ItemAbilityPossibility($type) {
 	switch($type) {
-		case "剑":
-		case "双手剑":
-		case "匕首":
-		case "魔杖":
-		case "杖":
-		case "弓":
-		case "鞭":
+		case "Sword":
+		case "TwoHandSword":
+		case "Dagger":
+		case "Wand":
+		case "Staff":
+		case "Bow":
+		case "Whip":
 			$low	= array(
 			100,101,102,103,104,
 			105,106,107,108,109,
@@ -100,11 +100,11 @@ function ItemAbilityPossibility($type) {
 			L05,L06,L07,L08,L09,
 			);
 			break;
-		case "盾":
-		case "书":
-		case "甲":
-		case "衣服":
-		case "长袍":
+		case "Shield":
+		case "Book":
+		case "Armor":
+		case "Cloth":
+		case "Robe":
 			$low	= array(
 			300,301,
 			350,351,

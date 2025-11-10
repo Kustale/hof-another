@@ -94,11 +94,11 @@ class Item {
 		if($this->RefineProb($this->refine)) {
 			print("+".$this->refine." -> ");
 			$this->refine++;
-			print("+".$this->refine." <span class=\"recover\">成功</span> !<br />\n");
+			print("+".$this->refine." <span class=\"recover\">성공</span> !<br />\n");
 			return true;
 		} else {
 			print("+".$this->refine." -> ");
-			print("+".($this->refine + 1)." <span class=\"dmg\">失败</span>.<br />\n");
+			print("+".($this->refine + 1)." <span class=\"dmg\">실패</span>.<br />\n");
 			return false;
 		}
 	}

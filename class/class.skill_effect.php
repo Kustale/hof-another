@@ -14,7 +14,7 @@ class ClassSkillEffect{
 
 	function SkillEffect($skill,$skill_no,&$user,&$target) {
 		if($target === false) {
-			print("没有目标.失败!<br />\n");
+			print("목표가 없다. 실패다!<br />\n");
 			return false;
 		}
 
@@ -69,7 +69,7 @@ class ClassSkillEffect{
 				$value	= round(abs($target->HP - $user->HP)*0.5); 
 				if($user->HP <= $target->HP) {
 					if(1000 <= $value) {
-						print("※价值太大被补正。<br />\n");
+						print("※값이 너무 높아서 수정하였습니다.<br />\n");
 						$value	= 500;
 					}
 					DamageHP($target,$value);
@@ -84,7 +84,7 @@ class ClassSkillEffect{
 				$value	= round(abs($target->SP - $user->SP)*0.5); 
 				if($user->SP <= $target->SP) {
 					if(1000 <= $value) {
-						print("※价值太大被补正。<br />\n");
+						print("※값이 너무 높아서 수정하였습니다.<br />\n");
 						$value	= 500;
 					}
 					DamageSP($target,$value);
@@ -110,7 +110,7 @@ class ClassSkillEffect{
 			case 1223:
 				if($target->STATE === 2) {
 					$option["multiply"]	= 6;
-					print("伤害 x6!<br />\n");
+					print("데미지 x6!<br />\n");
 				}
 				$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 				DamageHP($target,$dmg);
@@ -146,36 +146,36 @@ class ClassSkillEffect{
 			case 2032:  
 				$p	= mt_rand(1,100);
 				if(50<$p) $target->HP	= 0;
-				else print("失败!<br />");
+				else print("실패!<br />");
 				return true;
 
 			case 5121: 
 				$p	= mt_rand(1,100);
 				if(70<$p) $target->HP	= 0;
-				else print("失败!<br />");
+				else print("실패!<br />");
 				return true;
 
 			case 5122: 
 				$p	= mt_rand(1,100);
 				if(10<$p) $target->HP	= 0;
-				else print("失败!<br />");
+				else print("실패!<br />");
 				return true;
 
 			case 5136: 
 				$p	= mt_rand(1,100);
 				if(8<$p) $target->HP	= 0;
-				else print("失败!<br />");
+				else print("실패!<br />");
 				return true;
 
 			case 2035: 
 				$p	= mt_rand(1,100);
 				if(90<$p) $target->HP	= 0;
-				else print("失败!<br />");
+				else print("실패!<br />");
 				return true;
 
 			case 2055: 
 				$option["multiply"]	= $this->CountDead($user) + 1;
-				print("伤害 x".$option["multiply"]."!<br />\n");
+				print("데미지 x".$option["multiply"]."!<br />\n");
 				$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 				DamageHP($target,$dmg);
 				break;
@@ -190,7 +190,7 @@ class ClassSkillEffect{
 
 			case 2057: 
 				if(60 < $target->HpPercent() || $target->SPECIAL["Metamo"]) {
-					print("失败!<br />\n");
+					print("실패!<br />\n");
 					break;
 				}
 				print($target->GetSpecial("Metamo",true));
@@ -210,7 +210,7 @@ class ClassSkillEffect{
 
 			case 2059: 
 				if($target->SPECIAL["Metamo"]) {
-					print("失败!<br />\n");
+					print("실패!<br />\n");
 					break;
 				}
 				print($target->GetSpecial("Metamo",true));
@@ -224,7 +224,7 @@ class ClassSkillEffect{
 
 			case 2063: 
 				if($target->SPECIAL["Metamo"]) {
-					print("失败!<br />\n");
+					print("실패!<br />\n");
 					break;
 				}
 				print($target->GetSpecial("Metamo",true));
@@ -238,7 +238,7 @@ class ClassSkillEffect{
 
 			case 5099:
 				if(50 < $target->HpPercent() || $target->SPECIAL["Metamo"]) {
-					print("失败!<br />\n");
+					print("실패!<br />\n");
 					break;
 				}
 				print($target->GetSpecial("Metamo",true));
@@ -274,7 +274,7 @@ class ClassSkillEffect{
 				$Rate	= ($target->HP / $target->MAXHP) * 100;
 				if($Rate <= 30) {
 					$heal	*= 2;
-					print("治疗x2!<br />");
+					print("트리트먼트 x2!<br />");
 				}
 				RecoverHP($target,$heal);
 				break;
@@ -304,18 +304,18 @@ class ClassSkillEffect{
 			case 3013:  
 				$HpRate	= floor($target->HP/$target->MAXHP*100);
 				$SpRate	= floor($target->SP/$target->MAXSP*100);
-				print("{$target->name} 对换了HP和SP.<br />");
-				print("HP: {$target->HP}(".$HpRate."%) 到 ");
+				print("{$target->name}가 HP와 SP를 바꿨습니다.<br />");
+				print("HP: {$target->HP}(".$HpRate."%) 도달 ");
 				$target->HP	= round($SpRate/100*$target->MAXHP);
 				print("{$target->HP}(".$SpRate."%)<br />");
-				print("SP: {$target->SP}(".$SpRate."%) 到 ");
+				print("SP: {$target->SP}(".$SpRate."%) 도달 ");
 				$target->SP	= round($HpRate/100*$target->MAXSP);
 				print("{$target->SP}(".$HpRate."%)<br />");
 				break;
 
 			case 3020:  
 				$target->MAXSP	= round($target->MAXSP * 1.2);
-				print($target->Name(bold)."'s MAXSP 提升到 {$target->MAXSP}.<br />\n");
+				print($target->Name(bold)."'s MAXSP는 {$target->MAXSP} 증가 되었습니다.<br />\n");
 				break;
 
 			case 3040: 
@@ -336,7 +336,7 @@ class ClassSkillEffect{
 			case 3052:
 				if($target == $user) return false;
 				if($target->expect) return false;
-				print("<span class=\"support\">".$target->Name("bold")." 变得轻快了!</span>");
+				print("<span class=\"support\">".$target->Name("bold")." 가 더 가볍고 빨라졌습니다!</span>");
 				$target->DelayCut(101,$this->delay,1);
 				print("<br />\n");
 				break;
@@ -408,7 +408,7 @@ class ClassSkillEffect{
 
 			case 3124:
 				if(20 < $target->HpPercent()) {
-					print("失败!<br />\n");
+					print("실패!<br />\n");
 					break;
 				}
 				$dif	= $user->MAXHP - $user->HP;
@@ -438,7 +438,7 @@ class ClassSkillEffect{
 				break;
 
 			case 3900: 
-				print("中毒<br />\n");
+				print("중독<br />\n");
 				$user->GetPoison(100);
 				break;
 			case 3901: 
@@ -463,7 +463,7 @@ class ClassSkillEffect{
 				}
 				if($target->POSITION == "back") {
 					$target->POSITION = "front";
-					print($target->Name(bold)." 站到前排.<br />");
+					print($target->Name(bold)."는 앞줄로 이동했습니다.<br />");
 				}
 				$this->StatusChanges($skill,$target);
 				break;
@@ -488,26 +488,26 @@ class ClassSkillEffect{
 				$add	= CreateSummon($mob);
 				$this->JoinCharacter($user,$add);
 				$add->ShowImage(vcent);
-				print($add->Name(bold)." 加入了队伍.<br />\n");
+				print($add->Name(bold)."가 팀에 합류했습니다.<br />\n");
 				break;
 
 			default:
 				if($skill["MagicCircleAdd"]) {
 					$this->MagicCircleAdd($user->team,$skill["MagicCircleAdd"]);
-					print($user->Name(bold).'<span class="support"> 画魔法阵 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
+					print($user->Name(bold).'<span class="support"> 마법진 생성 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
 				}
 				if($skill["MagicCircleDeleteEnemy"]) {
 					$EnemyTeam	= ($user->team == TEAM_0)?TEAM_1:TEAM_0;
 					$this->MagicCircleDelete($EnemyTeam,$skill["MagicCircleDeleteEnemy"]);
-					print($user->Name(bold).'<span class="dmg"> 消除了敌人魔法阵 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
+					print($user->Name(bold).'<span class="dmg"> 적의 마법진을 제거 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
 				}
 				if($skill["HpRegen"]) {
 					$target->GetSpecial("HpRegen",$skill["HpRegen"]);
-					print($target->Name(bold).'<span class="recover"> HP 回复了+'.$skill["HpRegen"]."%</span><br />\n");
+					print($target->Name(bold).'<span class="recover"> HP 회복하기 +'.$skill["HpRegen"]."%</span><br />\n");
 				}
 				if($skill["SpRegen"]) {
 					$target->GetSpecial("SpRegen",$skill["SpRegen"]);
-					print($target->Name(bold).'<span class="support"> SP 回复了+'.$skill["SpRegen"]."%</span><br />\n");
+					print($target->Name(bold).'<span class="support"> SP 회복하기 +'.$skill["SpRegen"]."%</span><br />\n");
 				}
 				if($skill["priority"] == "Charge" && !$target->expect)
 					break;
@@ -521,7 +521,7 @@ class ClassSkillEffect{
 							$add->Quick($this->delay * 2);
 						$this->JoinCharacter($user,$add);
 						$add->ShowImage(vcent);
-						print($add->Name(bold)." 加入了队伍.<br />\n");
+						print($add->Name(bold)."가 팀에 합류했습니다.<br />\n");
 					}
 					return true;
 				}
@@ -549,9 +549,9 @@ class ClassSkillEffect{
 				if($skill["poison"]) {
 					$result	= $target->GetPoison($skill["poison"]);
 					if($result === true)
-						print($target->Name(bold)."<span class=\"spdmg\">中毒了</span> !<br />\n");
+						print($target->Name(bold)."<span class=\"spdmg\">는 중독되었습니다</span> !<br />\n");
 					else if($result === "BLOCK")
-						print($target->Name(bold)." 没有中毒.<br />\n");
+						print($target->Name(bold)." 는 중독되지 않았습니다.<br />\n");
 				}
 				if($skill["knockback"])
 					$target->KnockBack($skill["knockback"]);
@@ -636,50 +636,50 @@ class ClassSkillEffect{
 }
 
 function DamageHP(&$target,$value) {
-	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='dmg bold'>  ".$value."</span> 伤害 ");
+	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 는");
+	print("<span class='dmg bold'>  ".$value."</span> 피해를 받았다 ");
 	$target->HpDamage($value);
 	print("<br />\n");
 }
 
 function DamageHP2(&$target,$value) {
-	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='dmg bold'>  ".$value."</span> 伤害 ");
+	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 는");
+	print("<span class='dmg bold'>  ".$value."</span> 피해를 받았다 ");
 	$target->HpDamage2($value);
 	print("<br />\n");
 }
 
 function DamageSP(&$target,$value) {
-	print('<span class="spdmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='spdmg bold'>  ".$value."</span> 伤害 ");
+	print('<span class="spdmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 는");
+	print("<span class='spdmg bold'>  ".$value."</span> 피해를 받았다 ");
 	$target->SpDamage($value);
 	print("<br />\n");
 }
 
 function RecoverHP(&$target,$value) {
-	print($target->Name("bold").' <span class="recover">回复了 <span class="bold">'.$value.' HP</span></span>');
+	print($target->Name("bold").' <span class="recover">회복하기 <span class="bold">'.$value.' HP</span></span>');
 	$target->HpRecover($value);
 	print("<br />\n");
 }
 
 function RecoverSP(&$target,$value) {
-	print($target->Name("bold").' <span class="support">回复了 <span class="bold">'.$value.' SP</span></span>');
+	print($target->Name("bold").' <span class="support">회복하기 <span class="bold">'.$value.' SP</span></span>');
 	$target->SpRecover($value);
 	print("<br />\n");
 }
 
 function AbsorbHP(&$target,$value,&$user,$value2) {
-	print(' 从 '.$target->Name(bold));
+	print($target->Name(bold).'에게서');
 	$target->HpDamage($value);
-	print('吸取 <span class="recover"><span class="bold">'.$value.'</span> HP</span>');
+	print('<span class="recover"><span class="bold">'.$value.'</span> HP</span>를 흡수했다.');
 	$user->HpRecover($value);
 	print("<br />\n");
 }
 
 function AbsorbSP(&$target,$value,&$user,$value2) {
-	print(' 从 '.$target->Name(bold));
+	print($target->Name(bold).'에게서');
 	$target->SpDamage($value);
-	print('吸取 <span class="support"><span class="bold">'.$value.'</span> SP</span>');
+	print('<span class="support"><span class="bold">'.$value.'</span> SP</span>를 흡수했다.');
 	$user->SpRecover($value);
 	print("<br />\n");
 }
@@ -711,7 +711,7 @@ function CalcBasicDamage($skill,$user,&$target,$option=null) {
 
 	if($target->SPECIAL["Barrier"]) {
 		$target->GetSpecial("Barrier",false);
-		print("攻击无效.<br />\n");
+		print("공격은 효과가 없었다.<br />\n");
 		$dmg	= 0;
 	}
 

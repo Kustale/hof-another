@@ -56,7 +56,7 @@ class Ranking {
 
 		
 		if($MyRank["0"] === 0) {
-			SHowError("第一名不可再挑战.");
+			SHowError("1위는 다시 도전받을 수 없습니다.");
 			
 			return false;
 		}
@@ -110,11 +110,11 @@ class Ranking {
 
 	function RankBattle(&$user,&$Rival,$UserPlace,$RivalPlace) {
 
-		$UserPlace	= "[".($UserPlace+1)."位]";
-		$RivalPlace	= "[".($RivalPlace+1)."位]";
+		$UserPlace	= "[".($UserPlace+1)."위]";
+		$RivalPlace	= "[".($RivalPlace+1)."위]";
 
 		if($Rival->is_exist() == false) {
-			ShowError("对手不存在(不战而胜)");
+			ShowError("상대는 존재하지 않는다 (싸움 없이 승리)");
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
 			return "DEFENDER_NO_ID";
@@ -124,12 +124,12 @@ class Ranking {
 		$Party_Defender		= $Rival->RankParty();
 
 		if($Party_Challenger === false) {
-			ShowError("戦うメンバーがいません（？）。");
+			ShowError("싸울 멤버가 없습니다.");
 			return "CHALLENGER_NO_PARTY";
 		}
 
 		if($Party_Defender === false) {
-			ShowError($Rival->name." 对战的人物还未决定<br />(不战而胜)");
+			ShowError($Rival->name."의 경기의 상대는 아직 결정되지 않았습니다.<br />(싸움 없이 승리)");
 			return "DEFENDER_NO_PARTY";
 		}
 		
@@ -284,7 +284,7 @@ class Ranking {
 		$LastPlace	= __count($this->Ranking) - 1;
 
 		print("<table cellspacing=\"0\">\n");
-		print("<tr><td class=\"td6\" style=\"text-align:center\">排位</td><td  class=\"td6\" style=\"text-align:center\">队伍</td></tr>\n");
+		print("<tr><td class=\"td6\" style=\"text-align:center\">순위</td><td  class=\"td6\" style=\"text-align:center\">팀</td></tr>\n");
 		for($Place=$from; $Place<$to + 1; $Place++) {
 			if(!isset($this->Ranking["$Place"]))
 				break;
@@ -298,20 +298,20 @@ class Ranking {
 					print('<img src="'.IMG_ICON.'crown03.png" class="vcent" />'); break;
 				default:
 					if($Place == $LastPlace)
-						print("底");
+						print("끝");
 					else
-						print(($Place+1)."位");
+						print(($Place+1)."위");
 			}
 			print("</td><td class=\"td8\">\n");
 			foreach($this->Ranking["$Place"] as $SubRank => $data) {
 				list($Name,$R)	= $this->LoadUserName($data["id"],true);
 				$WinProb	= $R['all']?sprintf("%0.0f",($R['win']/$R['all'])*100):"--";
-				$Record	= "(".($R['all']?$R['all']:"0")."战 ".
-						($R['win']?$R['win']:"0")."胜".
-						($R['lose']?$R['lose']:"0")."败 ".
-						($R['all']-$R['win']-$R['lose'])."引 ".
-						($R['defend']?$R['defend']:"0")."防 ".
-						"胜率".$WinProb.'%'.
+				$Record	= "(".($R['all']?$R['all']:"0")."전 ".
+						($R['win']?$R['win']:"0")."승".
+						($R['lose']?$R['lose']:"0")."패 ".
+						($R['all']-$R['win']-$R['lose'])."인 ".
+						($R['defend']?$R['defend']:"0")."방 ".
+						"승률".$WinProb.'%'.
 						")";
 				if(isset($BoldRank) && $BoldRank["0"] == $Place && $BoldRank["1"] == $SubRank) {
 					print('<span class="bold u">'.$Name."</span> {$Record}");
@@ -337,7 +337,7 @@ class Ranking {
 
 			$Rank	= $this->SearchID($id);
 			if($Rank === false) {
-				print("排名未知");
+				print("순위 미상");
 				return 0;
 			}
 			$Range	= floor($Amount/2);

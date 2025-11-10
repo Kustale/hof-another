@@ -37,23 +37,23 @@ class JS_ItemList {
 
 	function AddItem($item,$string) {
 		switch($item["type"]) {
-			case "剑":
-			case "双手剑":
-			case "匕首":
-			case "魔杖":
-			case "杖":
-			case "弓":
-			case "鞭":
+			case "Sword":
+			case "TwoHandSword":
+			case "Dagger":
+			case "Wand":
+			case "Staff":
+			case "Bow":
+			case "Whip":
 				array_push($this->weapon,$string);
 				break;
-			case "盾":
-			case "书":
-			case "甲":
-			case "衣服":
-			case "长袍":
+			case "Shield":
+			case "Book":
+			case "Armor":
+			case "Cloth":
+			case "Robe":
 				array_push($this->armor,$string);
 				break;
-			case "道具":
+			case "Item":
 				array_push($this->item,$string);
 				break;
 			default:
@@ -188,11 +188,11 @@ _JS_;
 
 $html = <<< HTML
 <form id="{$this->ID}"><select onchange="ChangeType{$this->ID}()" name="{$this->name}" style="margin-bottom:10px">
-  <option value="weapon">武器(weapon)</option>
-  <option value="armor"{$armor}>防具(armor)</option>
-  <option value="item"{$item}>道具(---)</option>
-  <option value="other"{$other}>其他(other)</option>
-  <option value="all"{$all}>全部(all)</option>
+  <option value="weapon">무기(weapon)</option>
+  <option value="armor"{$armor}>방패(armor)</option>
+  <option value="item"{$item}>아이템(---)</option>
+  <option value="other"{$other}>기타(other)</option>
+  <option value="all"{$all}>전체(all)</option>
 </select></form>
 HTML;
 
