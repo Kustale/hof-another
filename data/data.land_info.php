@@ -13,7 +13,7 @@ function LandInformation($land) {
 	switch($land) {
 		case "gb0":
 			$land	= array(
-			"name"	=> "哥布林(最弱)",
+			"name"	=> "고블린(가장 약함)",
 			"name0"	=> "Goblin Training",
 			"land"	=> "grass",
 			"proper"	=> "Lv1",
@@ -24,7 +24,7 @@ function LandInformation($land) {
 			); break;
 		case "gb1":
 			$land	= array(
-			"name"	=> "强一点的哥布林",
+			"name"	=> "더 강한 고블린",
 			"name0"	=> "The Goblins",
 			"land"	=> "grass",
 			"proper"	=> "Lv1-5",
@@ -41,7 +41,7 @@ function LandInformation($land) {
 			); break;
 		case "gb2":
 			$land	= array(
-			"name"	=> "哥布林战士",
+			"name"	=> "고블린 전사",
 			"name0"	=> "The Goblin Warriors",
 			"land"	=> "grass",
 			"proper"	=> "Lv3-8",
@@ -55,7 +55,7 @@ function LandInformation($land) {
 			); break;
 		case "ac0":
 			$land	= array(
-			"name"	=> "古之洞穴",
+			"name"	=> "고대 동굴",
 			"name0"	=> "TheAncientCave",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -72,7 +72,7 @@ function LandInformation($land) {
 			); break;
 		case "ac1":
 			$land	= array(
-			"name"	=> "古之洞穴(B2)",
+			"name"	=> "고대 동굴(B2)",
 			"name0"	=> "TheAncientCave2F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -86,7 +86,7 @@ function LandInformation($land) {
 			); break;
 		case "ac2":
 			$land	= array(
-			"name"	=> "古之洞穴(B3)",
+			"name"	=> "고대 동굴(B3)",
 			"name0"	=> "TheAncientCave3F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -98,7 +98,7 @@ function LandInformation($land) {
 			); break;
 		case "ac3":
 			$land	= array(
-			"name"	=> "古之洞穴(B4)",
+			"name"	=> "고대 동굴(B4)",
 			"name0"	=> "TheAncientCave4F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -111,7 +111,7 @@ function LandInformation($land) {
 			); break;
 		case "ac4":
 			$land	= array(
-			"name"	=> "古之洞穴(B5)",
+			"name"	=> "고대 동굴(B5)",
 			"name0"	=> "TheAncientCave5F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -126,7 +126,7 @@ function LandInformation($land) {
 			); break;
 		case "ac5":
 			$land	= array(
-			"name"	=> "古之洞穴(B6)",
+			"name"	=> "고대 동굴(B6)",
 			"name0"	=> "TheAncientCave5F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -142,7 +142,7 @@ function LandInformation($land) {
 			); break;
 		case "ac6":
 			$land	= array(
-			"name"	=> "古之洞穴(B7)",
+			"name"	=> "고대 동굴(B7)",
 			"name0"	=> "TheAncientCave5F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -160,7 +160,7 @@ function LandInformation($land) {
 			); break;
 		case "ac7":
 			$land	= array(
-			"name"	=> "古之洞穴(B8)",
+			"name"	=> "고대 동굴(B8)",
 			"name0"	=> "TheAncientCave5F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -174,7 +174,7 @@ function LandInformation($land) {
 			); break;
 		case "ac8":
 			$land	= array(
-			"name"	=> "古之洞穴(B9)",
+			"name"	=> "고대 동굴(B9)",
 			"name0"	=> "TheAncientCave5F",
 			"land"	=> "cave",
 			"proper"	=> "Lv??",
@@ -184,7 +184,7 @@ function LandInformation($land) {
 			); break;
 		case "sea0":
 			$land	= array(
-			"name"	=> "东海岸",
+			"name"	=> "동해안",
 			"name0"	=> "",
 			"land"	=> "sea",
 			"proper"	=> "99-99",
@@ -200,7 +200,7 @@ function LandInformation($land) {
 			); break;
 		case "sea1":
 			$land	= array(
-			"name"	=> "西海岸",
+			"name"	=> "서해안",
 			"name0"	=> "",
 			"land"	=> "sea",
 			"proper"	=> "99-99",
@@ -212,7 +212,7 @@ function LandInformation($land) {
 			); break;
 		case "ocean0":
 			$land	= array(
-			"name"	=> "海洋",
+			"name"	=> "해양",
 			"name0"	=> "",
 			"land"	=> "ocean",
 			"proper"	=> "99-99",
@@ -226,7 +226,7 @@ function LandInformation($land) {
 			); break;
 		case "sand0":
 			$land	= array(
-			"name"	=> "沙漠",
+			"name"	=> "사막",
 			"name0"	=> "",
 			"land"	=> "sand",
 			"proper"	=> "99-99",
@@ -240,7 +240,7 @@ function LandInformation($land) {
 			); break;
 		case "mt0":
 			$land	= array(
-			"name"	=> "火山入口",
+			"name"	=> "화산입구",
 			"name0"	=> "",
 			"land"	=> "mount",
 			"proper"	=> "Lv??",
@@ -253,7 +253,7 @@ function LandInformation($land) {
 			); break;
 		case "volc0":
 			$land	= array(
-			"name"	=> "火山中腹",
+			"name"	=> "화산 중심",
 			"name0"	=> "",
 			"land"	=> "lava",
 			"proper"	=> "Lv??",
@@ -267,7 +267,7 @@ function LandInformation($land) {
 			); break;
 		case "volc1":
 			$land	= array(
-			"name"	=> "火山顶上",
+			"name"	=> "화산 정상",
 			"name0"	=> "",
 			"land"	=> "lava",
 			"proper"	=> "Lv??",
@@ -282,7 +282,7 @@ function LandInformation($land) {
 			); break;
 		case "swamp0":
 			$land	= array(
-			"name"	=> "沼泽",
+			"name"	=> "늪지대",
 			"name0"	=> "",
 			"land"	=> "swamp",
 			"proper"	=> "Lv??",
@@ -297,7 +297,7 @@ function LandInformation($land) {
 			); break;
 		case "swamp1":
 			$land	= array(
-			"name"	=> "村庄",
+			"name"	=> "마을",
 			"name0"	=> "",
 			"land"	=> "swamp",
 			"proper"	=> "Lv??",
@@ -311,7 +311,7 @@ function LandInformation($land) {
 			); break;
 		case "snow0":
 			$land	= array(
-			"name"	=> "滴冻入口",
+			"name"	=> "적하 입구",
 			"name0"	=> "FrostyMountain(foot)",
 			"land"	=> "snow",
 			"proper"	=> "Lv??",
@@ -324,7 +324,7 @@ function LandInformation($land) {
 			); break;
 		case "snow1":
 			$land	= array(
-			"name"	=> "滴冻中腹",
+			"name"	=> "적하 중심",
 			"name0"	=> "FrostyMountain(HalfWay)",
 			"land"	=> "snow",
 			"proper"	=> "Lv??",
@@ -340,7 +340,7 @@ function LandInformation($land) {
 			); break;
 		case "snow2":
 			$land	= array(
-			"name"	=> "滴冻顶上",
+			"name"	=> "적하 정상",
 			"name0"	=> "FrostyMountain(Top)",
 			"land"	=> "snow",
 			"proper"	=> "Lv??",
@@ -356,7 +356,7 @@ function LandInformation($land) {
 			); break;
 		case "des01":
 			$land	= array(
-			"name"	=> "沙漠深处",
+			"name"	=> "사막의 깊은 곳",
 			"name0"	=> "Plunderer's Sandland",
 			"land"	=> "sand",
 			"proper"	=> "Lv50-60",
@@ -370,7 +370,7 @@ function LandInformation($land) {
 			); break;
 		case "plund01":
 			$land	= array(
-			"name"	=> "贼之巢穴",
+			"name"	=> "도둑의 소굴",
 			"name0"	=> "Plunderer's Nest",
 			"land"	=> "sand",
 			"proper"	=> "Lv70-80",
@@ -384,7 +384,7 @@ function LandInformation($land) {
 			); break;
 		case "blow01":
 			$land	= array(
-			"name"	=> "沙漠尽头",
+			"name"	=> "사막의 끝",
 			"name0"	=> "TheBlowHills",
 			"land"	=> "sand",
 			"proper"	=> "Lv50-55",
@@ -398,7 +398,7 @@ function LandInformation($land) {
 			); break;
 		case "swamp2":
 			$land	= array(
-			"name"	=> "秘术之国",
+			"name"	=> "비술의 나라",
 			"name0"	=> "",
 			"land"	=> "swamp",
 			"proper"	=> "Lv55-60",
@@ -412,7 +412,7 @@ function LandInformation($land) {
 			); break;
 		case "ocean2":
 			$land	= array(
-			"name"	=> "深蓝海域",
+			"name"	=> "딥 블루 해역",
 			"name0"	=> "",
 			"land"	=> "ocean",
 			"proper"	=> "60-65",
@@ -426,7 +426,7 @@ function LandInformation($land) {
 			); break;
 		case "horh":
 			$land	= array(
-			"name"	=> "天堂或地狱",
+			"name"	=> "천국 혹은 지옥",
 			"name0"	=> "Heaven or Hell",
 			"land"	=> "sea",
 			"proper"	=> "Lv99",

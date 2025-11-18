@@ -10,24 +10,24 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 */
 ?>
 <div style="margin:15px">
-<h4>教程</h4><P>战斗基本攻略(下图)</P><IMG alt=图象 src="./image/manual/t001.gif"> 
-<P>基本上来说 ，应该把<SPAN class=bold>战士</SPAN>(Warrior)类的适合进攻的人物放在 <SPAN class=bold>前卫(Front)</SPAN>位置上 、<BR>使用<SPAN class=bold>魔法</SPAN>(Sorecerer) 的相对抗击打能力弱的人物放在 <SPAN class=bold>后卫(Back) </SPAN>位置上。</P>
-<P>前卫保护后卫、攻击力强的后卫又可以打到敌人、<BR>后卫也可以帮受伤的前卫疗伤。这样的布局是最好的。</P>
-<H4>暂且这样试试吧！</H4>
-<P>战士(Warrior), 法师(Sorecerer) 以及牧师(Priest)<BR>都可以从菜单的<SPAN class=bold>街道(Town) → </SPAN><A href="?recruit">人才介绍所(Recruit)</A>中雇佣 <BR>雇佣了以后，就可以对其进行战斗上的设定。</P>
-<img src="<?=IMG_CHAR_REV?>mon_079.gif" alt="守护的人" />
-<img src="<?=IMG_CHAR_REV?>mon_018.gif" alt="强力攻击的人" />
-<img src="<?=IMG_CHAR_REV?>mon_214.gif" alt="治疗的人" />
-<P>那么，赶快进入战斗吧。<BR>菜单中的狩猎(Hunt) → <A href="?common=gb0">哥布林</A><BR>对雇佣来的人进行测试、<BR>Battle !</P>
-<P>如果战斗的话、<BR>会显示战斗结果。</P>
-<H4>菜单的构成</H4><IMG src="./image/manual/003.gif"> 
-<H4>等等</H4>
-<DIV class="bold u">初期能雇佣的人物</DIV>
+<h4>튜토리얼</h4><P>기본 전투 전략(아래 이미지 참조)</P><IMG alt=이미지 src="./image/manual/t001.gif"> 
+<P>기본적으로, 공격에 강한<SPAN class=bold>전사</SPAN>(Warrior)계열 캐릭터는 <SPAN class=bold>전방(Front)</SPAN>에, <BR>생존력이 상대적으로 약한<SPAN class=bold>마법사</SPAN>(Sorecerer) 계열 캐릭터는 <SPAN class=bold>후방(Back) </SPAN>에 배치하는 것이 좋습니다.</P>
+<P>전방은 후방을 보호하고, 강력한 공격력을 가진 후방은 적에게 타격을 가할 수 있으며,<BR>후방은 부상당한 전방 아군을 치료할 수도 있습니다. 이 배치가 최적입니다.</P>
+<H4>지금 바로 사용해 보세요!</H4>
+<P>전사, 마법사, 사제는<BR><SPAN class=bold>마을(Town) → </SPAN><A href="?recruit">모집(Recruit)</A>메뉴에서 <BR>고용할 수 있습니다.</P>
+<img src="<?=IMG_CHAR_REV?>mon_079.gif" alt="가디언" />
+<img src="<?=IMG_CHAR_REV?>mon_018.gif" alt="강력한 공격자" />
+<img src="<?=IMG_CHAR_REV?>mon_214.gif" alt="치유사" />
+<P>자, 이제 전투에 돌입해 봅시다!<BR>메뉴에서 고블린 사냥(Hunt) → <A href="?common=gb0">고용한 캐릭터</A><BR>를 테스트하세요,<BR>Battle !</P>
+<P>전투가 발생하면, <BR>전투 결과가 표시됩니다.</P>
+<H4>메뉴 구조</H4><IMG src="./image/manual/003.gif"> 
+<H4>기타</H4>
+<DIV class="bold u">초기 고용 가능 캐릭터</DIV>
 <P>
 <UL>
-<LI>战士(Warrior) - 抗打。 
-<LI>法师(Sorcerer) - 攻击力强但是不抗击打。 
-<LI>牧师(Priest) - 治愈系。 
-<LI>猎人(Hunter) - 可以无视对手的前卫直接攻击后卫。 </LI></UL>
+<LI>전사(Warrior) - 내구력.
+<LI>마법사(Sorcerer) - 공격력은 높지만 내구도는 낮음.
+<LI>사제(Priest) - 치유.
+<LI>사냥군(Hunter) - 적의 전선을 무시하고 후방을 공격할 수 있음.</LI></UL>
 <P></P>
-<h4>等</h4></div>
+<h4>기타</h4></div>

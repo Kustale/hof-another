@@ -12,19 +12,19 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 include_once(DATA_MONSTER);
 ?>
 <div style="margin:0 15px">
-<h4>モンスタ〖</h4>
+<h4>몬스타S</h4>
 <table class="align-center" style="width:740px" cellspacing="0">
 <?php
 $List	= array(
-1000	=> array("grass","SPがあるときは、強い攻撃をたまにしてくる程度。"),
-1001	=> array("grass","SPがあるときは、強い攻撃をたまにしてくる程度。"),
-1002	=> array("grass","後列に押し出す攻撃をする。"),
-1003	=> array("grass","そこそこな強さ。"),
-1005	=> array("grass","レベルが低いと強く感じる。"),
-1009	=> array("grass","HPが高い。"),
-1012	=> array("cave","仲間を呼んで吸血攻撃をしてくる。"),
-1014	=> array("cave","魔法で攻撃しないと倒しにくい。"),
-1017	=> array("cave","洞窟のボス。倒すと奥に行けるようになる。"),
+	1000 => array("grass","SP가 있을 때는 강한 공격을 가끔 오는 정도."),
+	1001 => array("grass","SP가 있을 때는 강한 공격을 가끔 오는 정도."),
+	1002 => array("grass","뒤열로 밀어내는 공격을 한다."),
+	1003 => array("grass","당연한 힘."),
+	1005 => array("grass","레벨이 낮다고 강하게 느낀다."),
+	1009 => array("grass","HP가 높다."),
+	1012 => array("cave","동료를 불러 흡혈 공격을 한다."),
+	1014 => array("cave","마법으로 공격하지 않으면 쓰러뜨리기 어렵다."),
+	1017 => array("cave","동굴의 보스. 쓰러뜨리면 안쪽으로 갈 수 있게 된다."),
 );
 $Detail	= "<tr>
 <td class=\"td6\">Image</td>

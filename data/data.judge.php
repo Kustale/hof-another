@@ -24,9 +24,9 @@ function DecideJudge($number,$My,$classBattle) {
 	$Judge		= $My->judge["$number"];
 	$Quantity	= $My->quantity["$number"];
 	switch($Judge) {
-		case 1000:// 
+		case 1000:
 			return true;
-		case 1001:// 
+		case 1001:
 			return false;
 		case 1100:
 			$hpp	= $My->HpPercent();

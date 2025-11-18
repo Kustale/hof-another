@@ -31,35 +31,35 @@ function HaveNeeds($item,$UserItem) {
 
 function ItemAbilityPossibility($type) {
 	switch($type) {
-		case "剑":
-		case "双手剑":
-		case "太刀":
-		case "匕首":
-		case "魔杖":
-		case "杖":
-		case "弓":
-		case "鞭":
-		case "招魂幡":
-		case "手枪":
-		case "长枪":
-		case "副手枪":
-		case "权杖":
-		case "斧":
-		case "枪":
-		case "矛":
-		case "契约石":
-		case "邪剑":
-		case "手里剑":
-		case "镰刀":
-		case "战斧":
-		case "圣十字":
-		case "双剑(副)":
-		case "双剑(主)":
-		case "爪":
-		case "魔法扫帚":
-		case "飞剑":
-		case "拂尘":
-		case "符咒":
+		case "Sword":
+		case "Dual-wielding Sword":
+		case "Katana":
+		case "Dagger":
+		case "Wand":
+		case "Staff":
+		case "Bow":
+		case "Whip":
+		case "Soul Banner":
+		case "Pistol":
+		case "Spear":
+		case "Secondary Pistol":
+		case "Scepter":
+		case "Axe":
+		case "Spear":
+		case "Spear":
+		case "Contract Stone":
+		case "Evil Sword":
+		case "Shuriken":
+		case "Scythe":
+		case "Battle Axe":
+		case "Holy Cross":
+		case "Dual Swords (Secondary)":
+		case "Dual Swords (Main)":
+		case "Claw":
+		case "Magic Broom":
+		case "Flying Sword":
+		case "Dust whisk":
+		case "Talisman":
 		
 			$low	= array(
 			100,101,102,103,104,
@@ -88,14 +88,14 @@ function ItemAbilityPossibility($type) {
 			A05,A06,A07,A08,A09,
 			);
 			break;
-		case "盾":
-		case "水晶球":
-		case "书":
-		case "甲":
-		case "衣服":
-		case "长袍":
-		case "背部":
-		case "头饰":
+		case "Shield":
+ 		case "Crystal Ball":
+ 		case "Book":
+ 		case "Armor":
+ 		case "Clothes":
+ 		case "Robe":
+ 		case "Back":
+ 		case "Headwear":
 			$low	= array(
 			300,301,
 			350,351,
@@ -116,7 +116,7 @@ function ItemAbilityPossibility($type) {
 			);
 			break;
 		
-		case "勋章":
+		case "Medal":
 			$low	= array(
 			202,206,203,
 			252,256,253,

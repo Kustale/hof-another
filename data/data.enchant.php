@@ -537,173 +537,173 @@ function AddEnchantData(&$item, $opt) {
 			if($item["type2"] == "WEAPON") {
 				$item["atk"]["0"]	+= 5;
 				$item["option"]	.= "Atk+5, ";
-				$item["AddName"]	= "力量";
+				$item["AddName"]	= "힘";
 			} else {
 				$item["def"]["0"]	+= 2;
 				$item["option"]	.= "Def+2, ";
-				$item["AddName"]	= "稳固";
+				$item["AddName"]	= "안정적인";
 			}
 			break;
 		case X01:
 			if($item["type2"] == "WEAPON") {
 				$item["atk"]["1"]	+= 5;
 				$item["option"]	.= "Matk+5, ";
-				$item["AddName"]	= "智慧";
+				$item["AddName"]	= "지혜";
 			} else {
 				$item["def"]["2"]	+= 2;
 				$item["option"]	.= "Mdef+2, ";
-				$item["AddName"]	= "睿智";
+				$item["AddName"]	= "지혜로운";
 			}
 			break;
 		case M01:
 			$item["atk"]["1"]	+= 10;
 			$item["option"]	.= "Matk+10, ";
-			$item["AddName"]	= "哥布林之";
+			$item["AddName"]	= "고블린";
 			break;
 		case M02:
 			$item["P_MAXSP"]	+= 20;
 			$item["option"]	.= "MAXSP+20, ";
-			$item["AddName"]	= "蝙蝠之";
+			$item["AddName"]	= "박쥐";
 			break;
 		case M03:
 			$item["P_MAXHP"]	+= 20;
 			$item["option"]	.= "MAXHP+20, ";
-			$item["AddName"]	= "骷髅勇士之";
+			$item["AddName"]	= "해골 용사";
 			break;
 		case M04:
 			$item["atk"]["0"]	+= 10;
 			$item["option"]	.= "Atk+10, ";
-			$item["AddName"]	= "骷髅战士之";
+			$item["AddName"]	= "해골 전사";
 			break;
 		case M05:
 			$item["P_DEX"]	+= 10;
 			$item["option"]	.= "DEX+10, ";
-			$item["AddName"]	= "骷髅射手之";
+			$item["AddName"]	= "해골 궁수";
 			break;
 		case M06:
 			$item["P_MAXSP"]	+= 50;
 			$item["option"]	.= "MAXSP+50, ";
-			$item["AddName"]	= "骨头萨满之";
+			$item["AddName"]	= "본 샤먼";
 			break;
 		case M07:
 			$item["P_MAXHP"]	+= 100;
 			$item["option"]	.= "MAXHP+100, ";
-			$item["AddName"]	= "独眼巨人之";
+			$item["AddName"]	= "물벼룩";
 			break;
 		case M08:
 			$item["P_STR"]	+= 10;
 			$item["option"]	.= "STR+10, ";
-			$item["AddName"]	= "哥布林铁匠之";
+			$item["AddName"]	= "고블린 대장장이";
 			break;
 		case M09:
 			$item["P_INT"]	+= 10;
 			$item["option"]	.= "INT+10, ";
-			$item["AddName"]	= "模仿兽之";
+			$item["AddName"]	= "모조 짐승";
 			break;
 		case M10:
 			$item["atk"]["0"]	+= 20;
 			$item["option"]	.= "Atk+20, ";
-			$item["AddName"]	= "骷髅队长之";
+			$item["AddName"]	= "스컬 캡틴";
 			break;
 		case M11:
 			$item["atk"]["1"]	+= 20;
 			$item["option"]	.= "Matk+20, ";
-			$item["AddName"]	= "邪恶巫师之";
+			$item["AddName"]	= "사악한 마법사";
 			break;
 		case M12:
 			$item["M_MAXSP"]	+= 10;
 			$item["option"]	.= "MAXSP+10%, ";
-			$item["AddName"]	= "眼球怪之";
+			$item["AddName"]	= "눈알 괴물";
 			break;
 		case M13:
 			$item["P_LUK"]	+= 10;
 			$item["option"]	.= "LUK+10, ";
-			$item["AddName"]	= "邪恶佣人之";
+			$item["AddName"]	= "사악한 하인";
 			break;
 		case M14:
 			$item["P_SPD"]	+= 10;
 			$item["option"]	.= "SPD+10, ";
-			$item["AddName"]	= "人马猎手之";
+			$item["AddName"]	= "켄타우로스 사냥꾼";
 			break;
 		case M15:
 			$item["M_MAXHP"]	+= 10;
 			$item["option"]	.= "MAXHP+10%, ";
-			$item["AddName"]	= "人马骑士之";
+			$item["AddName"]	= "켄타우로스 기사";
 			break;
 		case M16:
 			$item["atk"]["0"]	= round($item["atk"]["0"] * 1.10);
 			$item["atk"]["1"]	= round($item["atk"]["1"] * 1.10);
 			$item["option"]	.= "Atk+10%, Matk+10%, ";
-			$item["AddName"]	= "巴风特之";
+			$item["AddName"]	= "바포메트";
 			break;
 		case M17:
 			$item["atk"]["0"]	= round($item["atk"]["0"] * 1.20);
 			$item["atk"]["1"]	= round($item["atk"]["1"] * 1.20);
 			$item["option"]	.= "Atk+20%, Matk+20%, ";
-			$item["AddName"]	= "巴风特王之";
+			$item["AddName"]	= "바포메트b";
 			break;
 		case M18:
 			$item["P_STR"]	+= 30;
 			$item["option"]	.= "STR+30, ";
-			$item["AddName"]	= "链锤兵之";
+			$item["AddName"]	= "체인 해머 솔저";
 			break;
 		case M19:
 			$item["P_DEX"]	+= 30;
 			$item["option"]	.= "DEX+30, ";
-			$item["AddName"]	= "巨剑兵之";
+			$item["AddName"]	= "대검 병사";
 			break;
 		case M20:
 			$item["P_INT"]	+= 30;
 			$item["option"]	.= "INT+30, ";
-			$item["AddName"]	= "黑暗桃乐斯之";
+			$item["AddName"]	= "다크 도로시";
 			break;
 		case M21:
 			$item["P_LUK"]	+= 30;
 			$item["option"]	.= "LUK+30, ";
-			$item["AddName"]	= "堕落女祭司之";
+			$item["AddName"]	= "타락한 여사제";
 			break;
 		case M22:
 			$item["P_MAXHP"]	+= 200;
 			$item["option"]	.= "MAXHP+200, ";
-			$item["AddName"]	= "金属哥布林之";
+			$item["AddName"]	= "메탈 고블린";
 			break;
 		case M23:
 			$item["def"]["0"]	+= 5;
 			$item["def"]["2"]	+= 5;
 			$item["option"]	.= "Def+5,Mdef+5, ";
-			$item["AddName"]	= "地狱兽之";
+			$item["AddName"]	= "지옥 짐승";
 			break;
 		case M24:
 			$item["P_SPD"]	+= 15;
 			$item["option"]	.= "SPD+15, ";
-			$item["AddName"]	= "地狱炮手之";
+			$item["AddName"]	= "헬거너";
 			break;
 		case M25:
 			$item["atk"]["1"]	+= 30;
 			$item["option"]	.= "Matk+30, ";
-			$item["AddName"]	= "血色制裁者之";
+			$item["AddName"]	= "블러드 퍼니셔";
 			break;
 		case M26:
 			$item["atk"]["0"]	+= 30;
 			$item["option"]	.= "Atk+30, ";
-			$item["AddName"]	= "嗜血骷髅之";
+			$item["AddName"]	= "피에 굶주린 해골";
 			break;
 		case M27:
 			$item["P_MAXSP"]	+= 100;
 			$item["option"]	.= "MAXSP+100, ";
-			$item["AddName"]	= "食人魔之";
+			$item["AddName"]	= "오우거";
 			break;
 		case M28:
 			$item["M_MAXHP"]	+= 15;
 			$item["M_MAXSP"]	+= 15;
 			$item["option"]	.= "MAXHP+15%,MAXSP+15%, ";
-			$item["AddName"]	= "冰炎之";
+			$item["AddName"]	= "얼음과 불꽃";
 			break;
 		case M29:
 			$item["atk"]["0"]	= round($item["atk"]["0"] * 1.25);
 			$item["atk"]["1"]	= round($item["atk"]["1"] * 1.25);
 			$item["option"]	.= "Atk+25%, Matk+25%, ";
-			$item["AddName"]	= "血腥玛丽之";
+			$item["AddName"]	= "블러디 메리";
 			break;
 	}
 }

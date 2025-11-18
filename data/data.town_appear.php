@@ -12,7 +12,6 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 function TownAppear($user) {
 	$place	= array();
 
-	// 無条件で行ける
 	$place["Shop"]	= true;
 	$place["Recruit"]	= true;
 	$place["Smithy"]	= true;
