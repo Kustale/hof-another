@@ -12,7 +12,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 <div style="margin:15px">
 <!-- ---------------------------------------------------------------- -->
 <a name="content"></a>
-<h4>目录</h4>
+<h4>목록</h4>
 <ul>
 <li><a href="#rule">规则</a></li>
 <li><a href="#menu">菜单</a></li>
