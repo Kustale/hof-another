@@ -3447,7 +3447,7 @@ P43;
 
 	function HtmlScript() {
 echo <<<P44
-<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./basis.css" type="text/css">
 <link rel="stylesheet" href="./style.css" type="text/css">
 <script type="text/javascript" src="prototype.js"></script>

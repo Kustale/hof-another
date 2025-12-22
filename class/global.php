@@ -688,7 +688,7 @@ echo <<<P1
 <h4>GameData</h4>
 <div style="margin:0 20px">
 | <a href="?gamedata=job">직업(Job)</a> | 
-<a href="?gamedata=item">어아탬(item)</a> | 
+<a href="?gamedata=item">아이템(item)</a> | 
 <a href="?gamedata=judge">판정</a> | 
 </div>
 </div>

@@ -12,7 +12,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 include_once(DATA_JOB);
 ?>
 <div style="margin:15px">
-<h4>직업(Job)</h4>
+<a name="top"></a><h4>직업(Job)</h4>
 <ul>
 <li><a href="#100">전사</a></li>
 <ul>
@@ -179,11 +179,11 @@ foreach($job as $No => $exp) {
 	$css	= $flag?' class="td6"':' style="padding:3px;"';
 	$JobData	= LoadJobData($No);
 	print("<tr>\n");
-	print('<td'.$css.' valign="top"><a name="#'.$No.'"></a><span class="bold">');
+	print('<td'.$css.' valign="top"><a name="'.$No.'"></a><span class="bold">');
 	print($JobData["name_male"]);
 	if($JobData["name_male"] !== $JobData["name_female"])
 		print("<br />(".$JobData["name_female"].")");
-	print('</span></td>'."\n");
+	print('</span><a href="#top">↑</a></td>'."\n");
 	print("<td$css>");
 	print('<img src="'.IMG_CHAR.$JobData["img_male"].'" />');
 	print('<img src="'.IMG_CHAR.$JobData["img_female"].'" />');
