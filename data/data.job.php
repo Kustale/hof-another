@@ -102,7 +102,7 @@ $job	= array(
 "name_female"	=> "블레이드 댄서",
 "img_male"		=> "mon_132ma.gif",
 "img_female"	=> "mon_132fe.gif",
-"equip"			=> array("검", "양손 검", "비수", "방패", "갑", "옷", "가운", "소품".),
+"equip"			=> array("검", "양손 검", "비수", "방패", "갑", "옷", "가운", "소품"),
 "coe"			=> array(4.5, 1.5),
 ); break;
 		case "200":
