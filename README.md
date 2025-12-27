@@ -1,10 +1,12 @@
-hall of fame rpg
+hall of fame rpg [한국어 ~~발번역~~]
 
 Copyright (C) TEKITO PROJECT for JUICE.
 
 Modded by https://github.com/Remileon/hof
 
 PHP8 version by Kustale.
+
+Used translator : translator.google.com, PAPAGO
 
 php8 버전 -> 일단 메인화면, 설명, 가입 화면은 고쳐짐. 나머지는 작업중
 
@@ -30,6 +32,10 @@ ereg -> preg_match
 
 코드 길다고 울어대서 줄여줌.
 
-중문, 일문 있는거 번역중(덜 완성)
+중문, 일문 있는거 번역중(거의 완성)
+
+몇몇 오류 뜨는거 수정중
 
 user, union, log폴더랑 얻어온 git에 기록되어있던 유저 정보들 전부 제거 + 폴더 없을때 오류 뜨기 전에 생성 코드 추가
+
+루트 폴더에 dat파일들 어차피 없어도 오류가 뜨지 않으므로 파일 정리. (플레이어 데이터 생성하면 자동으로 생김)

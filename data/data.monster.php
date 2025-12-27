@@ -14,7 +14,7 @@ function CreateMonster($no,$over=false) {
 	switch($no) {
 		case 1000:
 $monster	= array(
-"name"	=> "持斧哥布林",
+"name"	=> "도끼를 휘두르는 고블린",
 "img"	=> "mon_053.gif",
 "level"	=> "1",
 "exphold"	=> "20",
@@ -39,7 +39,7 @@ $monster	= array(
 );	break;
 		case 1001:
 $monster	= array(
-"name"	=> "哥布林勇士",
+"name"	=> "고블린 전사",
 "img"	=> "mon_052.gif",
 "level"	=> "1",
 "exphold"	=> "20",
