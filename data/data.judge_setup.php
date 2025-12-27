@@ -327,7 +327,7 @@ function LoadJudgeData($no) {
 			$judge["exp"]	= "적 레벨이 초과 {$Quantity}이상";
 			break;
 		default:
-$judge	= false;
+			$judge	= false;
 	}
 	return $judge;
 }

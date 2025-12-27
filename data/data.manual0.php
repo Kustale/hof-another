@@ -14,168 +14,248 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 <a name="content"></a>
 <h4>목록</h4>
 <ul>
-<li><a href="#rule">规则</a></li>
-<li><a href="#menu">菜单</a></li>
-<li><a href="#btl">战斗流程</a></li>
-<li><a href="#char">人物设定</a></li>
-<li><a href="#charstat">人物的基础能力值</a></li>
-<li><a href="#statup">能力值上升</a></li>
-<li><a href="#jdg">任务在战斗中的命令</a></li>
-<li><a href="#posi">人物的位置关系及后卫保护</a></li>
-<li><a href="#equip">人物装备</a></li>
-<li><a href="#skill">人物技能</a></li>
-<li><a href="#elem">攻击属性</a></li>
-<li><a href="#state">人物状态</a></li>
-<li><a href="#jobchange">转职(职业转换)</a></li>
-<li><a href="#sacrier">Sacrier（狂战士）的攻击方式</a></li>
-<li><a href="#ranking">排行</a></li>
-<li><a href="?manual2">高级指南</a></li>
-<li><a href="#cr">使用的图像</a></li>
+<li><a href="#rule">규칙</a></li>
+<li><a href="#menu">메뉴</a></li>
+<li><a href="#btl">배틀 플로우</a></li>
+<li><a href="#char">캐릭터 디자인</a></li>
+<li><a href="#charstat">캐릭터의 기본 능력치</a></li>
+<li><a href="#statup">능력치 상승</a></li>
+<li><a href="#jdg">전투 중 임무 명령</a></li>
+<li><a href="#posi">인물의 위치 관계 및 수비수 보호</a></li>
+<li><a href="#equip">캐릭터 장비</a></li>
+<li><a href="#skill">캐릭터 스킬</a></li>
+<li><a href="#elem">공격 속성</a></li>
+<li><a href="#state">캐릭터 상태</a></li>
+<li><a href="#jobchange">직업 변경 (경력 전환)</a></li>
+<li><a href="#sacrier">사크리에 (광전사)의 공격 방식</a></li>
+<li><a href="#ranking">순위</a></li>
+<li><a href="?manual2">고급 안내서</a></li>
+<li><a href="#cr">사용한 그림</a></li>
 </ul>
 <a name="rule"></a>
-<h4>规则(Rule) <a href="#content"></a></h4>
-<p style="margin-left:50px">本游戏目的、<br />
-就是爬到排行榜的第一名位置。<br />
-并持续维持住排名。<br />
-并没有什么冒险的要素。</p>
-<p style="margin-left:50px">可以自己组建1-5人的队伍进行战斗、<br />
-让其登上排行榜。</p>
-<p style="margin-left:50px">为了能登上榜首、<br />
-要持续的与敌人（怪物）进行战斗锻炼<br />
-从敌人（怪物）手中夺取更强力的道具<br />
-这就是这游戏有趣的地方。<br />
-排名战的敌人将是其他的玩家。</p>
-<p style="margin-left:50px">各个人物依照技能的使用条件等、进行详细的设定。<br />
-要调整出无瑕的战术配置、不是一件简单的事情。</p>
-<p class="bold u" style="margin-left:50px">排行榜功能还不是很完善。</p>
+<h4>규칙(Rule) <a href="#content"></a></h4>
+<p style="margin-left:50px">이 게임의 목적은 
+<br />바로 차트 1위 자리에 오르는 것입니다.<br />
+그리고 꾸준히 순위를 유지하고 있습니다.<br />
+모험적인 요소가 있는 것은 아닙니다.</p>
+
+<p style="margin-left:50px">스스로 1~5명의 팀을 만들어 싸워서 <br />
+랭킹에 올릴 수 있습니다.</p>
+
+<p style="margin-left:50px">1위에 오르기 위해 지속적으로 <br />
+적(괴물)과 전투를 벌이며 <br />
+적(괴물)으로부터 더 강력한 아이템을 빼앗는 것이 <br />
+이 게임의 재미있는 점입니다.<br />
+순위 싸움의 적은 다른 플레이어가 될 것입니다.</p>
+
+<p style="margin-left:50px">각 인물은 스킬의 사용 조건 등에 따라, 상세한 설정을 실시합니다.<br />
+흠잡을 데 없는 전술 구성을 조정하는 것은 간단한 일이 아닙니다.</p>
+
+<p class="bold u" style="margin-left:50px">차트 기능은 아직 완벽하지 않습니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="menu"></a>
-<h4>菜单(Menu) <a href="#content"></a></h4>
+<h4>메뉴(Menu) <a href="#content"></a></h4>
 <img src="./image/manual/003.gif">
-<p><span class="u bold">登录后会显示如下菜单</span>
+<p><span class="u bold">로그인하면 다음과 같은 메뉴가 뜬다.</span>
 <ul>
-<li><span class="bold">Top</span> - 所拥有的人物一览</li>
-<li><span class="bold">战斗(Hunt)</span> - 和怪物战斗</li>
-<li><span class="bold">道具(Item)</span> - 所持道具一览</li>
-<li><span class="bold">商店(Shop)</span> - 买卖道具和消费时间打工。</li>
-<li><span class="bold">排名(Rank)</span> - 排行榜。</li>
-<li><span class="bold">雇佣(Recruit)</span> - 雇佣新人物</li>
-<li><span class="bold">设定(Setting)</span> - 各种设定。注销。销号。</li>
-<li><span class="bold">记录(Log)</span> - 查看过去战斗的记录。</li>
+<li><span class="bold">Top</span> - 소유자의 일람</li>
+<li><span class="bold">전투 (Hunt)</span> - 괴물과 전투</li>
+<li><span class="bold">아이템 (Item)</span> - 소지 아이템 일람</li>
+<li><span class="bold">상점(Shop)</span> - 소품 매매 및 소비 시간 아르바이트.</li>
+<li><span class="bold">순위 (Rank)</span> - 차트.</li>
+<li><span class="bold">고용 (Recruit)</span> - 새로운 인물 채용</li>
+<li><span class="bold">설정(Setting)</span> - 각종 설정. 말소.</li>
+<li><span class="bold">로그(Log)</span> - 과거 전투의 기록을 봅니다.</li>
 </ul></p>
-<p>另外、<span class="u bold">菜单的下面</span>
+<p>또한, <span class="u bold">메뉴의 아래</span>
 <ul>
-<li /><span class="bold">队伍名称</span> - 名称。
-<li /><span class="bold">资金(Funds)</span> - 所拥有的金钱。
-<li /><span class="bold">时间(Time)</span> - 时间。战斗时减少。会随时间流逝逐渐恢复。
+<li /><span class="bold">팀 이름</span> - 이름.
+<li /><span class="bold">자금(Funds)</span> - 가진 돈.
+<li /><span class="bold">시간(Time)</span> - 시간. 전투 시 감소. 시간이 지나면서 점차 회복될 것입니다.
 </ul></p>
 <a name="btl"></a>
 <!-- ---------------------------------------------------------------- -->
-<h4>战斗流程 <a href="#content"></a></h4>
+<h4>배틀 플로우 <a href="#content"></a></h4>
 <div style="margin-left:50px">
-<p>战斗过程是由电脑处理。<br />
-战斗中晚间不能下达指令。</p>
-1. 依照人物的能力顺序行动。
+<p>전투 과정은 컴퓨터가 처리합니다.<br />
+전투 중에는 밤에 명령을 내릴 수 없습니다.</p>
+
+1. 인물의 능력순에 따라 행동합니다.
 <div class="bold" style="margin-left:30px">↓↓↓</div>
-2. 人物会根据事先设定来行动。
+2. 인물은 사전 설정에 따라 행동합니다.
 <div class="bold" style="margin-left:30px">↓↓↓</div>
-3. ( 重复1和2)
+3. (1과 2)
 <div class="bold" style="margin-left:30px">↓↓↓</div>
-4. 满足以下条件，则战斗结束。
-<p><span class="bold u">结束条件</span><br />
-1.我方或敌方全员战斗不能。<br />
-2.累计战斗 <?=BATTLE_MAX_TURNS?>回合则被判为平局。</p>
+4. 다음 조건이 충족되면 전투는 종료됩니다.
+<p><span class="bold u">종료조건</span><br />
+1. 아군 또는 적군은 전원 싸울 수 없습니다.<br />
+2. 누적전투 <?=BATTLE_MAX_TURNS?>라운드는 무승부.</p>
 </div>
 <!-- ---------------------------------------------------------------- -->
 <a name="char"></a>
-<h4>人物设定<a href="#content"></a></h4>
-<p style="margin-left:50px">登录后，点击top页面中的人物形象<br />
-将显示人物的相关页面。<br />
+<h4>캐릭터 디자인<a href="#content"></a></h4>
+<p style="margin-left:50px">로그인 후 top 페이지에서 캐릭터를 클릭하면 <br />인물에 관한 페이지가 나타납니다.<br />
 <img src="./image/manual/001.gif"><br />
-详细说明如下。</p>
+자세한 설명은 다음과 같습니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="charstat"></a>
-<h4>人物基本能力值 <a href="#content"></a></h4>
+<h4>캐릭터 기본 능력치 값 <a href="#content"></a></h4>
 <p style="margin-left:50px">
 <img src="./image/manual/002.gif">
 <ul>
-<li /><span class="bold">Exp</span> :升级所需经验
-<li /><span class="bold">MaxHP</span> : 最大体力。为0则被击倒
-<li /><span class="bold">MaxSP</span> : 使用技能所消耗的值
-<li /><span class="bold">Str</span> : 力量。影响HP和物理攻击力。
-<li /><span class="bold">Int</span> : 智力。影响SP和魔法攻击力。
-<li /><span class="bold">Dex</span> : 敏捷。可装更多的装备（？），猎人系攻击力上升，强化召唤物。
-<li /><span class="bold">Spd</span> : 速度。越高则行动次数也越多，攻击间隔将变短。
-<li /><span class="bold">Luk</span> : 运强化召唤物。
+<li /><span class="bold">Exp</span> : 업그레이드에 필요한 경험
+<li /><span class="bold">MaxHP</span> : 최대 체력. 0이면 녹아웃
+<li /><span class="bold">MaxSP</span> : 스킬 사용 시 사용한 값
+<li /><span class="bold">Str</span> : 힘. HP 및 물리적 공격력에 영향을 미칩니다.
+<li /><span class="bold">Int</span> : 지능. SP와 마법 공격력에 영향을 미칩니다.
+<li /><span class="bold">Dex</span> : 민첩함. 더 많은 장비(?) 사냥꾼은 공격력 상승, 소환물 강화.
+<li /><span class="bold">Spd</span> : 속도. 높을수록 행동 횟수도 많아지고 공격 간격이 짧아집니다.
+<li /><span class="bold">Luk</span> : 강화 소환물 운반.
 </ul>
 </p>
 <!-- ---------------------------------------------------------------- -->
 <a name="statup"></a>
-<h4>能力值上升g<a href="#content"></a></h4>
-<p style="margin-left:50px">角色持续战斗获得经验值<span class="u">升级</span>时、<br />
-会得到几个点数，可以自由用这些来强化各项能力值。</p>
+<h4>능력치 상승g<a href="#content"></a></h4>
+<p style="margin-left:50px">캐릭터가 지속적으로 전투하여 <span class="u">경험치</span>를 업그레이드할 때 <br />
+몇 가지 포인트를 얻게 되며, 이를 통해 자유롭게 각종 능력치를 강화할 수 있습니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="jdg"></a>
-<h4>人物在战斗中的命令 <a href="#content"></a></h4>
-<p style="margin-left:50px">基本上人物战斗是都是依据玩家设定的动作逐步行动的。</p>
+<h4>전투에서의 인물들의 명령 <a href="#content"></a></h4>
+<p style="margin-left:50px">기본적으로 캐릭터 전투는 플레이어가 설정한 동작에 따라 점진적으로 움직입니다.</p>
 <div style="margin-left:50px">
 <table cellspacing="5"><tbody>
-<tr><td class="bold">No</td><td style="text-align:center" class="bold">判定</td>
-<td style="text-align:center" class="bold">使用技能</td></tr>
+<tr><td class="bold">No</td><td style="text-align:center" class="bold">판정</td>
+<td style="text-align:center" class="bold">스킬 사용</td></tr>
 <tr><TD>1</TD>
-<TD><SELECT> <OPTION>必定</OPTION> <OPTION>自己的HP为50%以上时</OPTION> <OPTION>自己的HP为50%以下时</OPTION> <OPTION>同伴中有 HP为50%以下的人物时</OPTION> <OPTION>同伴的平均HP为 50%以上时</OPTION> <OPTION>同伴的平均HP为 50%以下时</OPTION> <OPTION>自己的SP为50%以上时</OPTION> <OPTION>自己的 SP为50%以下时</OPTION> <OPTION>以50%的概率</OPTION> <OPTION selected>初次行动时</OPTION> <OPTION>第二次行动时</OPTION> <OPTION>第三次行动时</OPTION> <OPTION>至少一次</OPTION> <OPTION>至少两次</OPTION> <OPTION>至少三次</OPTION></SELECT> </TD>
-<TD><SELECT> <OPTION>技能1</OPTION> <OPTION>技能2</OPTION> <OPTION selected>技能3</OPTION> <OPTION>恢复魔法</OPTION> <OPTION>使用物品</OPTION></SELECT> </TD></TR>
+<TD><SELECT>
+<OPTION>필요한</OPTION>
+<OPTION>자신의 HP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 HP가 50% 이하인 경우</OPTION>
+<OPTION>동반자 중 HP가 50% 이하인 사람이 있는 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이상인 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이하인 경우</OPTION>
+<OPTION>자신의 SP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 SP가 50% 이하인 경우</OPTION>
+<OPTION>50%의 확률로</OPTION>
+<OPTION selected>처음 행동할 때</OPTION>
+<OPTION>두번째 행동할 때</OPTION>
+<OPTION>세번째 행동할 때</OPTION>
+<OPTION>한 번쯤</OPTION>
+<OPTION>두 번쯤</OPTION>
+<OPTION>세 번쯤</OPTION></SELECT>
+</TD>
+<TD><SELECT>
+<OPTION>스킬 1</OPTION>
+<OPTION>스킬 2</OPTION>
+<OPTION selected>스킬 3</OPTION>
+<OPTION>회복 마법</OPTION>
+<OPTION>아이템 사용</OPTION></SELECT>
+</TD></TR>
 <TR>
 <TD>2</TD>
-<TD><SELECT> <OPTION>必定</OPTION> <OPTION>自己的HP为50%以上时</OPTION> <OPTION>自己的 HP为50%以下时</OPTION> <OPTION>同伴里有 HP为50%以下的人物时</OPTION> <OPTION>同伴的平均HP为 50%以上时</OPTION> <OPTION>同伴的平均HP为 50%以下时</OPTION> <OPTION selected>自己的SP为50%以上时</OPTION> <OPTION>自己的 SP为50%以下时</OPTION> <OPTION>以50%的概率</OPTION> <OPTION>初次行动时</OPTION> <OPTION>第二次行动时</OPTION> <OPTION>第三次行动时</OPTION> <OPTION>至少一次</OPTION> <OPTION>至少两次</OPTION> <OPTION>至少三次</OPTION></SELECT> </TD>
-<TD><SELECT> <OPTION>技能1</OPTION> <OPTION selected>技能2</OPTION> <OPTION>技能3</OPTION> <OPTION>恢复魔法</OPTION> <OPTION>使用物品</OPTION></SELECT> </TD></TR>
+<TD><SELECT>
+<OPTION>필요한</OPTION>
+<OPTION>자신의 HP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 HP가 50% 이하인 경우</OPTION>
+<OPTION>동료 중에 HP가 50% 이하인 사람이 있는 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이상인 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이하인 경우</OPTION>
+<OPTION selected>자신의 SP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 SP가 50% 이하인 경우</OPTION>
+<OPTION>50%의 확률로</OPTION>
+<OPTION>처음 행동할 때</OPTION>
+<OPTION>두번째 행동할 때</OPTION>
+<OPTION>세번째 행동할 때</OPTION>
+<OPTION>한 번쯤</OPTION>
+<OPTION>두 번쯤</OPTION>
+<OPTION>세 번쯤</OPTION></SELECT>
+</TD>
+<TD><SELECT>
+<OPTION>스킬 1</OPTION>
+<OPTION selected>스킬 2</OPTION>
+<OPTION>스킬 3</OPTION>
+<OPTION>회복 마법</OPTION>
+<OPTION>아이템 사용</OPTION></SELECT>
+</TD></TR>
 <TR>
 <TD>3</TD>
-<TD><SELECT> <OPTION selected>必须</OPTION> <OPTION>自己的HP为50%以上时</OPTION> <OPTION>自己的HP为50%以下时</OPTION> <OPTION>同伴中有HP为50%以下的人物存在时</OPTION> <OPTION>同伴的平均HP为 50%以上时</OPTION> <OPTION>同伴的平均HP为50%以下时</OPTION> <OPTION>自己的 SP为50%以上时</OPTION> <OPTION>自己的 SP为50%以下时</OPTION> <OPTION>以50%的概率</OPTION> <OPTION>初次行动时</OPTION> <OPTION>第二次行动时</OPTION> <OPTION>第三次行动时</OPTION> <OPTION>至少一次</OPTION> <OPTION>至少两次</OPTION> <OPTION>至少三次</OPTION></SELECT> </TD>
-<TD><SELECT> <OPTION selected>技能1</OPTION> <OPTION>技能2</OPTION> <OPTION>技能3</OPTION> <OPTION>恢复魔法</OPTION> <OPTION>使用物品</OPTION></SELECT> </TD></TR></TBODY></TABLE></DIV>
-
-<p style="margin-left:50px">这个是战斗设定的例子。<br />
-角色会依序行动、<br />从
-<span class="bold">No</span> 得的数字开始 <span class="bold">判定</span> 、<br />
-符合判定条件的话就执行 <span class="bold">技能</span>。<br />
-当战斗状况变化时，根据状况执行以下的操作。</p>
+<TD><SELECT>
+<OPTION selected>필요</OPTION>
+<OPTION>자신의 HP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 HP가 50% 이하인 경우</OPTION>
+<OPTION>동반자 중 HP가 50% 이하인 인물이 있는 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이상인 경우</OPTION>
+<OPTION>동반자의 평균 HP가 50% 이하인 경우</OPTION>
+<OPTION>자신의 SP가 50% 이상인 경우</OPTION>
+<OPTION>자신의 SP가 50% 이하인 경우</OPTION>
+<OPTION>50%의 확률로</OPTION>
+<OPTION>처음 행동할 때</OPTION>
+<OPTION>두번째 행동할 때</OPTION>
+<OPTION>세번째 행동할 때</OPTION>
+<OPTION>한 번쯤</OPTION>
+<OPTION>두 번쯤</OPTION>
+<OPTION>세 번쯤</OPTION></SELECT>
+</TD>
+<TD><SELECT>
+<OPTION selected>스킬 1</OPTION>
+<OPTION>스킬 2</OPTION>
+<OPTION>스킬 3</OPTION>
+<OPTION>회복 마법</OPTION>
+<OPTION>아이템 사용</OPTION></SELECT>
+</TD></TR></TBODY></TABLE></DIV>
+<p style="margin-left:50px">이것은 전투 설정의 예입니다.<br />
+캐릭터는 순서대로 움직이며 <br />
+<span class="bold">No</span>로 얻은 숫자부터 <span class="bold">판정</span>하고 <br />
+판정 조건에 맞으면 <span class="bold">스킬</span>을 수행합니다.<br />
+전투 상황이 변할 때, 상황에 따라 다음과 같은 작업을 수행합니다.</p>
 <div style="margin-left:50px">
 <table><tbody>
-<tr><td>"首次行动时"</td><td>"技能3"</td></tr>
-<tr><td>"自己的 SP为50%以上时"</td><td>"技能2"</td></tr>
-<tr><td>"必定"</td><td>"技能1"</td></tr>
+<tr><td>"처음 행동할 때"</td><td>"스킬 3"</td></tr>
+<tr><td>"자신의 SP가 50% 이상인 경우"</td><td>"스킬 2"</td></tr>
+<tr><td>"필요한"</td><td>"스킬 1"</td></tr>
 </tbody></table>
 </div>
-<p style="margin-left:50px">如果设定、<br />
-人物采取首次行动使用技能3。<br />
-第二及以后SP在50%以上的回合使用技能2、<br />
-SP降到49%一下则使用技能1。</p>
-<p style="margin-left:50px">判定条件的数量将会根据<span class="bold">Int</span> 而增加。(No 增加)<br />
-判定的种类在登录后会显示(说明上只有简单的实例)。</p>
+<p style="margin-left:50px">설정, <br />
+인물이 첫 행동을 취하여 스킬 3을 사용하는 경우.<br />
+둘째, 이후 SP가 50% 이상인 라운드에서 스킬 2를 사용하고 <br />
+SP가 49% 이하로 떨어지면 스킬 1을 사용합니다.</p>
+<p style="margin-left:50px">판정 조건의 수는 <span class="bold">Int</span>에 따라 증가할 것입니다. (No 증가)<br />
+판정된 종류는 로그인 후 표시됩니다(설명에는 간단한 사례만 있습니다).</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="posi"></a>
-<h4>人物的位置关系及后卫保护 <a href="#content"></a></h4>
+<h4>인물의 위치 관계 및 수비수 보호 <a href="#content"></a></h4>
 <table><tbody>
-<tr><td style="text-align:right">配置:</td>
-<td><input class="vcent" type="radio" checked name="position">前卫(Front)</td>
+<tr><td style="text-align:right">설정 : </td>
+<td><input class="vcent" type="radio" checked name="position">전방(Front)</td>
 </tr><tr><td></td>
-<td><input class="vcent" type="radio" name="position">后卫(Backs)</td>
-</tr><tr><td>后为保护方式 :</td><td>
+<td><input class="vcent" type="radio" name="position">후방(Backs)</td>
+</tr><tr><td>다음 보호 방법 : </td><td>
 <select>
-<OPTION selected>必定</OPTION> <OPTION>不保护</OPTION> <OPTION>自己的体力为 25% 以上的话</OPTION> <OPTION>自己的体力为 50% 以上的话</OPTION> <OPTION>自己的体力为 75% 以上的话</OPTION> <OPTION>以25%的概率</OPTION> <OPTION>以50%的概率</OPTION> <OPTION>以75%的概率</OPTION></select>
+<OPTION selected>필요한</OPTION>
+<OPTION>보호하지 않음</OPTION>
+<OPTION>자신의 체력이 25% 이상이면</OPTION>
+<OPTION>자신의 체력이 50% 이상이면</OPTION>
+<OPTION>자기 체력이 75% 이상이면</OPTION>
+<OPTION>25%의 확률로</OPTION>
+<OPTION>50%의 확률로</OPTION>
+<OPTION>75%의 확률로</OPTION>
+</select>
 </td></tr></tbody></table>
-<p>人物战斗时决定是在前卫还是后卫。<br />
-当设为前卫的时候、<br />
-战斗时敌方攻击我方后卫时、<br />
-符合设定保护方式时、<br />
-角色将替后卫承受攻击。</p>
+
+<p>캐릭터는 싸울 때 아방가르드냐 수비수냐를 결정합니다.<br />
+공격수로 설정할 때, <br />
+전투 시 적이 우리 수비수를 공격할 때, <br />
+설정된 보호 방식에 부합할 때, <br />
+역할이 수비수를 대신하여 공격을 받게 됩니다.</p>
+
 <!-- ---------------------------------------------------------------- -->
 <a name="equip"></a>
-<h4>人物装备 <a href="#content"></a></h4>
-<p>在人物页面是会显示当前装备及可装备的物品。</p>
-<p>各装备和人物都有<span class="charge">handle</span> 值、<br />
-装备和记得<span class="charge">handle</span>值、不得超过人物的<span class="charge">handle</span>值。<br />
-这是装备的限制设定。dex和级别上等的话<span class="charge">handle</span>也会随之上升。</p>
+<h4>캐릭터 장비 <a href="#content"></a></h4>
+<p>캐릭터 페이지에는 현재 장비 및 장비 가능 아이템이 표시됩니다.</p>
+<p>각 장비 및 인물은 <span class="charge">handle</span> 값, <br />
+장비 및 기억 <span class="charge">handle</span> 값을 가지며 인물의 <span class="charge">handle</span> 값을 초과해서는 안 됩니다.<br />
+아이템 제한 설정입니다. 덱스와 클래스가 올라가면 <span class="charge">handle</span>도 같이 올라갑니다.</p>
+
 <?php
 	$sample	= array(1000,1700,5000);
 	foreach($sample as $val) {
@@ -185,15 +265,15 @@ SP降到49%一下则使用技能1。</p>
 	}
 ?>
 <p><ul>
-<li><span class="dmg">Atk</span> - 物理攻击力</li>
-<li><span class="spdmg">Matk</span> - 魔法攻击力</li>
-<li><span class="recover">Def</span> - 物理防御</li>
-<li><span class="support">Mdef</span> - 魔法防御</li>
-<li><span class="charge">h:</span> - handle值</li>
+<li><span class="dmg">Atk</span> - 물리적 공격력</li>
+<li><span class="spdmg">Matk</span> - 마법 공격력</li>
+<li><span class="recover">Def</span> - 물리적 방어</li>
+<li><span class="support">Mdef</span> 마법의 방어</li>
+<li><span class="charge">h:</span> - handle값</li>
 </ul></p>
 <!-- ---------------------------------------------------------------- -->
 <a name="skill"></a>
-<h4>人物技能 <a href="#content"></a></h4>
+<h4>캐릭터 스킬 <a href="#content"></a></h4>
 <?php
 	$sample	= array(1000,1001,1002,2300,3000,3110);
 	foreach($sample as $val) {
@@ -202,50 +282,74 @@ SP降到49%一下则使用技能1。</p>
 		print("<br />\n");
 	}
 ?>
-<p>(图像) 技能名称 / 对象 - 选择 / 消耗SP / 威力%x次数 / (准备:待机时间) ... ... ...</p>
+<p>(이미지) 스킬명 / 대상 - SP 선택 / 소모 / 파워%x횟수 / (준비 : 대기시간) ... ... ...</p>
 <ul>
-<p><LI><SPAN class=bold>对象</SPAN> - 技能能影响到的对象<BR><SPAN class=dmg>enemy</SPAN> - 敌人<BR><SPAN class=recover>friend</SPAN> - 同伴<BR><SPAN class=support>self</SPAN> - 对使用者自身而言<BR><SPAN class=charge>all</SPAN> - 敌人-同伴(全体) 
-<LI><SPAN class=bold>选择</SPAN> - <SPAN class=u>从对象</SPAN>（选择）使用技能的人物。<BR><SPAN class=recover>individual</SPAN> - 对个人而言。<BR><SPAN class=spdmg>multi</SPAN> - (随机)复数。<BR><SPAN class=charge>all</SPAN> - 对象全部人员。 
-<LI><SPAN class=bold>消费SP</SPAN> - 使用技能时消费的SP。不足的话会失败。 
-<LI><SPAN class=bold>威力</SPAN> - 技能的强弱。 
-<LI><SPAN class=bold>次数</SPAN> - 技能的实行次数。<BR>100%x2 的话、总计有200%的威力。 
-<LI>(<SPAN class=bold>准备</SPAN>:<SPAN class=bold>待机时间</SPAN>)<BR>发动技能所需的时间。(使用例:<SPAN class=charge>○○○ 开始 发动技能准备.</SPAN>)<BR>发动技能后的僵直时间。<BR>数字越大时间越长。<BR>
-<LI><SPAN class=bold>其他</SPAN><BR><SPAN class=spdmg>Magic</SPAN> - 使用魔法的技能。对威力和效果有影响int。<BR><SPAN class=charge>invalid</SPAN> - 对方的前卫(Front)未防守。<BR><SPAN class=support>BackAttack</SPAN> - 后列(Back)的人物优先成为使用对象。 </LI></UL>
+<p><LI><SPAN class=bold>객체</SPAN> - 스킬이 영향을 미치는 객체<BR>
+<SPAN class=dmg>enemy</SPAN> - 적<BR>
+<SPAN class=recover>friend</SPAN> - 동반자<BR>
+<SPAN class=support>self</SPAN> - 사용자 자신에게<BR>
+<SPAN class=charge>all</SPAN> - 적-동반자(전체)
+<LI><SPAN class=bold>선택</SPAN> - <SPAN class=u>대상(선택)</SPAN>에서 스킬을 사용하는 인물입니다.<BR>
+<SPAN class=recover>individual</SPAN> - 개인적으로는.<BR>
+<SPAN class=spdmg>multi</SPAN> - (랜덤) 복수.<BR>
+<SPAN class=charge>all</SPAN> - 대상자 전원.
+<LI><SPAN class=bold>소비 SP</SPAN> - 스킬을 사용할 때 소비하는 SP입니다. 부족하면 실패합니다.
+<LI><SPAN class=bold>위력</SPAN> - 기능의 강약.
+<LI><SPAN class=bold>횟수</SPAN> - 스킬의 실행 횟수입니다.<BR>
+100%x2면 총 200% 위력.
+<LI>(<SPAN class=bold>준비</SPAN> : <SPAN class=bold>대기시간</SPAN>)<BR>
+스킬 시동에 걸리는 시간. (사용 예: <SPAN class=charge>○○○ 스킬 시동을 걸고 준비합니다. </SPAN>)<BR>
+스킬 발동 후 경직 시간입니다.<BR>
+숫자가 클수록 시간이 길어집니다.<BR>
+<LI><SPAN class=bold>기타</SPAN><BR>
+<SPAN class=spdmg>Magic</SPAN> - 마법을 사용하는 기능입니다. 위력과 효과에 영향을 미칩니다.<BR>
+<SPAN class=charge>invalid </SPAN>- 상대의 프론트(Front)가 수비하지 않습니다.<BR>
+<SPAN class=support>BackAttack</SPAN> - 백그라운드(Back)의 인물이 우선 사용 대상이 됩니다.</LI></UL>
 
 </ul></p>
-<p>另外升级之后<br />
-可获得几个技能学习点数、<br />
-可以消耗一定的点数习得新的技能。</p>
+<p>또한 업그레이드 후에는 <br />
+몇 가지 기술 학습 포인트를 얻을 수 있으며, <br />
+일정한 포인트를 소모하여 새로운 기술을 습득할 수 있습니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="elem"></a>
-<h4>攻击属性 <a href="#content"></a></h4>
-<p>没有火怕水的类似设定。</p>
-<p>只有物理和魔法两种属性。</p>
+<h4>공격 속성 <a href="#content"></a></h4>
+<p>불이나 물을 무서워하는 비슷한 설정은 없습니다.</p>
+<p>물리학과 마법 두 가지 속성만 있습니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="state"></a>
-<h4>人物状态 <a href="#content"></a></h4>
+<h4>캐릭터 상태 <a href="#content"></a></h4>
 <ul>
-<li><span class="recover">生存</span> - HP在1以上的状态。</li>
-<li><span class="dmg">死亡</span> - HP为0的状态。</li>
-<li><span class="spdmg">剧毒</span> - 每回合将 <span class="u">按照最大HP和级别</span> 受到相应的损伤，不会致死。</li>
+<li><span class="recover">생존</span> - HP가 1 이상인 상태입니다.</li>
+<li><span class="dmg">사망</span> - HP가 0인 상태입니다.</li>
+<li><span class="spdmg">맹독성</span> - <span class="u">매회 최대 HP와 레벨에 따라</span> 해당 손상을 입으며 사망하지 않습니다.</li>
 </ul>
 <!-- ---------------------------------------------------------------- -->
 <a name="jobchange"></a>
-<h4>转职(职业转换) <a href="#content"></a></h4>
-<p>满足专职条件后会显示在人物最下面。</p>
+<h4>직업 변경 (경력 전환) <a href="#content"></a></h4>
+<p>전임 조건이 충족되면 인물 맨 아래에 표시됩니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="sacrier"></a>
-<h4>Sacrier（狂战士）的攻击方式  <a href="#content"></a></h4>
+<h4>사크리에 (광전사)의 공격 방식  <a href="#content"></a></h4>
 <p style="margin:15px">
 <img src="<?=IMG_CHAR?>mon_100r.gif">
 <img src="<?=IMG_CHAR?>mon_012.gif"><br />
-Sacrier的大部分技能将消耗HP。<br />
-人物处在后排时<span class="bold u">后排</span>时，HP消耗为平常的<span class="bold u">2倍</span>。</p>
+Sacrier의 대부분의 기술은 HP를 소모할 것입니다.<br />
+인물이 <span class="bold u">뒷줄</span>에 있을 때, HP는 평소의 <span class="bold u">2배</span>로 소모됩니다.</p>
 <!-- ---------------------------------------------------------------- -->
 <a name="ranking"></a>
-<h4>排行榜 <a href="#content"></a></h4>
-<P>排行表的<BR><IMG class=vcent src="./image/icon/crown01.png">第一名 1人<BR><IMG class=vcent src="./image/icon/crown02.png">第二名 2人<BR><IMG class=vcent src="./image/icon/crown03.png">第三名 3人<BR>第四名以下 3人<BR>...<BR>同一名次上可能有多个人物<BR>挑战的话将和排行表上比自己名次高的人中随机选出来的人进行对决、<BR>胜利的话将和对方互换名次。</P><!-- ---------------------------------------------------------------- --><A name=cr></A>
-<h4>使用的图像 <a href="#content"></a></h4>
-<p><a href="http://whitecafe.sakura.ne.jp/">Whitecatさま</a> - 武器级技能<br />
-<a href="http://www.geocities.co.jp/Milano-Cat/3319/">Rドさま</a> - 人物</p>
+<h4>랭킹 <a href="#content"></a></h4>
+
+<P>순위표의<BR>
+<IMG class=vcent src="./image/icon/crown01.png">1등 1명<BR>
+<IMG class=vcent src="./image/icon/crown02.png">2등 2명<BR>
+<IMG class=vcent src="./image/icon/crown03.png">3등 3명<BR>
+4위 이하 3명<BR>...<BR>동명이인에 여러 명의 인물이 있을 수 있습니다.<BR>
+도전하면 순위표에서 자신보다 순위가 높은 사람 중에서 무작위로 뽑힌 사람과 대결하게 되며, <BR>
+승리하면 상대와 순위가 바뀌게 됩니다.</P>
+
+<!-- ---------------------------------------------------------------- -->
+<A name=cr></A>
+<h4>사용한 그림 <a href="#content"></a></h4>
+<p><a href="http://whitecafe.sakura.ne.jp/">Whitecatさま</a> - 무기급 스킬<br />
+<a href="http://www.geocities.co.jp/Milano-Cat/3319/">Rドさま</a> - 캐릭터</p>
 </div>

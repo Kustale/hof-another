@@ -476,7 +476,7 @@ function ShowBattleLog($no,$type=false) {
 			print(" / <span class=\"support\">MagicCircle x".$skill["MagicCircleDeleteTeam"]."</span>");
 		if(isset($skill["pow"])) {
 			print(" / <span class=\"".(isset($skill["support"])?"recover":"dmg")."\">{$skill['pow']}%</span>x");
-			print(( $skill["target"][2] ? $skill["target"][2] : "1" ) );
+			if(isset($skill["target"])) print(( $skill["target"][2] ? $skill["target"][2] : "1" ) );
 		}
 		if($skill["type"] == 1)
 			print(" / <span class=\"spdmg\">Magic</span>");
@@ -744,7 +744,7 @@ P1;
 	function RecordManage($string) {
 		$file	= MANAGE_LOG_FILE;
 
-		$fp	= @fopen($file,"r+") or die();
+		$fp	= @fopen($file,"r+") or die("File can not read.");
 		$text	= fread($fp,2048);
 		ftruncate($fp,0);
 		rewind($fp);
