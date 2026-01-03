@@ -12,7 +12,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Monster List</title>
 <link rel="stylesheet" href="../basis.css" type="text/css">
 <link rel="stylesheet" href="../style.css" type="text/css">
