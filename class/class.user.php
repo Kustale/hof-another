@@ -383,6 +383,7 @@ class user {
 			"UserColor",
 			);
 		foreach($Save as $val) {
+			$text = "";
 			if($this->{$val})
 				$text	.= "$val=".(is_array($this->{$val}) ? implode("<>",$this->{$val}) : $this->{$val})."\n";
 		}

@@ -319,7 +319,7 @@ class Auction {
 	function ItemSaveData() {
 		if(!$this->DataChange)
 		{
-			fclose($this->fp);
+			if(isset($this->fp)) fclose($this->fp);
 			unset($this->fp);
 			return false;
 		}

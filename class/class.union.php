@@ -147,13 +147,17 @@ class union extends char{
 
 	function ShowCharLink() {
 		$temp1 = IMG_OTHER."land_".$this->UnionLand.".gif";
-echo <<<P1
+	print <<<P1_A
 	<div class="carpet_frame">
-	<div class="land" style="background-image : url({$temp1});">
-	<a href="?union={$this->UnionNo}">{$this->ShowImage()}</a></div>
+	<div class="land" style="background-image : url('{$temp1}');">
+	<a href="?union={$this->UnionNo}">
+	P1_A;
+	$this->ShowImage();
+	print <<<P1_B
+	</a></div>
 	<div class="bold dmg">{$this->UnionName}</div>제한 수준 : {$this->LevelLimit}급
 	</div>
-P1;	
+	P1_B;
 	}
 
 	function UpMAXHP($no) {

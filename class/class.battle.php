@@ -868,7 +868,7 @@ function GetExp($exp,&$team) {
 			$team1_total_hp		= '????';
 			$team1_total_maxhp	= '????';
 		}
-		echo <<<P1
+		print <<<P1
 		<table style="width:100%;" cellspacing="0"><tbody>
 		<tr><td class="teams"><div class="bold">{$this->team1_name}</div>
 		전체 수준 : {$team1_total_lv}<br>
@@ -883,7 +883,7 @@ function GetExp($exp,&$team) {
 	}
 
 	function BattleFoot() {
-		echo <<<P2
+		print <<<P2
 		</tbody></table>
 		P2;
 	}

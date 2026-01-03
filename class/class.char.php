@@ -128,12 +128,16 @@ class char{
 		$temp6 = (($this->P_SPD) ? " + ".$this->P_SPD."" : "");
 		$temp7 = (($this->P_LUK) ? " + ".$this->P_LUK."" : "");
 		
-		print <<<P1
+		print <<<P1_A
 		<table>
-		<tr><td valign="top" style="width:180px">{$this->ShowCharLink()}
+		<tr><td valign="top" style="width:180px">
+		P1_A;
+		$this->ShowCharLink();
+		print <<<P1_B
 		</td><td valign="top" style="padding-right:20px">
 		<table border="0" cellpadding="0" cellspacing="0">
-		<tr><td style="text-align:right">Exp : </td><td>{$this->exp}/{$this->CalcExpNeed()}</td></tr>
+		<tr><td style="text-align:right">Exp : </td><td>{$this->exp}/{$this->CalcExpNeed()}
+		</td></tr>
 		<tr><td style="text-align:right">HP : </td><td>{$this->maxhp}{$temp1}</td></tr>
 		<tr><td style="text-align:right">SP : </td><td>{$this->maxsp}{$temp2}</td></tr>
 		<tr><td style="text-align:right">STR : </td><td>{$this->str}{$temp3}</td></tr>
@@ -143,14 +147,14 @@ class char{
 		<tr><td style="text-align:right">LUK : </td><td>{$this->luk}{$temp7}</td></tr>
 		</table>
 		</td><td valign="top">
-		P1;
-		if($this->SPECIAL["PoisonResist"])
+		P1_B;
+		if(isset($this->SPECIAL["PoisonResist"]))
 			print("독 저항성 +".$this->SPECIAL["PoisonResist"]."%<br />\n");
-		if($this->SPECIAL["Pierce"]["0"])
+		if(isset($this->SPECIAL["Pierce"]["0"]))
 			print("물리 방어력 무시 +".$this->SPECIAL["Pierce"]["0"]."<br />\n");
-		if($this->SPECIAL["Pierce"]["1"])
+		if(isset($this->SPECIAL["Pierce"]["1"]))
 			print("마법 방어력 무시 +".$this->SPECIAL["Pierce"]["1"]."<br />\n");
-		if($this->SPECIAL["Summon"])
+		if(isset($this->SPECIAL["Summon"]))
 			print("소환의 힘 +".$this->SPECIAL["Summon"]."%<br />\n");
 		print <<<P2
 		</td></tr></table>
@@ -885,6 +889,10 @@ class char{
 	}
 
 	function SetBattleVariable($team=false) {
+		$maxhp = 0;
+		$hp = 0;
+		$maxsp = 0;
+		$sp = 0;
 		if(isset($this->IMG))
 			return false;
 
@@ -918,7 +926,7 @@ class char{
 	}
 
 	function CalcEquips() {
-		if($this->monster) return false;
+		if(isset($this->monster)) return false;
 		$equip	= array("weapon","shield","armor","item");
 		$this->atk	= array(0,0);
 		$this->def	= array(0,0,0,0);
@@ -928,41 +936,43 @@ class char{
 			$item	= LoadItemData($this->{$place});
 			if($place == "weapon")
 					$this->WEAPON	= $item["type"];
-			$this->atk[0]	+= $item[atk][0];
-			$this->atk[1]	+= $item[atk][1];
-			$this->def[0]	+= $item[def][0];
-			$this->def[1]	+= $item[def][1];
-			$this->def[2]	+= $item[def][2];
-			$this->def[3]	+= $item[def][3];
+			if(isset($item['atk'][0])) $this->atk[0]	+= $item['atk'][0];
+			if(isset($item['atk'][1])) $this->atk[1]	+= $item['atk'][1];
+			if(isset($item['def'][0])) $this->def[0]	+= $item['def'][0];
+			if(isset($item['def'][1])) $this->def[1]	+= $item['def'][1];
+			if(isset($item['def'][2])) $this->def[2]	+= $item['def'][2];
+			if(isset($item['def'][3])) $this->def[3]	+= $item['def'][3];
 
-			$this->P_MAXHP	+= $item["P_MAXHP"];
-			$this->M_MAXHP	+= $item["M_MAXHP"];
-			$this->P_MAXSP	+= $item["P_MAXSP"];
-			$this->M_MAXSP	+= $item["M_MAXSP"];
+			if(isset($item["P_MAXHP"])) $this->P_MAXHP	+= $item["P_MAXHP"];
+			if(isset($item["M_MAXHP"])) $this->M_MAXHP	+= $item["M_MAXHP"];
+			if(isset($item["P_MAXSP"])) $this->P_MAXSP	+= $item["P_MAXSP"];
+			if(isset($item["M_MAXSP"])) $this->M_MAXSP	+= $item["M_MAXSP"];
 
-			$this->P_STR	+= $item["P_STR"];
-			$this->P_INT	+= $item["P_INT"];
-			$this->P_DEX	+= $item["P_DEX"];
-			$this->P_SPD	+= $item["P_SPD"];
-			$this->P_LUK	+= $item["P_LUK"];
+			if(isset($item["P_STR"])) $this->P_STR	+= $item["P_STR"];
+			if(isset($item["P_INT"])) $this->P_INT	+= $item["P_INT"];
+			if(isset($item["P_DEX"])) $this->P_DEX	+= $item["P_DEX"];
+			if(isset($item["P_SPD"])) $this->P_SPD	+= $item["P_SPD"];
+			if(isset($item["P_LUK"])) $this->P_LUK	+= $item["P_LUK"];
 
-			if($item["P_SUMMON"])
+			if(isset($item["P_SUMMON"]))
 				$this->GetSpecial("Summon",$item["P_SUMMON"]);
-			if($item["P_PIERCE"])
+			if(isset($item["P_PIERCE"]))
 				$this->GetSpecial("Pierce",$item["P_PIERCE"]);
 		}
 	}
 
 	function ShowCharWithLand($land) {
 		$temp1 = IMG_OTHER;
-		print <<<P3
+		print <<<P3_A
 		<div class="carpet_frame">
 		<div class="land" style="background-image : url('{$temp1}land_{$land}.gif');">
-		{$this->ShowImage()}
+		P3_A;
+		$this->ShowImage();
+		print <<< P3_B
 		</div>
 		{$this->name}<br>Lv.{$this->level}
 		</div>
-		P3;
+		P3_B;
 	}
 
 
@@ -993,6 +1003,7 @@ class char{
 
 
 	function DataSavingFormat() {
+		$text = "";
 		$Save	= array("name","gender","job","birth","level","exp",
 		"statuspoint","skillpoint",
 		"str","int","dex","spd","luk",
@@ -1017,12 +1028,16 @@ class char{
 		if( CHAR_ROW%2==0 && $flag%(CHAR_ROW+1)==0 )
 			$flag++;
 		$temp1 = $flag%2;
-print <<<P4
+print <<<P4_A
 <div class="carpet_frame">
-<div class="carpet{$temp1}">{$this->ShowImage()}</div>
+<div class="carpet{$temp1}">
+P4_A;
+$this->ShowImage();
+print <<< P4_B
+</div>
 {$this->name}<br>Lv.{$this->level} {$this->job_name}
 </div>
-P4;
+P4_B;
 	}
 
 
@@ -1035,13 +1050,17 @@ P4;
 		
 		$temp1 = (($this->statuspoint) ? "<span class=\"bold charge\">*</span>" : "");
 		$temp2 = $flag%2;
-print <<<P5
+print <<<P5_A
 <div class="carpet_frame">
-<div class="carpet{$temp9}">
-<a href="?char={$this->Number}">{$this->ShowImage()}</a></div>
+<div class="carpet{$temp2}">
+<a href="?char={$this->Number}">
+P5_A;
+$this->ShowImage();
+print <<<P5_B
+</a></div>
 {$this->name}{$temp1}<br>Lv.{$this->level} {$this->job_name}
 </div>
-P5;
+P5_B;
 	}
 
 	function ShowCharRadio($birth,$checked=null) {

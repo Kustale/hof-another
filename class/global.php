@@ -567,51 +567,55 @@ function ShowBattleLog($no,$type=false) {
 	}
 
 	function ShowItemDetail($item,$amount=false,$text=false,$need=false) {
-		if(!isset($item)) return false;
+		$html = "";
+		if(isset($item)){
+			if(isset($item["img"]))
+				$html	.= "<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">";
+			if(isset($item["refine"]))
+				$html	.= "+{$item['refine']} ";
+			if(isset($item["AddName"]))
+				$html	.= "{$item['AddName']} ";
+			if(isset($item['base_name']))
+				$html	.= "{$item['base_name']}";
 
-		$html	= "<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">";
-		if(isset($item["refine"]))
-			$html	.= "+{$item['refine']} ";
-		if(isset($item["AddName"]))
-			$html	.= "{$item['AddName']} ";
-		$html	.= "{$item['base_name']}";
-
-		if(isset($item["type"]))
-			$html	.= "<span class=\"light\"> ({$item['type']})</span>";
-		if($amount) {
-			$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
-		}
-		if(isset($item["atk"]["0"]))
-			$html	.= ' / <span class="dmg">Atk:'.$item['atk'][0].'</span>';
-		if(isset($item["atk"]["1"]))
-			$html	.= ' / <span class="spdmg">Matk:'.$item['atk'][1].'</span>';
-		if(isset($item["def"])) {
-			$html	.= " / <span class=\"recover\">Def:{$item['def'][0]}+{$item['def'][1]}</span>";
-			$html	.= " / <span class=\"support\">Mdef:{$item['def'][2]}+{$item['def'][3]}</span>";
-		}
-		if(isset($item["P_SUMMON"]))
-			$html	.= ' / <span class="support">Summon+'.$item["P_SUMMON"].'%</span>';
-		if(isset($item["handle"]))
-			$html	.= ' / <span class="charge">h:'.$item['handle'].'</span>';
-		if(isset($item["option"]))
-			$html	.= ' / <span style="font-size:80%">'.substr($item["option"],0,-2)."</span>";
-
-		if($need && isset($item["need"])) {
-			$html	.= " /";
-			foreach($item["need"] as $M_itemNo => $M_amount) {
-				$M_item	= LoadItemData($M_itemNo);
-				$html	.= "<img src=\"".IMG_ICON.$M_item["img"]."\" class=\"vcent\">";
-				$html	.= "".$M_item['base_name']."";
-				$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
-				if($need["$M_itemNo"])
-				$html	.= "<span class=\"light\">(".$need["$M_itemNo"].")</span>";
+			if(isset($item["type"]))
+				$html	.= "<span class=\"light\"> ({$item['type']})</span>";
+			if($amount) {
+				$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
 			}
-		}
+			if(isset($item["atk"]["0"]))
+				$html	.= ' / <span class="dmg">Atk:'.$item['atk'][0].'</span>';
+			if(isset($item["atk"]["1"]))
+				$html	.= ' / <span class="spdmg">Matk:'.$item['atk'][1].'</span>';
+			if(isset($item["def"])) {
+				$html	.= " / <span class=\"recover\">Def:{$item['def'][0]}+{$item['def'][1]}</span>";
+				$html	.= " / <span class=\"support\">Mdef:{$item['def'][2]}+{$item['def'][3]}</span>";
+			}
+			if(isset($item["P_SUMMON"]))
+				$html	.= ' / <span class="support">Summon+'.$item["P_SUMMON"].'%</span>';
+			if(isset($item["handle"]))
+				$html	.= ' / <span class="charge">h:'.$item['handle'].'</span>';
+			if(isset($item["option"]))
+				$html	.= ' / <span style="font-size:80%">'.substr($item["option"],0,-2)."</span>";
 
-		if($text)
-			return $html;
+			if($need && isset($item["need"])) {
+				$html	.= " /";
+				foreach($item["need"] as $M_itemNo => $M_amount) {
+					$M_item	= LoadItemData($M_itemNo);
+					$html	.= "<img src=\"".IMG_ICON.$M_item["img"]."\" class=\"vcent\">";
+					$html	.= "".$M_item['base_name']."";
+					$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
+					if($need["$M_itemNo"])
+					$html	.= "<span class=\"light\">(".$need["$M_itemNo"].")</span>";
+				}
+			}
 
-		print($html);
+			if($text)
+				return $html;
+
+			print($html);
+		} else
+			 return false;
 	}
 
 
@@ -683,7 +687,7 @@ EOD;
 	}
 
 	function ShowGameData() {
-echo <<<P1
+print <<<P1
 <div style="margin:15px">
 <h4>GameData</h4>
 <div style="margin:0 20px">
@@ -720,6 +724,7 @@ P1;
 
 
 	function userNameAdd($add) {
+		$string = "";
 		foreach(userNameLoad() as $name) {
 			$string	.= $name."\n";
 		}

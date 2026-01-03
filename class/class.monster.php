@@ -22,7 +22,7 @@ class monster extends char{
 
 	}
 
-	function SaveCharData() {
+	function SaveCharData($id = false) {
 		return false;
 	}
 
@@ -54,27 +54,27 @@ class monster extends char{
 		}
 	}
 
-	function SetCharData($monster) {
+	function SetCharData(&$monster) {
 
-		$this->name		= $monster["name"];
-		$this->level	= $monster["level"];
+		if(isset($monster["name"])) $this->name		= $monster["name"];
+		if(isset($monster["level"])) $this->level	= $monster["level"];
 
-		if ($monster["img"])
+		if (isset($monster["img"]))
 			$this->img		= $monster["img"];
 
-		$this->str		= $monster["str"];
-		$this->int		= $monster["int"];
-		$this->dex		= $monster["dex"];
-		$this->spd		= $monster["spd"];
-		$this->luk		= $monster["luk"];
+		if(isset($monster["str"])) $this->str		= $monster["str"];
+		if(isset($monster["int"])) $this->int		= $monster["int"];
+		if(isset($monster["dex"])) $this->dex		= $monster["dex"];
+		if(isset($monster["spd"])) $this->spd		= $monster["spd"];
+		if(isset($monster["luk"])) $this->luk		= $monster["luk"];
 
-		$this->maxhp	= $monster["maxhp"];
-		$this->hp		= $monster["hp"];
-		$this->maxsp	= $monster["maxsp"];
-		$this->sp		= $monster["sp"];
+		if(isset($monster["maxhp"])) $this->maxhp	= $monster["maxhp"];
+		if(isset($monster["hp"])) $this->hp		= $monster["hp"];
+		if(isset($monster["maxsp"])) $this->maxsp	= $monster["maxsp"];
+		if(isset($monster["sp"])) $this->sp		= $monster["sp"];
 
-		$this->position	= $monster["position"];
-		$this->guard	= $monster["guard"];
+		if(isset($monster["position"])) $this->position	= $monster["position"];
+		if(isset($monster["guard"])) $this->guard	= $monster["guard"];
 
 		if(is_array($monster["judge"]))
 			$this->judge	= $monster["judge"];
@@ -84,13 +84,13 @@ class monster extends char{
 			$this->action	= $monster["action"];
 
 		$this->monster		= true;
-		$this->summon		= $monster["summon"];
-		$this->exphold		= $monster["exphold"];
-		$this->moneyhold	= $monster["moneyhold"];
-		$this->itemdrop		= $monster["itemdrop"];
-		$this->atk	= $monster["atk"];
-		$this->def	= $monster["def"];
-		$this->SPECIAL	= $monster["SPECIAL"];
+		if(isset($monster["summon"])) $this->summon		= $monster["summon"];
+		if(isset($monster["exphold"])) $this->exphold		= $monster["exphold"];
+		if(isset($monster["moneyhold"])) $this->moneyhold	= $monster["moneyhold"];
+		if(isset($monster["itemdrop"])) $this->itemdrop		= $monster["itemdrop"];
+		if(isset($monster["atk"])) $this->atk	= $monster["atk"];
+		if(isset($monster["def"])) $this->def	= $monster["def"];
+		if(isset($monster["SPECIAL"])) $this->SPECIAL	= $monster["SPECIAL"];
 	}
 
 	function SetBattleVariable($team=false) {

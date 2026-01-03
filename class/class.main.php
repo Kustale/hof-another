@@ -46,10 +46,11 @@ class main extends user {
 
 
 	function Order() {
+		$result = "";
 		switch(true) {
 			case(__GET("menu") === "auction"):
 				include(CLASS_AUCTION);
-				$ItemAuction	= new Auction(item);
+				$ItemAuction	= new Auction('item');
 				$ItemAuction->AuctionHttpQuery("auction");
 				$ItemAuction->ItemCheckSuccess(); 
 				$ItemAuction->UserSaveData(); 
@@ -739,6 +740,7 @@ HTML_BYEBYE;
 	}
 	
 	function CharStatShow() {
+		$CanChange = [];
 		$char	= $this->char[__GET("char")];
 		if(!$char) {
 			print("Not exists");
@@ -756,7 +758,7 @@ HTML_BYEBYE;
 			}
 		}
 		$temp1 = __GET("char");
-echo <<<P1
+print <<<P1
 <form action="?char={$temp1}" method="post" style="padding:5px 0 0 15px">
 P1;
 		print('<div style="padding-top:5px">');
@@ -764,20 +766,20 @@ P1;
 			echo "<a href=\"?char={$key}\">{$val->name}</a>  ";
 		}
 		print("</div>");
-echo <<<P2
+print <<<P2
 <h4>캐릭터 상태 <a href="?manual#charstat" target="_blank" class="a0">?</a></h4>
 P2;
 		$char->ShowCharDetail();
-		if($this->item["7500"])
+		if(isset($this->item["7500"]))
 			print('<input type="submit" class="btn" name="rename" value="ChangeName">'."\n");
-		if($this->item["7510"] ||
-			$this->item["7511"] ||
-			$this->item["7512"] ||
-			$this->item["7513"] ||
-			$this->item["7520"]) {
+		if(isset($this->item["7510"]) ||
+			isset($this->item["7511"]) ||
+			isset($this->item["7512"]) ||
+			isset($this->item["7513"]) ||
+			isset($this->item["7520"])) {
 			print('<input type="submit" class="btn" name="showreset" value="다시 놓기">'."\n");
 		}
-echo <<<P3
+print <<<P3
 <input type="submit" class="btn" name="byebye" value="제거">
 </form>
 P3;
@@ -805,7 +807,7 @@ HTML;
 	}
 	$temp2 = __GET("char");
 	
-echo <<<P4
+print <<<P4
 	<form action="?char={$temp2}" method="post" style="padding:0 15px">
 	<h4>액션 모드 <a href="?manual#jdg" target="_blank" class="a0">?</a></h4>
 P4;
@@ -818,7 +820,7 @@ P4;
 			print("<select name=\"judge".$i."\">\n");
 			foreach($list as $val) {
 				$exp	= LoadJudgeData($val);
-				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).($exp["css"]?' class="select0"':NULL).">".($exp["css"]?' ':'   ')."{$exp[exp]}</option>\n");
+				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).(isset($exp["css"])?' class="select0"':NULL).">".(isset($exp["css"])?' ':'   ')."{$exp['exp']}</option>\n");
 			}
 			print("</select>\n");
 			print("</td><td>\n");
@@ -828,7 +830,7 @@ P4;
 			foreach($char->skill as $val) {
 				$skill	= LoadSkillData($val);
 				print("<option value=\"{$val}\"".($char->action[$i] == $val ? " selected" : NULL).">");
-				print($skill["name"].(isset($skill["sp"])?" - (SP:{$skill[sp]})":NULL));
+				print($skill["name"].(isset($skill["sp"])?" - (SP:{$skill['sp']})":NULL));
 				print("</option>\n");
 			}
 			print("</select>\n");
@@ -841,7 +843,7 @@ P4;
 		$temp3 = __GET("char");
 		$temp4 = (($char->position=="front") ? " checked" : NULL);
 		$temp5 = (($char->position=="back") ? " checked" : NULL);
-echo <<<P5
+print <<<P5
 <input type="submit" class="btn" value="확인 모드" name="ChangePattern">
 <input type="submit" class="btn" value="설정 및 테스트" name="TestBattle">
  <a href="?simulate">Simulate</a><br />
@@ -872,7 +874,7 @@ P5;
 		);
 		foreach($option as $key => $val)
 			print("<option value=\"{$key}\"".($char->guard==$key ? " selected" : NULL ).">{$val}</option>");
-echo <<<P6
+print <<<P6
 	</select>
 	</td></tr>
 	</tbody></table>
@@ -885,14 +887,10 @@ P6;
 		$item	= LoadItemData($char->item);
 
 		$handle	= 0;
-		$handle	= $weapon["handle"] + $shield["handle"] + $armor["handle"] + $item["handle"];
+		$handle	= (isset($weapon["handle"])?$weapon["handle"]:0) + (isset($shield["handle"])?$shield["handle"]:0) + (isset($armor["handle"])?$armor["handle"]:0) + (isset($item["handle"])?$item["handle"]:0);
 
 		$temp6 = __GET("char");
-		$temp7 = ShowItemDetail(LoadItemData($char->weapon));
-		$temp8 = ShowItemDetail(LoadItemData($char->shield));
-		$temp9 = ShowItemDetail(LoadItemData($char->armor));
-		$temp10 = ShowItemDetail(LoadItemData($char->item));
-echo <<<P7
+print <<<P7_A
 	<div style="margin:0 15px">
 	<h4>장비<a href="?manual#equip" target="_blank" class="a0">?</a></h4>
 	<div class="bold u">Current Equip's</div>
@@ -907,23 +905,31 @@ echo <<<P7
 	<table>
 	<tr><td class="align-right">
 	무기:</td><td><input type="radio" class="vcent" name="spot" value="weapon">
-	{$temp7}
+	P7_A;
+	ShowItemDetail(LoadItemData($char->weapon));
+	print <<<P7_B
 	</td></tr><tr><td class="align-right">
 	방패:</td><td><input type="radio" class="vcent" name="spot" value="shield">
-	{$temp8}
+	P7_B;
+	ShowItemDetail(LoadItemData($char->shield));
+	print <<<P7_C
 	</td></tr><tr><td class="align-right">
 	갑옷:</td><td><input type="radio" class="vcent" name="spot" value="armor">
-	{$temp9}
+	P7_C;
+	ShowItemDetail(LoadItemData($char->armor));
+	print <<<P7_D
 	</td></tr><tr><td class="align-right">
 	아이템 : </td><td><input type="radio" class="vcent" name="spot" value="item">
-	{$temp10}
+	P7_D;
+	ShowItemDetail(LoadItemData($char->item));
+	print <<<P7_E
 	</td></tr></tbody>
 	</table>
 	<input type="submit" class="btn" name="remove" value="장비해제">
 	<input type="submit" class="btn" name="remove_all" value="전부해제">
 	</form>
 	</div>
-P7;
+P7_E;
 
 		if($JobData["equip"])
 			$EquipAllow	= array_flip($JobData["equip"]);
@@ -961,7 +967,7 @@ P7;
 		print("</div>\n");
 
 		$temp11 = __GET("char");
-echo <<<P8
+print <<<P8
 	<form action="?char={$temp11}" method="post" style="padding:0 15px">
 	<h4>기능<a href="?manual#skill" target="_blank" class="a0">?</a></h4>
 P8;
@@ -993,7 +999,7 @@ P8;
 		}
 		if($CanChange) {
 			$temp12 = __GET("char");
-echo <<<P9
+print <<<P9
 	</form>
 	<form action="?char={$temp12}" method="post" style="padding:0 15px">
 	<h4>직업 변경</h4>
@@ -1008,7 +1014,7 @@ P9;
 				print("</td>");
 			}
 
-echo <<<P10
+print <<<P10
 	</tr></tbody></table>
 	<input type="submit" class="btn" name="classchange" value="직업 변경">
 	<input type="hidden" name="classchange" value="1">
@@ -1078,7 +1084,7 @@ P10;
 		print('<h4>Teams</h4></div>');
 		print('<form action="'.INDEX.'?simulate" method="post">');
 		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
-echo <<<P11
+print <<<P11
 	<div style="margin:15px;text-align:center">
 	<input type="submit" class="btn" name="simu_battle" value="대결!">
 	<input type="reset" class="btn" value="다시 놓기"><br>
@@ -1097,7 +1103,7 @@ P11;
 		$mapList	= LoadMapAppear($this);
 		foreach($mapList as $map) {
 			list($land)	= LandInformation($map);
-			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land[name]}</a>");
+			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land['name']}</a>");
 			print("</p>");
 		}
 
@@ -1112,7 +1118,7 @@ P11;
 					$Union[]	= $UnionMons;
 			}
 		}
-		if($Union) {
+		if(isset($Union)) {
 			print('<h4>BOSS</h4>');
 			$result = $this->CanUnionBattle();
 			if($result !== true) {
@@ -1142,6 +1148,7 @@ P11;
 	}
 
 	function MonsterShow() {
+		$message = "";
 		$land_id	= __GET("common");
 		include(DATA_LAND);
 		include_once(DATA_LAND_APPEAR);
@@ -1160,9 +1167,9 @@ P11;
 		print('<span class="bold">'.$land["name"].'</span>');
 		print('<h4>팀</h4></div>');
 		print('<form action="'.INDEX.'?common='.__GET("common").'" method="post">');
-		$this->ShowCharacters($this->char,"CHECKBOX",explode("<>",$this->party_memo));
+		if(isset($this->party_memo)) $this->ShowCharacters($this->char,"CHECKBOX",explode("<>",$this->party_memo));
 
-echo <<<P12
+print <<<P12
 	<div style="margin:15px;text-align:center">
 	<input type="submit" class="btn" name="monster_battle_multiply" value="대결! (테스트 중) (실패하면 클릭하지 마세요)">
 	<input type="submit" class="btn" name="monster_battle" value="대결!">
@@ -1173,7 +1180,7 @@ P12;
 		include(DATA_MONSTER);
 		include(CLASS_MONSTER);
 		foreach($monster_list as $id =>$val) {
-			if($val[1])
+			if(isset($val[1]))
 				$monster[]	= new monster(CreateMonster($id));
 		}
 		print('<div style="margin:15px"><h4>MonsterAppearance</h4></div>');
@@ -1187,6 +1194,7 @@ P12;
 
 
 	function MonsterBattle() {
+		$MyParty = array();
 		if(__POST("monster_battle") || __POST("monster_battle_multiply")) {
 			$this->MemorizeParty();
 			include_once(DATA_LAND_APPEAR);
@@ -1246,7 +1254,7 @@ P12;
 
 
 	function ItemShow() {
-echo <<<P13
+print <<<P13
 		<div style="margin:15px">
 		<h4>아이템</h4>
 		<div style="margin:0 20px">
@@ -1274,7 +1282,7 @@ P13;
 
 	function ShopHeader() {
 		$temp13 = IMG_CHAR;
-echo <<<P14
+print <<<P14
 <div style="margin:15px">
 <h4>상점</h4>
 
@@ -1361,7 +1369,7 @@ P14;
 
 	function ShopShow($message=NULL) {
 		$temp14 = ShowError($message);
-echo <<<P15
+print <<<P15
 	<div style="margin:15px">
 	{$temp14}
 	<h4>Goods List</h4>
@@ -1421,7 +1429,7 @@ P15;
 		}
 		print("</div>\n");
 		$temp15 = MoneyFormat("500");
-echo <<<P16
+print <<<P16
 <form action="?shop" method="post">
 <h4>일하기</h4>
 <div style="margin:0 20px">
@@ -1637,7 +1645,7 @@ JS_HTML;
 
 	function WorkShow() {
 		$temp16 = MoneyFormat(500);
-echo <<<P17
+print <<<P17
 <div style="margin:15px">
 <h4>파트타임 일자리!</h4>
 <form method="post" action="?menu=work">
@@ -1707,7 +1715,10 @@ P17;
 	}
 
 	function RankShow(&$Ranking) {
-
+		$message = "";
+		$disableRB = false;
+		$left_mes = "";
+		$disable = "";
 		$now	= time();
 		if( ($now - $this->rank_set_time) < RANK_TEAM_SET_TIME) {
 			$left	= RANK_TEAM_SET_TIME - ($now - $this->rank_set_time);
@@ -1717,7 +1728,7 @@ P17;
 			$disable	= " disabled";
 		}
 		$temp17 = ShowError($message);
-echo <<<P18
+print <<<P18
 	<div style="margin:15px">
 	{$temp17}
 	<form action="?menu=rank" method="post">
@@ -1744,9 +1755,8 @@ P18;
 		print("<div style=\"clear:both\"></div>\n");
 		print("</div>\n");
 
-		$temp18 = $this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_rank));
 		$temp19 = floor(RANK_TEAM_SET_TIME/(60*60));
-echo <<<P19
+print <<<P19_A
 	<input type="submit" class="btn" value="도전!!" name="ChallengeRank" style="width:160px"{$disableRB} />
 	</form>
 	<form action="?menu=rank" method="post">
@@ -1754,8 +1764,9 @@ echo <<<P19
 	<p>순위전대 설정.<br />
 	여기에 순위전대를 배치합니다.</p>
 	</div>
-	{$temp18}
-
+	P19_A;
+	if(isset($this->party_rank)) $this->ShowCharacters($this->char,'CHECKBOX',explode("<>",$this->party_rank));
+print <<<P19_B
 	<div style="margin:15px">
 	{$left_mes}
 	<input type="submit" class="btn" style="width:160px" value="대열 설정" {$disable} />
@@ -1763,7 +1774,7 @@ echo <<<P19
 	<p>설정 후 {$temp19}시간 후에 재설정이 가능합니다.<br />Team setting disabled after {$temp19}hours once set.</p>
 	</form>
 	</div>
-P19;
+P19_B;
 	}
 
 	function RecruitProcess() {
@@ -1823,7 +1834,7 @@ P19;
 	function RecruitShow() {
 		if( MAX_CHAR <= $this->CharCount() ) {
 
-echo <<<P20
+print <<<P20
 	<div style="margin:15px">
 	<p>Maximum characters.<br>
 	Need to make a space to recruit new character.</p>
@@ -1851,40 +1862,44 @@ P20;
 		$char[7]	= new char();
 		$char[7]->SetCharData(array_merge(BaseCharStatus("4"),array("gender"=>"1")));
 
-		$temp20 = $char[0]->ShowImage();
-		$temp21 = $char[1]->ShowImage();
 		$temp22 = MoneyFormat(2000);
-		$temp23 = $char[2]->ShowImage();
-		$temp24 = $char[3]->ShowImage();
 		$temp25 = MoneyFormat(2000);
-		$temp26 = $char[4]->ShowImage();
-		$temp27 = $char[5]->ShowImage();
 		$temp28 = MoneyFormat(2500);
-		$temp29 = $char[6]->ShowImage();
-		$temp30 = $char[7]->ShowImage();
 		$temp31 = MoneyFormat(4000);
-echo <<<P21
+print <<<P21_A
 	<form action="?recruit" method="post" style="margin:15px">
 	<h4>새로운 인물의 직업</h4>
 	<table cellspacing="0"><tbody><tr>
 	<td class="td1" style="text-align:center">
-	{$temp20}
-	{$temp21}<br>
+	P21_A;
+	$char[0]->ShowImage();
+	$char[1]->ShowImage();
+	print <<<P21_B
+	<br>
 	<input type="radio" name="recruit_no" value="1" style="margin:3px"><br>
 	{$temp22}</td>
 	<td class="td1" style="text-align:center">
-	{$temp23}
-	{$temp24}<br>
+	P21_B;
+	$char[2]->ShowImage();
+	$char[3]->ShowImage();
+	print <<<P21_C
+	<br>
 	<input type="radio" name="recruit_no" value="2" style="margin:3px"><br>
 	{$temp25}</td>
 	<td class="td1" style="text-align:center">
-	{$temp26}
-	{$temp27}<br>
+	P21_C;
+	$char[4]->ShowImage();
+	$char[5]->ShowImage();
+	print <<<P21_D
+	<br>
 	<input type="radio" name="recruit_no" value="3" style="margin:3px"><br>
 	{$temp28}</td>
 	<td class="td1" style="text-align:center">
-	{$temp29}
-	{$temp30}<br>
+	P21_D;
+	$char[6]->ShowImage();
+	$char[7]->ShowImage();
+	print <<<P21_E
+	<br>
 	<input type="radio" name="recruit_no" value="4" style="margin:3px"><br>
 	{$temp31}</td>
 	</tr><tr>
@@ -1914,13 +1929,13 @@ echo <<<P21
 	</p>
 	</td></tr></tbody></table>
 	</form>
-P21;
+P21_E;
 
 	}
 
 	function SmithyRefineHeader() {
 		$temp32 = IMG_CHAR;
-echo <<<P22
+print <<<P22
 <div style="margin:15px">
 <h4>정련 공방(Refine)</h4>
 
@@ -2055,7 +2070,7 @@ P22;
 
 	function SmithyCreateHeader() {
 		$temp33 = IMG_CHAR;
-echo <<<P23
+print <<<P23
 <div style="margin:15px">
 <h4>제작 공방(Create)<a name="sm"></a></h4>
 <div style="width:600px">
@@ -2128,7 +2143,8 @@ P23;
 	}
 
 	function SmithyCreateShow() {
-
+		$result = "";
+		$head = "";
 		$CanCreate	= CanCreate($this);
 		include(CLASS_JS_ITEMLIST);
 		$CreateList	= new JS_ItemList();
@@ -2154,7 +2170,7 @@ P23;
 			print($CreateList->ShowSelect());
 			
 			$temp34 = $CreateList->ShowDefault();
-echo <<<P24
+print <<<P24
 <form action="?menu=create" method="post">
 <div id="list">{$temp34}</div>
 <input type="submit" class="btn" name="Create" value="만들다">
@@ -2170,7 +2186,7 @@ P24;
 				print(ShowItemDetail($item,$this->item["$item_no"],1)."<br />\n");
 			}
 		}
-echo <<<P25
+print <<<P25
 <input type="submit" class="btn" name="Create" value="만들다">
 <input type="reset" class="btn" value="다시 놓기">
 </form>
@@ -2183,14 +2199,14 @@ P25;
 		print("<h4>소지 소재 일람<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
 		print("<div style=\"margin:0 15px\">");
 		for($i=6000; $i<7000; $i++) {
-			if(!$this->item["$i"])
+			if(!isset($this->item["$i"]))
 				continue;
 			$item	= LoadItemData($i);
 			ShowItemDetail($item,$this->item["$i"]);
 			print("<br />\n");
 		}
 		
-echo <<<P26
+print <<<P26
 </div>
 </div>
 P26;
@@ -2215,7 +2231,7 @@ P26;
 	}
 
 	function AuctionEnter() {
-		if($this->item["9000"])
+		if(isset($this->item["9000"]))
 			return true;
 		else
 			return false;
@@ -2223,7 +2239,7 @@ P26;
 
 	function AuctionHeader() {
 		$temp35 = IMG_CHAR;
-echo <<<P27
+print <<<P27
 <div style="margin:15px 0 0 15px">
 <h4>경매(Auction)</h4>
 <div style="margin-left:20px">
@@ -2253,7 +2269,7 @@ P27;
 		if(!AUCTION_EXHIBIT_TOGGLE)
 			ShowError("경매중지");
 
-echo <<<P28
+print <<<P28
 </div>
 <div style="clear:both"></div>
 </div>
@@ -2264,15 +2280,16 @@ P28;
 	}
 
 	function AuctionFoot(&$ItemAuction) {
-		$temp36 = $ItemAuction->ShowLog();
-echo <<<P29
+print <<<P29_A
 </div>
 <a name="log"></a>
 <h4>경매기록(AuctionLog)</h4>
 <div style="margin-left:20px">
-{$temp36}
+P29_A;
+$ItemAuction->ShowLog();
+print <<<P29_B
 </div>
-P29;
+P29_B;
 	}
 
 	function AuctionItemBiddingProcess(&$ItemAuction) {
@@ -2411,7 +2428,7 @@ P29;
 		include(CLASS_JS_ITEMLIST);
 		$possible	= CanExhibitType();
 
-echo <<<P30
+print <<<P30
 <div class="u bold">참여 방법</div>
 <ol>
 <li>아이템 하나를 선택해서 경매.</li>
@@ -2452,7 +2469,7 @@ P30;
 		print($ExhibitList->GetJavaScript("list"));
 		print($ExhibitList->ShowSelect());
 		$temp37 = $ExhibitList->ShowDefault();
-echo <<<P31
+print <<<P31
 <form action="?menu=auction" method="post">
 <div id="list">{$temp37}</div>
 <table><tr><td style="text-align:right">
@@ -2580,7 +2597,7 @@ P31;
 		print('<form action="'.INDEX.'?union='.__GET("union").'" method="post">');
 		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
 
-echo <<<P32
+print <<<P32
 	<div style="margin:15px;text-align:center">
 	<input type="submit" class="btn" value="대결!">
 	<input type="hidden" name="union_battle" value="1">
@@ -2599,7 +2616,7 @@ P32;
 		$PlaceList	= TownAppear($this);
 		if($PlaceList["Shop"]) {
 
-echo <<<P33
+print <<<P33
 <li>상점(Shop)
 <ul>
 <li><a href="?menu=buy">사기(Buy)</a></li>
@@ -2613,7 +2630,7 @@ P33;
 			print("<li><p><a href=\"?recruit\">인재중재소(Recruit)</a></p></li>");
 		if($PlaceList["Smithy"]) {
 
-echo <<<P34
+print <<<P34
 <li>제작소(Smithy)
 <ul>
 <li><a href="?menu=refine">정련 공방(Refine)</a></li>
@@ -2636,7 +2653,7 @@ P34;
 
 	function TownBBS() {
 		$file	= BBS_TOWN;
-echo <<<P35
+print <<<P35
 <form action="?town" method="post">
 <input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
 <input type="submit" value="post" class="btn" style="width:100px" />
@@ -2725,13 +2742,16 @@ P35;
 	}
 
 	function SettingShow() {
+		$record_btl_log = "";
+		$no_JS_itemlist = "";
+		$Result = "";
 		print('<div style="margin:15px">'."\n");
 		if($this->record_btl_log) $record_btl_log	= " checked";
 		if($this->no_JS_itemlist) $no_JS_itemlist	= " checked";
 		
 		$temp38 = INDEX;
 		$temp39 = MoneyFormat(NEW_NAME_COST);
-echo <<<P36
+print <<<P36
 <h4>설정</h4>
 <form action="?setting" method="post">
 <table><tbody>
@@ -2983,6 +3003,7 @@ P36;
 	}
 
 	function MemorizeParty() {
+		$PartyMemo = [];
 		if(__POST("memory_party")) {
 			foreach($this->char as $key => $val) {
 				if(__POST("char_".$key))
@@ -3005,7 +3026,7 @@ P36;
 		$term	= 60*60*1;
 		if( ($last - $start) < $term) {
 
-echo <<<P37
+print <<<P37
 	<div style="margin:5px 15px">
 	<a href="?tutorial">튜토리얼</a> - 전투의 기본 (로그인 후 1시간 이내에 표시)
 	</div>
@@ -3016,6 +3037,7 @@ P37;
 
 
 	function ShowMyCharacters($array=NULL) {
+		$i = 0;
 		if(!$this->char) return false;
 		$divide	= (__count($this->char)<CHAR_ROW ? count($this->char) : CHAR_ROW);
 		$width	= floor(100/$divide);
@@ -3033,6 +3055,7 @@ P37;
 	}
 
 	function ShowCharacters($characters,$type=null,$checked=null) {
+		$i = 0;
 		if(!$characters) return false;
 		$divide	= (__count($characters)<CHAR_ROW ? count($characters) : CHAR_ROW);
 		$width	= floor(100/$divide);
@@ -3058,9 +3081,9 @@ HTML;
 			print("\t<td valign=\"bottom\" style=\"width:{$width}%\">");
 
 			switch(1) {
-				case ($type === MONSTER):
+				case ($type === "MONSTER"):
 					$char->ShowCharWithLand($checked); break;
-				case ($type === CHECKBOX):
+				case ($type === "CHECKBOX"):
 					if(!is_array($checked)) $checked = array();
 					if(in_array($char->birth,$checked))
 						$char->ShowCharRadio($char->birth," checked");
@@ -3276,7 +3299,7 @@ HTML;
 	function NewForm($error=NULL) {
 		if(MAX_USERS <= __count(glob(USER."*"))) {
 
-echo <<<P38
+print <<<P38
 	<div style="margin:15px">
 	Maximum users.<br />
 	가입자 수가 최대에 도달했습니다.
@@ -3288,7 +3311,7 @@ P38;
 
 		$temp40 = ShowError($error);
 		$temp41 = INDEX;
-echo <<<P39
+print <<<P39
 	<div style="margin:15px">
 	{$temp40}
 	<h4>등록하기</h4>
@@ -3317,7 +3340,7 @@ P39;
 		
 		$temp42 = INDEX;
 		$temp43 = ((__SESSION("id")) ? " value=\"".__SESSION('id')."\"" : NULL);
-echo <<<P40
+print <<<P40
 <div style="width:730px;">
 <div style="width:350px;float:right">
 <h4 style="width:350px">로그인</h4>
@@ -3347,7 +3370,7 @@ P40;
 
 	$temp44 = UserAmount();
 	$temp45 = MAX_USERS;
-echo <<<P41
+print <<<P41
 </div>
 <div style="width:350px;padding:5px;float:left;">
 <div style="width:350px;text-align:center">
@@ -3393,7 +3416,7 @@ print("</div>\n");
 			$temp46 = MoneyFormat($this->money);
 			$temp47 = floor($this->time);
 			$temp48 = MAX_TIME;
-echo <<<P42
+print <<<P42
 	<div style="width:100%">
 	<div style="width:30%;float:left">{$this->name}</div>
 	<div style="width:60%;float:right">
@@ -3427,26 +3450,29 @@ P42;
 
 
 	function Head() {
-		$temp49 = $this->HtmlScript();
 		$temp50 = TITLE;
-		$temp51 = $this->MyMenu();
-echo <<<P43
+print <<<P43_A
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-{$temp49}
+P43_A;
+$this->HtmlScript();
+print <<<P43_B
 <title>{$temp50}</title>
 </head>
 <body><a name="top"></a>
 <div id="main_frame">
 <div id="title"><img src="./image/title03.gif"></div>
-{$temp51}<div id="contents">
-P43;
+P43_B;
+$this->MyMenu();
+print <<<P43_C
+<div id="contents">
+P43_C;
 	}
 
 
 	function HtmlScript() {
-echo <<<P44
+print <<<P44
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./basis.css" type="text/css">
 <link rel="stylesheet" href="./style.css" type="text/css">
@@ -3457,7 +3483,7 @@ P44;
 
 	function Foot() {
 
-echo <<<P45
+print <<<P45
 </div>
 <div style="clear: both;"></div>
 <div id="foot">
@@ -3466,7 +3492,7 @@ P45;
 	if(BBS_BOTTOM_TOGGLE)
 		print('<a href="'.BBS_OUT.'" target="_blank">BBS</a> - '."\n");
 
-echo <<<P46
+print <<<P46
 <a href="?manual">메뉴얼</a> - 
 <a href="?tutorial">튜토리얼</a> - 
 <a href="?gamedata=job">게임 데이터</a> - 
@@ -3583,15 +3609,16 @@ P46;
 		$sor_female->SetCharData($mr8);
 
 		$temp52 = INDEX;
-		$temp53 = ShowError($error);
 		$temp54 = (__POST("name")?"value=\"".__POST('name')."\"":"");
 		$temp55 = $war_male->ShowImage();
 		$temp56 = $war_female->ShowImage();
 		$temp57 = $sor_male->ShowImage();
 		$temp58 = $sor_female->ShowImage();
-echo <<<P47
+print <<<P47_A
 	<form action="{$temp52}" method="post" style="margin:15px">
-	{$temp53}
+	P47_A;
+	ShowError($error);
+	print <<<P47_B
 	<h4>Name of Team</h4>
 	<p>Decide the Name of the team.<br />
 	It should be more than 1 and less than 16 letters.<br />
@@ -3619,7 +3646,7 @@ echo <<<P47
 	<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
 	<input type="hidden" value="1" name="Done">
 	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
-P47;
+P47_B;
 
 			return true;
 	}
@@ -3629,7 +3656,7 @@ P47;
 			return false;
 		$file	= BBS_BOTTOM;
 
-echo <<<P48
+print <<<P48
 <div style="margin:15px">
 <h4>one line bbs</h4>
 잘못된 보고나 의견, 여기에 대한 개발 건의
