@@ -71,24 +71,24 @@ for($no=1000; $no<9999; $no++) {
 
 	print("<tr>");
 	print("<td>{$no}</td>");
-	print("<td style=\"font-weight:bold\">{$skill[name]}</td>");
+	print("<td style=\"font-weight:bold\">{$skill['name']}</td>");
 	$img	= '<img src="'.$img_f.$skill["img"].'">';
 	print("<td>$img</td>");//img
-	print("<td>{$skill[sp]}".($skill["sacrifice"]?"<span style=\"color:red\">s:{$skill[sacrifice]}</span>":"")."</td>");
-	print("<td>{$skill[type]}</td>");//type
-	print("<td>{$skill[learn]}</td>");
-	print("<td>{$skill[target][0]},{$skill[target][1]},{$skill[target][2]}</td>");//target
+	print("<td>{$skill['sp']}".($skill["sacrifice"]?"<span style=\"color:red\">s:{$skill['sacrifice']}</span>":"")."</td>");
+	print("<td>{$skill['type']}</td>");//type
+	print("<td>{$skill['learn']}</td>");
+	print("<td>{$skill['target'][0]},{$skill['target'][1]},{$skill['target'][2]}</td>");//target
 	if($skill[summon]) {
-		print("<td>召喚:{$skill[summon]}".($skill[quick]?"(Q)":"")."</td>");
+		print("<td>소환 : {$skill['summon']}".($skill['quick']?"(Q)":"")."</td>");
 	} else {
-		print("<td>{$skill[pow]}% x {$skill[target][2]} = ".($skill[pow]*$skill[target][2])."%</td>");
+		print("<td>{$skill[pow]}% x {$skill['target'][2]} = ".($skill[pow]*$skill['target'][2])."%</td>");
 	}
-	print("<td>{$skill[hit]}</td>");//hit
-	print("<td>{$skill[invalid]}</td>");//invalid
-	print("<td>{$skill[support]}</td>");//
-	print("<td>{$skill[priority]}</td>");//
-	print("<td>{$skill[charge][0]}:{$skill[charge][1]}</td>");
-	print("<td>{$skill[exp]}</td>");//
+	print("<td>{$skill['hit']}</td>");//hit
+	print("<td>{$skill['invalid']}</td>");//invalid
+	print("<td>{$skill['support']}</td>");//
+	print("<td>{$skill['priority']}</td>");//
+	print("<td>{$skill['charge'][0]}:{$skill['charge'][1]}</td>");
+	print("<td>{$skill['exp']}</td>");//
 	
 	print("</tr>\n");
 }

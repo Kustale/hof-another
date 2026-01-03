@@ -15,7 +15,7 @@ for($no=1000; $no<10000; $no++) {
 	$skill = LoadSkillData($no);
 	if(!$skill) continue;
 
-	print("case $no: // ".$skill[name]."<br>");
+	print("case $no: // ".$skill['name']."<br>");
 	$list[]	= $no;
 }
 foreach($list as $var) {

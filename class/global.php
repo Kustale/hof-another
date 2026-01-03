@@ -478,7 +478,7 @@ function ShowBattleLog($no,$type=false) {
 			print(" / <span class=\"".(isset($skill["support"])?"recover":"dmg")."\">{$skill['pow']}%</span>x");
 			if(isset($skill["target"])) print(( $skill["target"][2] ? $skill["target"][2] : "1" ) );
 		}
-		if($skill["type"] == 1)
+		if((isset($skill["type"]) ? $skill["type"] : 0) == 1)
 			print(" / <span class=\"spdmg\">Magic</span>");
 		if(isset($skill["quick"]))
 			print(" / <span class=\"charge\">Quick</span>");

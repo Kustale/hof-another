@@ -21,11 +21,12 @@ include("../data/data.judge_setup.php");
 for($i=1000; $i<9999; $i++) {
 	$j	= LoadJudgeData($i);
 	if($j) {
-		print("case {$i}:// {$j[exp]}<br />");
+		print("case {$i}:// {$j['exp']}<br />");
 		$list[]	= $i;
 	}
 }
 print("array(<br />\n");
+$A = 0;
 foreach($list as $var) {
 	$A++;
 	print("$var, ");

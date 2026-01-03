@@ -36,9 +36,11 @@ input{background-color:#dddddd;
 </head>
 <body>
 <?php
-	function UserAmount() {
-		return 1;
-	}
+	include("../class/global.php");
+
+	//function UserAmount() {
+	//	return 1;
+	//}
 
 	define("ROWS",__POST("patternNum")?__POST("patternNum"):8);
 	define("IMG","../image/char/");
@@ -48,9 +50,9 @@ input{background-color:#dddddd;
 		$monster	= CreateMonster(__POST("loadMob"));
 		if($monster) {
 			for($i=0; $i<ROWS; $i++) {
-				__POST("judge".$i)		= $monster["judge"][$i]?$monster["judge"][$i]:NULL;
-				__POST("quantity".$i)	= $monster["quantity"][$i]?$monster["quantity"][$i]:NULL;
-				__POST("skill".$i)		= $monster["action"][$i]?$monster["action"][$i]:NULL;
+				$_POST["judge".$i]		= $monster["judge"][$i]?$monster["judge"][$i]:NULL;
+				$_POST["quantity".$i]	= $monster["quantity"][$i]?$monster["quantity"][$i]:NULL;
+				$_POST["skill".$i]		= $monster["action"][$i]?$monster["action"][$i]:NULL;
 			}
 		}
 		print('<span style="font-weight:bold">'.__POST("loadMob")." ".$monster["name"].'</span><img src="'.IMG.$monster["img"].'" />');
@@ -62,9 +64,9 @@ input{background-color:#dddddd;
 		foreach($var as $head) {
 			for($i=ROWS; -1<$i; $i--) {
 				if($number == $i)
-					__POST($head.$i)	= NULL;
+					$_POST[$head.$i]	= NULL;
 				else if($number < $i)
-					__POST($head.$i)	= __POST($head.($i-1));
+					$_POST[$head.$i]	= __POST($head.($i-1));
 				else
 					break;
 			}
@@ -77,7 +79,7 @@ input{background-color:#dddddd;
 		foreach($var as $head) {
 			for($i=0; $i<ROWS; $i++) {
 				if($number <= $i)
-					__POST($head.$i)	= __POST($head.($i+1));
+					$_POST[$head.$i]	= __POST($head.($i+1));
 			}
 		}
 	}
@@ -108,7 +110,7 @@ input{background-color:#dddddd;
 		if(!$judge)
 			continue;
 		$judgeList["$i"]["exp"]	= $judge["exp"];
-		if($judge["css"])
+		if(isset($judge["css"]))
 			$judgeList["$i"]["css"]	= true;
 	}
 
@@ -117,7 +119,7 @@ input{background-color:#dddddd;
 		$skill	= LoadSkillData($i);
 		if(!$skill)
 			continue;
-		$skillList["$i"]	= $i." - ".$skill["name"]."(sp:{$skill[sp]})";
+		$skillList["$i"]	= $i." - ".$skill["name"]."(sp:".(isset($skill['sp'])?$skill['sp']:"").")";
 	}
 
 	print('<form method="post" action="?">'."\n");
@@ -129,7 +131,7 @@ input{background-color:#dddddd;
 		print('<select name="judge'.$i.'">'."\n");
 		print('<option></option>'."\n");
 		foreach($judgeList as $key => $exp) {
-			$css	= $exp["css"]?' class="bg"':NULL;
+			$css	= isset($exp["css"])?' class="bg"':NULL;
 			if(__POST("judge".$i) == $key)
 				print('<option value="'.$key.'"'.$css.'selected>'.$exp["exp"].'</option>'."\n");
 			else
@@ -153,12 +155,12 @@ input{background-color:#dddddd;
 		print("</td></tr>\n");
 	}
 	print("</table>\n");
-	print('判定次数: <input type="text" name="patternNum" size="10" value="'.(__POST("patternNum")?__POST("patternNum"):"8").'" /><br />'."\n");
+	print('판결 건수 : <input type="text" name="patternNum" size="10" value="'.(__POST("patternNum")?__POST("patternNum"):"8").'" /><br />'."\n");
 	print('<input type="submit" value="만들다" name="make">'."\n");
 	print('<input type="hidden" value="make" name="make">'."\n");
 	print('<input type="submit" value="추가" name="add">'."\n");
 	print('<input type="submit" value="삭제" name="delete"><br />'."\n");
-	print('输入怪物id: <input type="text" name="loadMob" size="10" /> <input type="submit" value="读取" name="Load" />');
+	print('몬스터 ID를 입력하세요 : <input type="text" name="loadMob" size="10" /> <input type="submit" value="읽기" name="Load" />');
 	print("</form>\n");
 ?>
 </body>

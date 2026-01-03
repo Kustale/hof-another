@@ -41,18 +41,19 @@ td{
 </style></head>
 <body>
 <?php 
+define("DATA_ENCHANT","");
 include("../data/data.item.php");
 print("<table cellspacing=\"1\"><tbody>");
 $img_f	= "../image/icon/";
 $des	= '<tr><td class="a">ID</td>
-<td class="a">图</td>
-<td class="a">名字</td>
-<td class="a">类型</td>
+<td class="a">사진</td>
+<td class="a">이름</td>
+<td class="a">유형</td>
 <td class="a">atk</td>
 <td class="a">def</td>
 <td class="a">handle</td>
-<td class="a">卖价</td>
-<td class="a">买价</td></tr>';
+<td class="a">판매 가격</td>
+<td class="a">입찰 가격</td></tr>';
 $count=0;
 for($i=1000; $i<10000; $i++) {
 	$item	= LoadItemData($i);
@@ -65,28 +66,28 @@ for($i=1000; $i<10000; $i++) {
 	print("<tr><td>\n");
 	print($i);
 	print("</td><td>");
-	print("<img src=\"".$img_f.$item[img]."\">");
+	if(isset($item['img'])) print("<img src=\"".$img_f.$item['img']."\">");
 	print("</td><td>\n");
-	print($item[name]);
+	print(isset($item['name'])?$item['name']:"");
 	print("</td><td>\n");
-	print($item[type]);
+	print(isset($item['type'])?$item['type']:"");
 	print("</td><td>\n");
-	print($item[atk][0]."<br />".$item[atk][1]);
+	print((isset($item['atk'][0])?$item['atk'][0]:"")."<br />".(isset($item['atk'][1])?$item['atk'][1]:""));
 	print("</td><td>\n");
-	print($item[def][0]."+".$item[def][1]."<br />".$item[def][2]."+".$item[def][3]);
+	print((isset($item['def'][0])?$item['def'][0]:"")."+".(isset($item['def'][1])?$item['def'][1]:"")."<br />".(isset($item['def'][2])?$item['def'][2]:"")."+".(isset($item['def'][3])?$item['def'][3]:""));
 	print("</td><td>\n");
-	print($item[handle]);
+	print(isset($item['handle'])?$item['handle']:"");
 	print("</td><td>\n");
-	print($item[buy]);
+	print(isset($item['buy'])?$item['buy']:"");
 	print("</td><td>\n");
-	print($item[sell]);
+	print(isset($item['sell'])?$item['sell']:"");
 	print("</td></tr>\n");
-	if($item["need"]) {
+	if(isset($item["need"])) {
 		print("<tr><td colspan=\"9\" style=\"text-align:left;padding-left:50px\">\n");
 		foreach($item["need"] as $M_item => $M_amount) {
 			$M	= LoadItemData($M_item);
-			print("$M[name]");
-			print("<img src=\"".$img_f.$M[img]."\">");
+			print("{$M['name']}");
+			print("<img src=\"".$img_f.$M['img']."\">");
 			print("x".$M_amount." / \n");
 		}
 		print("</td></tr>\n");

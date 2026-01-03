@@ -10,6 +10,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 */
 
 function LoadSkillData($no) {
+	$skill = array();
 	switch($no) {
 		case "1000":
 $skill	= array(
@@ -5919,8 +5920,7 @@ $skill	= array(
 "pow"	=> false,
 ); break;
 	}
-	if(!$skill)
-		return false;
+	if(!array_filter($skill)) return false;
 	$skill	+= array("no"=>"$no");
 	return $skill;
 }

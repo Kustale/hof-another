@@ -10,6 +10,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 */
 
 function LoadJobData($no) {
+	$job = array();
 	switch($no) {
 		case "100":
 $job	= array(

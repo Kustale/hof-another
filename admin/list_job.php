@@ -72,20 +72,20 @@ for($no=100; $no<999; $no++) {
 
 	print("<tr>");
 	print("<td>{$no}</td>");//no
-	print("<td>{$j[name_male]}</td>");
-	print("<td>{$j[coe][0]} : {$j[coe][1]}</td>");
-	print("<td><img src=\"{$img_f}{$j[img_male]}\"><img src=\"{$img_f}{$j[img_female]}\"></td>");//no
+	print("<td>{$j['name_male']}</td>");
+	print("<td>{$j['coe'][0]} : {$j['coe'][1]}</td>");
+	print("<td><img src=\"{$img_f}{$j['img_male']}\"><img src=\"{$img_f}{$j['img_female']}\"></td>");//no
 	print("</tr>\n");
 	print("<tr>");
 	print("<td colspan=\"4\">");
-	foreach($j[equip] as $i)
+	foreach($j['equip'] as $i)
 		print("$i, ");
 	print("</td>");
 	print("</tr>\n");
-	if($j[learn]) {
+	if(isset($j['learn'])) {
 	print("<tr><td colspan=\"4\">");
 	print('<table><tbody>');
-		foreach($j[learn] as $skill) {
+		foreach($j['learn'] as $skill) {
 			print("<tr><td class=\"b\">");
 			$skill	= LoadSKillData($skill);
 			ShowSkillDetail($skill);
@@ -114,32 +114,32 @@ print("</tbody></table>");
 		print("{$skill[name]}");
 
 		if($radio)
-			print(" / <span class=\"bold\">{$skill[learn]}</span>pt");
+			print(" / <span class=\"bold\">{$skill['learn']}</span>pt");
 
-		if($skill[target][0] == "all")
-			print(" / <span class=\"charge\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "enemy")
-			print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "friend")
-			print(" / <span class=\"recover\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "self")
-			print(" / <span class=\"support\">{$skill[target][0]}</span>");
-		else if(isset($skill[target][0]))
-			print(" / {$skill[target][0]}");
+		if($skill['target'][0] == "all")
+			print(" / <span class=\"charge\">{$skill['target'][0]}</span>");
+		else if($skill['target'][0] == "enemy")
+			print(" / <span class=\"dmg\">{$skill['target'][0]}</span>");
+		else if($skill['target'][0] == "friend")
+			print(" / <span class=\"recover\">{$skill['target'][0]}</span>");
+		else if($skill['target'][0] == "self")
+			print(" / <span class=\"support\">{$skill['target'][0]}</span>");
+		else if(isset($skill['target'][0]))
+			print(" / {$skill['target'][0]}");
 
-		if($skill[target][1] == "all")
-			print(" - <span class=\"charge\">{$skill[target][1]}</span>");
-		else if($skill[target][1] == "individual")
-			print(" - <span class=\"recover\">{$skill[target][1]}</span>");
-		else if($skill[target][1] == "multi")
-			print(" - <span class=\"spdmg\">{$skill[target][1]}</span>");
-		else if(isset($skill[target][1]))
-			print(" - {$skill[target][1]}");
+		if($skill['target'][1] == "all")
+			print(" - <span class=\"charge\">{$skill['target'][1]}</span>");
+		else if($skill['target'][1] == "individual")
+			print(" - <span class=\"recover\">{$skill['target'][1]}</span>");
+		else if($skill['target'][1] == "multi")
+			print(" - <span class=\"spdmg\">{$skill['target'][1]}</span>");
+		else if(isset($skill['target'][1]))
+			print(" - {$skill['target'][1]}");
 
 		if(isset($skill["sp"]))
-			print(" / <span class=\"support\">{$skill[sp]}sp</span>");
+			print(" / <span class=\"support\">{$skill['sp']}sp</span>");
 		if($skill["pow"]) {
-			print(" / <span class=\"".($skill["support"]?"recover":"dmg")."\">{$skill[pow]}%</span>x");
+			print(" / <span class=\"".($skill["support"]?"recover":"dmg")."\">{$skill['pow']}%</span>x");
 			print(( $skill["target"][2] ? $skill["target"][2] : "1" ) );
 		}
 		if($skill["type"] == 1)
@@ -155,7 +155,7 @@ print("</tbody></table>");
 			print(($skill["charge"]["1"]?$skill["charge"]["1"]:"0").")");
 		}
 		if($skill["exp"])
-			print(" / {$skill[exp]}");
+			print(" / {$skill['exp']}");
 		print("\n");
 	}
 ?>
