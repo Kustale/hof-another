@@ -206,6 +206,9 @@ HTML;
 
 
 	function BattleResult() {
+		$team0Lose = false;
+		$team1Lose = false;
+		
 		if(CountAlive($this->team0) == 0)
 			$team0Lose	= true;
 		if(CountAlive($this->team1) == 0)
@@ -341,6 +344,8 @@ HTML;
 
 
 	function Action(&$char) {
+		$MyTeam = null;
+		
 		if($char->judge === array()) {
 			$char->delay	= $char->SPD;
 			return false;
@@ -363,7 +368,7 @@ HTML;
 
 		if($char->expect) {
 			$skill	= $char->expect;
-			$return	= &$char->target_expect;
+			$return	= $char->target_expect;
 		} else {
 			$JudgeKey	= -1;
 
@@ -380,9 +385,10 @@ HTML;
 				$return	= MultiFactJudge($Keys,$char,$this);
 
 				if($return) {
-					$skill	= $char->action["$JudgeKey"];
+					if(isset($char->action["$JudgeKey"])) $skill	= $char->action["$JudgeKey"];
 					foreach($Keys as $no)
-						$char->JdgCount[$no]++;
+						//$char->JdgCount[$no]++;
+						array_push($char->JdgCount,$no);
 					break;
 				}
 			} while($char->judge["$JudgeKey"]);
@@ -393,7 +399,7 @@ HTML;
 		if($skill) {
 			$this->UseSkill($skill,$return,$char,$MyTeam,$EnemyTeam);
 		} else {
-			print($char->Name(bold). " 생각에 잠겨 행동하는 것을 잊어버렸습니다.<br />(더 이상 액션 모드가 없습니다)<br />\n");
+			print($char->Name('bold'). " 생각에 잠겨 행동하는 것을 잊어버렸습니다.<br />(더 이상 액션 모드가 없습니다)<br />\n");
 			$char->DelayReset();
 		}
 
@@ -414,9 +420,9 @@ HTML;
 	function UseSkill($skill_no,&$JudgedTarget,&$My,&$MyTeam,&$Enemy) {
 		$skill	= LoadSkillData($skill_no);
 
-		if($skill["limit"] && !$My->monster) {
+		if(isset($skill["limit"]) && !$My->monster) {
 			if(!$skill["limit"][$My->WEAPON]) {
-				print('<span class="u">'.$My->Name(bold));
+				print('<span class="u">'.$My->Name('bold'));
 				print('<span class="dmg">실패</span> 이유는 다음과 같습니다');
 				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
@@ -428,7 +434,7 @@ HTML;
 		}
 
 		if($My->SP < $skill["sp"]) {
-			print($My->Name(bold).$skill["name"]."실패(SP 부족)");
+			print($My->Name('bold').$skill["name"]."실패(SP 부족)");
 			if($My->expect) {
 				$My->ResetExpect();
 			}
@@ -436,12 +442,12 @@ HTML;
 			return true;
 		}
 
-		if($skill["charge"]["0"] && $My->expect === false) {
+		if(isset($skill["charge"]["0"]) && $My->expect === false) {
 			if($skill["type"] == 0) {
-				print('<span class="charge">'.$My->Name(bold).'이 충전을 시작합니다.</span>');
+				print('<span class="charge">'.$My->Name('bold').'이 충전을 시작합니다.</span>');
 				$My->expect_type	= CHARGE;
 			} else {
-				print('<span class="charge">'.$My->Name(bold).'으로 주문이 시작됩니다.</span>');
+				print('<span class="charge">'.$My->Name('bold').'으로 주문이 시작됩니다.</span>');
 				$My->expect_type	= CAST;
 			}
 			$My->expect	= $skill_no;
@@ -454,14 +460,14 @@ HTML;
 		} else {
 			$My->ActCount++;
 
-			print('<div class="u">'.$My->Name(bold));
+			print('<div class="u">'.$My->Name('bold'));
 			print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
-			print($skill[name]."</div>\n");
+			print($skill['name']."</div>\n");
 
-			if($skill["MagicCircleDeleteTeam"])
+			if(isset($skill["MagicCircleDeleteTeam"]))
 			{
 				if($this->MagicCircleDelete($My->team,$skill["MagicCircleDeleteTeam"])) {
-					print($My->Name(bold).'<span class="charge"> 마법진 사용 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
+					print($My->Name('bold').'<span class="charge"> 마법진 사용 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
 				} else {
 					print('<span class="dmg">실패! (마법진 부족)</span><br />'."\n");
 					$My->DelayReset();
@@ -474,7 +480,7 @@ HTML;
 			if($My->expect)
 				$My->ResetExpect();
 
-			if($skill["sacrifice"])
+			if(isset($skill["sacrifice"]))
 				$My->SacrificeHp($skill["sacrifice"]);
 
 		}
@@ -486,7 +492,7 @@ HTML;
 		elseif($skill["target"]["0"] == "self"):
 			$candidate[]	= &$My;
 		elseif($skill["target"]["0"] == "all"):
-			$candidate	= array_merge_recursive(&$MyTeam,&$Enemy);
+			$candidate	= array_merge_recursive($MyTeam,$Enemy);
 		endif;
 
 		if($skill["target"]["1"] == "individual") {
@@ -510,7 +516,7 @@ HTML;
 		} else if($skill["target"]["1"] == "all") {
 			foreach($candidate as $key => $char) {
 				$target	= &$candidate[$key];
-				if($skill["priority"] != "사망") {
+				if((isset($skill["priority"]) ? $skill["priority"] : "") != "사망") {
 					if($char->STATE === DEAD) continue;
 				}
 				for($i=0; $i<$skill["target"]["2"]; $i++) {
@@ -520,10 +526,10 @@ HTML;
 			}
 		}
 
-		if($skill["umove"])
+		if(isset($skill["umove"]))
 			$My->Move($skill["umove"]);
 
-		if($skill["sacrifice"]) { 
+		if(isset($skill["sacrifice"])) { 
 			$Sacrier[]	= &$My;
 			$this->JudgeTargetsDead($Sacrier);
 		}
@@ -536,9 +542,9 @@ HTML;
 		if($this->ChangeDelay)
 			$this->SetDelay();
 
-		if($skill["charge"]["1"]) {
+		if(isset($skill["charge"]["1"])) {
 			$My->DelayReset();
-			print($My->Name(bold)." 는 행동이 지연되었다.");
+			print($My->Name('bold')." 는 행동이 지연되었다.");
 			$My->DelayByRate($skill["charge"]["1"],$this->delay,1);
 			print("<br />\n");
 			return false;
@@ -586,9 +592,9 @@ function GetExp($exp,&$team) {
 	function &Defending(&$target,&$candidate,$skill) {
 		if($target === false) return false;
 
-		if($skill["invalid"])
+		if(isset($skill["invalid"]))
 			return false;
-		if($skill["support"])
+		if(isset($skill["support"]))
 			return false;
 		if($target->POSITION == "front")
 			return false;
@@ -613,7 +619,7 @@ function GetExp($exp,&$team) {
 			}
 			switch($char->guard) {
 				case "never":
-					continue;
+					continue 2;
 				case "life25":
 					if(25 < $HpRate) $defender	= &$fore["$key"]; break;
 				case "life50":
@@ -637,23 +643,27 @@ function GetExp($exp,&$team) {
 	}
 
 	function JudgeTargetsDead(&$target) {
+		$exp = 0;
+		$money = 0;
+		$itemdrop = array();
 		foreach($target as $key => $char) {
 			if(method_exists($target[$key],'HpDifferenceEXP')) {
 				$exp	+= $target[$key]->HpDifferenceEXP();
 			}
 			if($target[$key]->CharJudgeDead()) {
-				print("<span class=\"dmg\">".$target[$key]->Name(bold)." 가 패배했습니다.</span><br />\n");
+				print("<span class=\"dmg\">".$target[$key]->Name('bold')." 가 패배했습니다.</span><br />\n");
 
 				$exp	+= $target[$key]->DropExp();
 
 				$money	+= $target[$key]->DropMoney();
 
 				if($item = $target[$key]->DropItem()) {
-					$itemdrop["$item"]++;
+					//$itemdrop["$item"]++;
+					array_push($itemdrop,$item);
 					$item	= LoadItemData($item);
 					print($char->Name("bold")." 가 삭제되었습니다");
 					print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\"/>\n");
-					print("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
+					print("<span class=\"bold u\">{$item['name']}</span>.<br />\n");
 				}
 
 				if($target[$key]->summon === true) {
@@ -667,7 +677,7 @@ function GetExp($exp,&$team) {
 	}
 
 	function &SelectTarget(&$target_list,$skill) {
-		if($skill["priority"] == "LowHpRate") {
+		if((isset($skill["priority"]) ? $skill["priority"] : "") == "LowHpRate") {
 			$hp = 2;
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD) continue;
@@ -679,7 +689,7 @@ function GetExp($exp,&$team) {
 			}
 			return $target;
 
-		} else if($skill["priority"] == "Back") {
+		} else if((isset($skill["priority"]) ? $skill["priority"] : "") == "Back") {
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD) continue;
 				if($char->POSITION != FRONT)
@@ -687,7 +697,7 @@ function GetExp($exp,&$team) {
 			}
 			if($target)
 				return $target[array_rand($target)];
-		} else if($skill["priority"] == "Dead") {
+		} else if((isset($skill["priority"]) ? $skill["priority"] : "") == "Dead") {
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD)
 				$target[]	= &$target_list[$key];
@@ -696,7 +706,7 @@ function GetExp($exp,&$team) {
 				return $target[array_rand($target)];
 			else
 				return false;
-		} else if($skill["priority"] == "Summon") {
+		} else if((isset($skill["priority"]) ? $skill["priority"] : "") == "Summon") {
 			foreach($target_list as $key => $char) {
 				if($char->summon)
 					$target[]	= &$target_list[$key];
@@ -705,7 +715,7 @@ function GetExp($exp,&$team) {
 				return $target[array_rand($target)];
 			else
 				return false;
-		} else if($skill["priority"] == "Charge") {
+		} else if((isset($skill["priority"]) ? $skill["priority"] : "") == "Charge") {
 			foreach($target_list as $key => $char) {
 				if($char->expect)
 					$target[]	= &$target_list[$key];
@@ -850,6 +860,14 @@ function GetExp($exp,&$team) {
 	}
 
 	function BattleHeader() {
+		$team0_total_lv = 0;
+		$team0_total_hp = 0;
+		$team0_total_maxhp = 0;
+		
+		$team1_total_lv = 0;
+		$team1_total_hp = 0;
+		$team1_total_maxhp = 0;
+		
 		foreach($this->team0 as $char) {
 			$team0_total_lv	+= $char->level;
 			$team0_total_hp	+= $char->HP;

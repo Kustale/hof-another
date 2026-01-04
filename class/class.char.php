@@ -85,7 +85,7 @@ class char{
 		$SelfDamage	= ceil( $this->MAXHP*($rate/100) );
 		if($this->POSITION != "front")
 			$SelfDamage	*= 2;
-		print("<span class=\"dmg\">".$this->Name(bold)." sacrifice ");
+		print("<span class=\"dmg\">".$this->Name('bold')." sacrifice ");
 		print("<span class=\"bold\">$SelfDamage</span> HP</span>\n");
 		$this->HpDamage($SelfDamage);
 		print("</span><br />\n");
@@ -104,15 +104,15 @@ class char{
 	}
 
 	function AutoRegeneration() {
-		if($this->SPECIAL["HpRegen"]) {
+		if(isset($this->SPECIAL["HpRegen"])) {
 			$Regen	= round($this->MAXHP * $this->SPECIAL["HpRegen"]/100);
-			print('<span class="recover">* </span>'.$this->Name(bold)."<span class=\"recover\"> 자동 회신 <span class=\"bold\">".$Regen." HP</span></span> ");
+			print('<span class="recover">* </span>'.$this->Name('bold')."<span class=\"recover\"> 자동 회신 <span class=\"bold\">".$Regen." HP</span></span> ");
 			$this->HpRecover($Regen);
 			print("<br />\n");
 		}
-		if($this->SPECIAL["SpRegen"]) {
+		if(isset($this->SPECIAL["SpRegen"])) {
 			$Regen	= round($this->MAXSP * $this->SPECIAL["SpRegen"]/100);
-			print('<span class="support">* </span>'.$this->Name(bold)."<span class=\"support\"> 자동 회신 <span class=\"bold\">".$Regen." SP</span></span> ");
+			print('<span class="support">* </span>'.$this->Name('bold')."<span class=\"support\"> 자동 회신 <span class=\"bold\">".$Regen." SP</span></span> ");
 			$this->SpRecover($Regen);
 			print("<br />\n");
 		}
@@ -178,12 +178,12 @@ class char{
 			if($this->POSITION == "front")
 				return false;
 			$this->POSITION = "front";
-			print($this->Name(bold)." 이 앞줄로 이동되었습니다.<br />\n");
+			print($this->Name('bold')." 이 앞줄로 이동되었습니다.<br />\n");
 		} else {
 			if($this->POSITION != "front")
 				return false;
 			$this->POSITION = "back";
-			print($this->Name(bold)." 이 뒷줄로 이동되었습니다.<br />\n");
+			print($this->Name('bold')." 이 뒷줄로 이동되었습니다.<br />\n");
 		}
 	}
 
@@ -330,104 +330,104 @@ class char{
 	function KnockBack($no=1) {
 		if($this->POSITION == "front") {
 			$this->POSITION = "back";
-			print($this->Name(bold)."는 뒷줄에 입력해야 합니다!<br />\n");
+			print($this->Name('bold')."는 뒷줄에 입력해야 합니다!<br />\n");
 		}
 	}
 
 	function PlusSTR($no) {
 		$this->STR	+= $no;
-		print($this->Name(bold)." STR 증가 {$no}<br />\n");
+		print($this->Name('bold')." STR 증가 {$no}<br />\n");
 	}
 	function PlusINT($no) {
 		$this->INT	+= $no;
-		print($this->Name(bold)." INT 증가 {$no}<br />\n");
+		print($this->Name('bold')." INT 증가 {$no}<br />\n");
 	}
 	function PlusDEX($no) {
 		$this->DEX	+= $no;
-		print($this->Name(bold)." DEX 증가 {$no}<br />\n");
+		print($this->Name('bold')." DEX 증가 {$no}<br />\n");
 	}
 	function PlusSPD($no) {
 		$this->SPD	+= $no;
-		print($this->Name(bold)." SPD 증가 {$no}<br />\n");
+		print($this->Name('bold')." SPD 증가 {$no}<br />\n");
 	}
 	function PlusLUK($no) {
 		$this->LUK	+= $no;
-		print($this->Name(bold)." LUK 증가 {$no}<br />\n");
+		print($this->Name('bold')." LUK 증가 {$no}<br />\n");
 	}
 
 	function UpMAXHP($no) {
-		print($this->Name(bold)." MAXHP({$this->MAXHP}) 증가 되었습니다 ");
+		print($this->Name('bold')." MAXHP({$this->MAXHP}) 증가 되었습니다 ");
 		$this->MAXHP	= round($this->MAXHP * (1 + $no/100));
 		print("{$this->MAXHP}<br />\n");
 	}
 	function UpMAXSP($no) {
-		print($this->Name(bold)." MAXSP({$this->MAXSP}) 증가 되었습니다 ");
+		print($this->Name('bold')." MAXSP({$this->MAXSP}) 증가 되었습니다 ");
 		$this->MAXSP	= round($this->MAXSP * (1 + $no/100));
 		print("{$this->MAXSP}<br />\n");
 	}
 	function UpSTR($no) {
 		$this->STR	= round($this->STR * (1 + $no/100));
 		if(($this->str * MAX_STATUS_MAXIMUM/100) < $this->STR) {
-			print($this->Name(bold)." STR 가 최대치가 되었습니다 (".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name('bold')." STR 가 최대치가 되었습니다 (".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->STR = round($this->str * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." STR 증가 {$no}%<br />\n");
+			print($this->Name('bold')." STR 증가 {$no}%<br />\n");
 		}
 	}
 	function UpINT($no) {
 		$this->INT	= round($this->INT * (1 + $no/100));
 		if(($this->int * MAX_STATUS_MAXIMUM/100) < $this->INT) {
-			print($this->Name(bold)." INT 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name('bold')." INT 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->INT = round($this->int * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." INT 증가 {$no}%<br />\n");
+			print($this->Name('bold')." INT 증가 {$no}%<br />\n");
 		}
 	}
 	function UpDEX($no) {
 		$this->DEX	= round($this->DEX * (1 + $no/100));
 		if(($this->dex * MAX_STATUS_MAXIMUM/100) < $this->DEX) {
-			print($this->Name(bold)." DEX 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name('bold')." DEX 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->DEX = round($this->dex * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." DEX 증가 {$no}%<br />\n");
+			print($this->Name('bold')." DEX 증가 {$no}%<br />\n");
 		}
 	}
 	function UpSPD($no) {
 		$this->SPD	= round($this->SPD * (1 + $no/100));
 		if(($this->spd * MAX_STATUS_MAXIMUM/100) < $this->SPD) {
-			print($this->Name(bold)." SPD 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
+			print($this->Name('bold')." SPD 가 최대치가 되었습니다(".MAX_STATUS_MAXIMUM."%).<br />\n");
 			$this->SPD = round($this->spd * MAX_STATUS_MAXIMUM/100);
 		} else {
-			print($this->Name(bold)." SPD 증가 {$no}%<br />\n");
+			print($this->Name('bold')." SPD 증가 {$no}%<br />\n");
 		}
 	}
 	function UpATK($no) {
 		$this->atk["0"]	= round($this->atk["0"] * (1 + $no/100));
-		print($this->Name(bold)." ATK 증가 {$no}%<br />\n");
+		print($this->Name('bold')." ATK 증가 {$no}%<br />\n");
 	}
 	function UpMATK($no) {
 		$this->atk["1"]	= round($this->atk["1"] * (1 + $no/100));
-		print($this->Name(bold)." MATK 증가 {$no}%<br />\n");
+		print($this->Name('bold')." MATK 증가 {$no}%<br />\n");
 	}
 	function UpDEF($no) {
 		$up	= floor((100 - $this->def["0"]) * ($no/100) );
 		$this->def["0"]	+= $up;
-		print($this->Name(bold)." DEF 증가 {$no}%<br />\n");
+		print($this->Name('bold')." DEF 증가 {$no}%<br />\n");
 	}
 	function UpMDEF($no) {
 		$up	= floor((100 - $this->def["2"]) * ($no/100) );
-		print($this->Name(bold)." MDEF 증가 {$no}%<br />\n");
+		print($this->Name('bold')." MDEF 증가 {$no}%<br />\n");
 		$this->def["2"]	+= $up;
 	}
 	function DownMAXHP($no) {
-		print($this->Name(bold)." MAXHP({$this->MAXHP}) 하락 되었습니다 ");
+		print($this->Name('bold')." MAXHP({$this->MAXHP}) 하락 되었습니다 ");
 		$this->MAXHP	= round($this->MAXHP * (1 - $no/100));
 		if($this->MAXHP < $this->HP)
 			$this->HP	= $this->MAXHP;
 		print("{$this->MAXHP}<br />\n");
 	}
 	function DownMAXSP($no) {
-		print($this->Name(bold)." MAXSP({$this->MAXSP}) 하락 되었습니다 ");
+		print($this->Name('bold')." MAXSP({$this->MAXSP}) 하락 되었습니다 ");
 		$this->MAXSP	= round($this->MAXSP * (1 - $no/100));
 		if($this->MAXSP < $this->SP)
 			$this->SP	= $this->MAXSP;
@@ -435,35 +435,35 @@ class char{
 	}
 	function DownSTR($no) {
 		$this->STR	= round($this->STR * (1 - $no/100));
-		print($this->Name(bold)." STR 하락 {$no}%<br />\n");
+		print($this->Name('bold')." STR 하락 {$no}%<br />\n");
 	}
 	function DownINT($no) {
 		$this->INT	= round($this->INT * (1 - $no/100));
-		print($this->Name(bold)." INT 하락 {$no}%<br />\n");
+		print($this->Name('bold')." INT 하락 {$no}%<br />\n");
 	}
 	function DownDEX($no) {
 		$this->DEX	= round($this->DEX * (1 - $no/100));
-		print($this->Name(bold)." DEX 하락 {$no}%<br />\n");
+		print($this->Name('bold')." DEX 하락 {$no}%<br />\n");
 	}
 	function DownSPD($no) {
 		$this->SPD	= round($this->SPD * (1 - $no/100));
-		print($this->Name(bold)." SPD 하락 {$no}%<br />\n");
+		print($this->Name('bold')." SPD 하락 {$no}%<br />\n");
 	}
 	function DownATK($no) {
 		$this->atk["0"]	= round($this->atk["0"] * (1 - $no/100));
-		print($this->Name(bold)." ATK 하락 {$no}%<br />\n");
+		print($this->Name('bold')." ATK 하락 {$no}%<br />\n");
 	}
 	function DownMATK($no) {
 		$this->atk["1"]	= round($this->atk["1"] * (1 - $no/100));
-		print($this->Name(bold)." MATK 하락 {$no}%<br />\n");
+		print($this->Name('bold')." MATK 하락 {$no}%<br />\n");
 	}
 	function DownDEF($no) {
 		$this->def["0"]	= round($this->def["0"] * (1 - $no/100));
-		print($this->Name(bold)." DEF 하락 {$no}%<br />\n");
+		print($this->Name('bold')." DEF 하락 {$no}%<br />\n");
 	}
 	function DownMDEF($no) {
 		$this->def["2"]	= round($this->def["2"] * (1 - $no/100));
-		print($this->Name(bold)." MDEF 하락 {$no}%<br />\n");
+		print($this->Name('bold')." MDEF 하락 {$no}%<br />\n");
 	}
 
 	function MaxPatterns() {
@@ -529,7 +529,7 @@ class char{
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." 는 중독의 영향을 받았습니다 ");
+		print("<span class=\"spdmg\">".$this->Name('bold')." 는 중독의 영향을 받았습니다 ");
 		print("<span class=\"bold\">$poison</span> 피해.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
@@ -563,7 +563,7 @@ class char{
 		$Add	= round($Add);
 		$this->SPECIAL["PoisonResist"]	+= $Add;
 		print('<span class="support">');
-		print($this->Name(bold)." got PoisonResist!(".$this->SPECIAL["PoisonResist"]."%)");
+		print($this->Name('bold')." got PoisonResist!(".$this->SPECIAL["PoisonResist"]."%)");
 		print("</span><br />\n");
 	}
 
@@ -775,19 +775,20 @@ class char{
 			return true;
 		if($this->STATE === DEAD) {
 			if($mes)
-				print($this->Name(bold).' <span class="recover">부활</span>!<br />'."\n");
+				print($this->Name('bold').' <span class="recover">부활</span>!<br />'."\n");
 			$this->STATE = 0;
 			return true;
 		}
 		if($this->STATE === POISON) {
 			if($mes)
-				print($this->Name(bold)."의 <span class=\"spdmg\">중독</span> 이 치료되었습니다.<br />\n");
+				print($this->Name('bold')."의 <span class=\"spdmg\">중독</span> 이 치료되었습니다.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
 	}
 
 	function ShowHpSp() {
+		$sub = "";
 		if($this->STATE === 1)
 			$sub	= " dmg";
 		else if($this->STATE === 2)
@@ -989,7 +990,7 @@ class char{
 		if(!file_exists($dir))
 			return false;
 
-		if(isset($this->file))
+		if($this->file)
 			$file	= $this->file;
 		else
 			$file	= $dir."/".$this->birth.".dat";
@@ -1006,18 +1007,16 @@ class char{
 
 	function DataSavingFormat() {
 		$text = "";
-		$Save	= array("name","gender","job","birth","level","exp",
-		"statuspoint","skillpoint",
-		"str","int","dex","spd","luk",
-		"weapon","shield","armor","item",
-		"position","guard",
-		"skill",
-		"Pattern",
-		"PatternMemo",
+		$Save	= array(
+		"name", "gender", "job", "birth", "level",
+		"exp", "statuspoint", "skillpoint", "str", "int",
+		"dex", "spd", "luk", "weapon", "shield",
+		"armor", "item", "position", "guard", "skill",
+		"Pattern", "PatternMemo",
 		);
 		foreach($Save as $val) {
-			if (!isset($this->{$val})) continue;
-			$text	.= "$val=".(is_array($this->{$val}) ? implode("<>",$this->{$val}) : $this->{$val})."\n";
+			if ($this->{$val})
+				$text	.= "$val=".(is_array($this->{$val}) ? implode("<>",$this->{$val}) : $this->{$val})."\n";
 		}
 		return $text;
 	}
@@ -1075,10 +1074,14 @@ P5_B;
 		$temp1 = (($checked) ? null : ' class="unselect"');
 		$temp2 = (($this->statuspoint) ? '<span class="bold charge">*</span>' : '');
 		$temp3 = $flag%2;
-print <<<P6
+print <<<P6_A
 <div class="carpet_frame">
 <div class="carpet{$temp3}">
-<a href="?char={$this->birth}">{$this->ShowImage()}</a>
+<a href="?char={$this->birth}">
+P6_A;
+$this->ShowImage();
+print <<<P6_B
+</a>
 </div>
 <div onClick="toggleCheckBox('{$flag}')" id="text{$flag}" {$temp1}>
 {$this->name}
@@ -1087,7 +1090,7 @@ Lv.{$this->level} {$this->job_name}
 </div>
 <input type="checkbox" onclick="Element.toggleClassName('text{$flag}','unselect')" id="box{$flag}" name="char_{$birth}" value="1" {$checked}>
 </div>
-P6;
+P6_B;
 	}
 
 	function SetTeam($no) {

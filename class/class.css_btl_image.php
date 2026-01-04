@@ -112,6 +112,7 @@ class cssimage {
 
 	function CopyRow($teams,$direction,$axis_x,$cell_width,$axis_y,$cell_height) {
 		$number	= __count($teams);
+		$gap = 0;
 		if($number == 0) return false;
 
 		$axis_x	+= ( $direction ? -$cell_width/2 : +$cell_width/2 );

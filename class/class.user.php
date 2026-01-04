@@ -360,30 +360,14 @@ class user {
 
 
 	function DataSavingFormat() {
-
+		$text = "";
 		$Save	= array(
-			"id",
-			"pass",
-			"ip",
-			"name",
-			"last",
-			"login",
-			"start",
-			"money",
-			"time",
-			"wtime",
-			"party_memo",
-			"party_rank",
-			"rank_set_time",
-			"rank_btl_time",
-			"rank_record",
-			"union_btl_time",
-			"record_btl_log",
-			"no_JS_itemlist",
-			"UserColor",
+			"id", "pass", "ip", "name", "last", "login",
+			"start", "money", "time", "wtime", "party_memo",
+			"party_rank", "rank_set_time", "rank_btl_time", "rank_record", "union_btl_time",
+			"record_btl_log", "no_JS_itemlist", "UserColor",
 			);
 		foreach($Save as $val) {
-			$text = "";
 			if($this->{$val})
 				$text	.= "$val=".(is_array($this->{$val}) ? implode("<>",$this->{$val}) : $this->{$val})."\n";
 		}
@@ -393,7 +377,6 @@ class user {
 
 
 	function SaveData() {
-		//$dir	= USER.$this->id;
 		$file	= USER.$this->id."/".DATA;
 
 		if(file_exists($this->file) && isset($this->fp)) {

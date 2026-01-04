@@ -13,6 +13,8 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 class ClassSkillEffect{
 
 	function SkillEffect($skill,$skill_no,&$user,&$target) {
+		$option = array();
+		
 		if($target === false) {
 			print("목표가 없다. 실패다!<br />\n");
 			return false;
@@ -315,7 +317,7 @@ class ClassSkillEffect{
 
 			case 3020:  
 				$target->MAXSP	= round($target->MAXSP * 1.2);
-				print($target->Name(bold)."'s MAXSP는 {$target->MAXSP} 증가 되었습니다.<br />\n");
+				print($target->Name('bold')."'s MAXSP는 {$target->MAXSP} 증가 되었습니다.<br />\n");
 				break;
 
 			case 3040: 
@@ -343,7 +345,7 @@ class ClassSkillEffect{
 
 			case 3055:
 				if($target->expect && $target->expect_type === 1) {
-					print("<span class=\"support\">".$target->Name(bold)." casting shorted!</span>");
+					print("<span class=\"support\">".$target->Name('bold')." casting shorted!</span>");
 					$target->DelayCut(60,$this->delay,1);
 					print("<br />\n");
 				}
@@ -351,7 +353,7 @@ class ClassSkillEffect{
 
 			case 3056:
 				if($target->expect && $target->expect_type === 1) {
-					print("<span class=\"support\">".$target->Name(bold)." casting shorted!</span>");
+					print("<span class=\"support\">".$target->Name('bold')." casting shorted!</span>");
 					$target->DelayCut(80,$this->delay,1);
 					print("<br />\n");
 				}
@@ -361,7 +363,7 @@ class ClassSkillEffect{
 			case 5067:
 				if(!$target->SPECIAL["Barrier"]) {
 					$target->GetSpecial("Barrier",true);
-					print("<span class=\"support\">".$target->Name(bold)." got barriered!</span><br />\n");
+					print("<span class=\"support\">".$target->Name('bold')." got barriered!</span><br />\n");
 				}
 				break;
 
@@ -372,7 +374,7 @@ class ClassSkillEffect{
 				$this->StatusChanges($skill,$target);
 				if(!$target->SPECIAL["Barrier"]) {
 					$target->GetSpecial("Barrier",true);
-					print("<span class=\"support\">".$target->Name(bold)." got barriered!</span><br />\n");
+					print("<span class=\"support\">".$target->Name('bold')." got barriered!</span><br />\n");
 				}
 				break;
 
@@ -382,7 +384,7 @@ class ClassSkillEffect{
 				RecoverSP($target,$SpRec);
 				if(!$target->SPECIAL["Barrier"]) {
 					$target->GetSpecial("Barrier",true);
-					print("<span class=\"support\">".$target->Name(bold)." got barriered!</span><br />\n");
+					print("<span class=\"support\">".$target->Name('bold')." got barriered!</span><br />\n");
 				}
 				break;
 
@@ -463,7 +465,7 @@ class ClassSkillEffect{
 				}
 				if($target->POSITION == "back") {
 					$target->POSITION = "front";
-					print($target->Name(bold)."는 앞줄로 이동했습니다.<br />");
+					print($target->Name('bold')."는 앞줄로 이동했습니다.<br />");
 				}
 				$this->StatusChanges($skill,$target);
 				break;
@@ -488,75 +490,75 @@ class ClassSkillEffect{
 				$add	= CreateSummon($mob);
 				$this->JoinCharacter($user,$add);
 				$add->ShowImage(vcent);
-				print($add->Name(bold)."가 팀에 합류했습니다.<br />\n");
+				print($add->Name('bold')."가 팀에 합류했습니다.<br />\n");
 				break;
 
 			default:
-				if($skill["MagicCircleAdd"]) {
+				if(isset($skill["MagicCircleAdd"])) {
 					$this->MagicCircleAdd($user->team,$skill["MagicCircleAdd"]);
-					print($user->Name(bold).'<span class="support"> 마법진 생성 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
+					print($user->Name('bold').'<span class="support"> 마법진 생성 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
 				}
-				if($skill["MagicCircleDeleteEnemy"]) {
+				if(isset($skill["MagicCircleDeleteEnemy"])) {
 					$EnemyTeam	= ($user->team == TEAM_0)?TEAM_1:TEAM_0;
 					$this->MagicCircleDelete($EnemyTeam,$skill["MagicCircleDeleteEnemy"]);
-					print($user->Name(bold).'<span class="dmg"> 적의 마법진을 제거 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
+					print($user->Name('bold').'<span class="dmg"> 적의 마법진을 제거 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
 				}
-				if($skill["HpRegen"]) {
+				if(isset($skill["HpRegen"])) {
 					$target->GetSpecial("HpRegen",$skill["HpRegen"]);
-					print($target->Name(bold).'<span class="recover"> HP 회복하기 +'.$skill["HpRegen"]."%</span><br />\n");
+					print($target->Name('bold').'<span class="recover"> HP 회복하기 +'.$skill["HpRegen"]."%</span><br />\n");
 				}
-				if($skill["SpRegen"]) {
+				if(isset($skill["SpRegen"])) {
 					$target->GetSpecial("SpRegen",$skill["SpRegen"]);
-					print($target->Name(bold).'<span class="support"> SP 회복하기 +'.$skill["SpRegen"]."%</span><br />\n");
+					print($target->Name('bold').'<span class="support"> SP 회복하기 +'.$skill["SpRegen"]."%</span><br />\n");
 				}
-				if($skill["priority"] == "Charge" && !$target->expect)
+				if(isset($skill["priority"]) == "Charge" && !$target->expect)
 					break;
-				if($skill["summon"]) {
+				if(isset($skill["summon"])) {
 					if(!is_array($skill["summon"]))
 						$skill["summon"]	= array($skill["summon"]);
 					foreach($skill["summon"] as $SummonNo) {
 						$Strength	= $user->SUmmonPower();
 						$add	= CreateSummon($SummonNo,$Strength);
-						if($skill["quick"]) 
+						if(isset($skill["quick"])) 
 							$add->Quick($this->delay * 2);
 						$this->JoinCharacter($user,$add);
 						$add->ShowImage(vcent);
-						print($add->Name(bold)."가 팀에 합류했습니다.<br />\n");
+						print($add->Name('bold')."가 팀에 합류했습니다.<br />\n");
 					}
 					return true;
 				}
 
-				if($skill["CurePoison"]) {
+				if(isset($skill["CurePoison"])) {
 					if($target->STATE == POISON)
 						$target->GetNormal(true);
 				}
-				if($skill["pow"]) {
-					if($skill["support"]) {
+				if(isset($skill["pow"])) {
+					if(isset($skill["support"])) {
 						$heal	= CalcRecoveryValue($skill,$user,$target);
 						RecoverHP($target,$heal);
 						$this->StatusChanges($skill,$target);
 					} else {
-						if($skill["pierce"])
+						if(isset($skill["pierce"]))
 							$option["pierce"] = true;
 						$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 						DamageHP($target,$dmg);
 					}
 				}
-				if($skill["SpRecoveryRate"]) {
+				if(isset($skill["SpRecoveryRate"])) {
 					$SpRec	= ceil(sqrt($target->MAXSP) * $skill["SpRecoveryRate"]);
 					RecoverSP($target,$SpRec);
 				}
-				if($skill["poison"]) {
+				if(isset($skill["poison"])) {
 					$result	= $target->GetPoison($skill["poison"]);
 					if($result === true)
-						print($target->Name(bold)."<span class=\"spdmg\">는 중독되었습니다</span> !<br />\n");
+						print($target->Name('bold')."<span class=\"spdmg\">는 중독되었습니다</span> !<br />\n");
 					else if($result === "BLOCK")
-						print($target->Name(bold)." 는 중독되지 않았습니다.<br />\n");
+						print($target->Name('bold')." 는 중독되지 않았습니다.<br />\n");
 				}
-				if($skill["knockback"])
+				if(isset($skill["knockback"]))
 					$target->KnockBack($skill["knockback"]);
 				$this->StatusChanges($skill,$target);
-				if($skill["move"])
+				if(isset($skill["move"]))
 					$target->Move($skill["move"]);
 				$this->DelayChar($target,$skill);
 				return $dmg;
@@ -564,72 +566,72 @@ class ClassSkillEffect{
 	}
 
 	function DelayChar(&$target,$skill) {
-		if(!$skill["delay"])
+		if(!isset($skill["delay"]))
 			return false;
 
-		print($target->Name(bold)." delayed ");
+		print($target->Name('bold')." delayed ");
 		$target->DelayByRate($skill["delay"],$this->delay,1);
 		print(".<br />\n");
 	}
 
 	function StatusChanges($skill,&$target) {
-		if($skill["PlusSTR"])
+		if(isset($skill["PlusSTR"]))
 			$target->PlusSTR($skill["PlusSTR"]);
-		if($skill["PlusINT"])
+		if(isset($skill["PlusINT"]))
 			$target->PlusINT($skill["PlusINT"]);
-		if($skill["PlusDEX"])
+		if(isset($skill["PlusDEX"]))
 			$target->PlusDEX($skill["PlusDEX"]);
-		if($skill["PlusSPD"]) {
+		if(isset($skill["PlusSPD"])) {
 			$target->PlusSPD($skill["PlusSPD"]);
 			$this->ChangeDelay();
 		}
-		if($skill["PlusLUK"])
+		if(isset($skill["PlusLUK"]))
 			$target->PlusLUK($skill["PlusLUK"]);
 
-		if($skill["UpMAXHP"])
+		if(isset($skill["UpMAXHP"]))
 			$target->UpMAXHP($skill["UpMAXHP"]);
-		if($skill["UpMAXSP"])
+		if(isset($skill["UpMAXSP"]))
 			$target->UpMAXSP($skill["UpMAXSP"]);
-		if($skill["UpSTR"])
+		if(isset($skill["UpSTR"]))
 			$target->UpSTR($skill["UpSTR"]);
-		if($skill["UpINT"])
+		if(isset($skill["UpINT"]))
 			$target->UpINT($skill["UpINT"]);
-		if($skill["UpDEX"])
+		if(isset($skill["UpDEX"]))
 			$target->UpDEX($skill["UpDEX"]);
-		if($skill["UpSPD"]) {
+		if(isset($skill["UpSPD"])) {
 			$target->UpSPD($skill["UpSPD"]);
 			$this->ChangeDelay();
 		}
-		if($skill["UpATK"])
+		if(isset($skill["UpATK"]))
 			$target->UpATK($skill["UpATK"]);
-		if($skill["UpMATK"])
+		if(isset($skill["UpMATK"]))
 			$target->UpMATK($skill["UpMATK"]);
-		if($skill["UpDEF"])
+		if(isset($skill["UpDEF"]))
 			$target->UpDEF($skill["UpDEF"]);
-		if($skill["UpMDEF"])
+		if(isset($skill["UpMDEF"]))
 			$target->UpMDEF($skill["UpMDEF"]);
 
-		if($skill["DownMAXHP"])
+		if(isset($skill["DownMAXHP"]))
 			$target->DownMAXHP($skill["DownMAXHP"]);
-		if($skill["DownMAXSP"])
+		if(isset($skill["DownMAXSP"]))
 			$target->DownMAXSP($skill["DownMAXSP"]);
-		if($skill["DownSTR"])
+		if(isset($skill["DownSTR"]))
 			$target->DownSTR($skill["DownSTR"]);
-		if($skill["DownINT"])
+		if(isset($skill["DownINT"]))
 			$target->DownINT($skill["DownINT"]);
-		if($skill["DownDEX"])
+		if(isset($skill["DownDEX"]))
 			$target->DownDEX($skill["DownDEX"]);
-		if($skill["DownSPD"]) {
+		if(isset($skill["DownSPD"])) {
 			$target->DownSPD($skill["DownSPD"]);
 			$this->ChangeDelay();
 		}
-		if($skill["DownATK"])
+		if(isset($skill["DownATK"]))
 			$target->DownATK($skill["DownATK"]);
-		if($skill["DownMATK"])
+		if(isset($skill["DownMATK"]))
 			$target->DownMATK($skill["DownMATK"]);
-		if($skill["DownDEF"])
+		if(isset($skill["DownDEF"]))
 			$target->DownDEF($skill["DownDEF"]);
-		if($skill["DownMDEF"])
+		if(isset($skill["DownMDEF"]))
 			$target->DownMDEF($skill["DownMDEF"]);
 	}
 
@@ -669,7 +671,7 @@ function RecoverSP(&$target,$value) {
 }
 
 function AbsorbHP(&$target,$value,&$user,$value2) {
-	print($target->Name(bold).'에게서');
+	print($target->Name('bold').'에게서');
 	$target->HpDamage($value);
 	print('<span class="recover"><span class="bold">'.$value.'</span> HP</span>를 흡수했다.');
 	$user->HpRecover($value);
@@ -677,7 +679,7 @@ function AbsorbHP(&$target,$value,&$user,$value2) {
 }
 
 function AbsorbSP(&$target,$value,&$user,$value2) {
-	print($target->Name(bold).'에게서');
+	print($target->Name('bold').'에게서');
 	$target->SpDamage($value);
 	print('<span class="support"><span class="bold">'.$value.'</span> SP</span>를 흡수했다.');
 	$user->SpRecover($value);
@@ -685,15 +687,17 @@ function AbsorbSP(&$target,$value,&$user,$value2) {
 }
 
 function CalcBasicDamage($skill,$user,&$target,$option=null) {
+	$dmg = 0;
+	$Pierce = 0;
 	if($skill["type"] == 0) {
-		if($skill["inf"] == "dex")
+		if((isset($skill["inf"]) ? $skill["inf"] : "") == "dex")
 			$str	= $user->DEX;
 		else
 			$str	= $user->STR;
 		$dmg	= sqrt($str)*10;
 		$dmg	+= $user->atk[0];
 		$dmg	*= $skill["pow"]/100;
-		if($user->SPECIAL["Pierce"]["0"]) {
+		if(isset($user->SPECIAL["Pierce"]["0"])) {
 			$Pierce	= $user->SPECIAL["Pierce"]["0"] * $skill["pow"]/100;
 		}
 	} else {
@@ -701,15 +705,15 @@ function CalcBasicDamage($skill,$user,&$target,$option=null) {
 		$dmg	= sqrt($int)*10;
 		$dmg	+= $user->atk[1];
 		$dmg	*= $skill["pow"]/100;
-		if($user->SPECIAL["Pierce"]["1"]) {
+		if(isset($user->SPECIAL["Pierce"]["1"])) {
 			$Pierce	= $user->SPECIAL["Pierce"]["1"] * $skill["pow"]/100;
 		}
 	}
 
-	if($option["multiply"])
+	if(isset($option["multiply"]))
 		$dmg	*= $option["multiply"];
 
-	if($target->SPECIAL["Barrier"]) {
+	if(isset($target->SPECIAL["Barrier"])) {
 		$target->GetSpecial("Barrier",false);
 		print("공격은 효과가 없었다.<br />\n");
 		$dmg	= 0;
@@ -717,7 +721,7 @@ function CalcBasicDamage($skill,$user,&$target,$option=null) {
 
 	$min	= $dmg*(1/10);
 
-	if(!$option["pierce"]) {
+	if(!isset($option["pierce"])) {
 		if($skill["type"] == 0) {
 			$dmg	*= 1 - $target->def["0"]/100;
 			$dmg	-= $target->def["1"];

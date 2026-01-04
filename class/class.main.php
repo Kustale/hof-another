@@ -318,6 +318,8 @@ class main extends user {
 	}
 
 	function SelectMonster($monster) {
+		$max = 0;
+		$upp = 0;
 		foreach($monster as $val)
 			$max	+= $val[0];
 		$pos	= mt_rand(0,$max);
@@ -1083,7 +1085,7 @@ P10;
 		print('<span class="bold">시뮬레이션 전투</span>');
 		print('<h4>Teams</h4></div>');
 		print('<form action="'.INDEX.'?simulate" method="post">');
-		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
+		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",(isset($this->party_memo) ? $this->party_memo : '')));
 print <<<P11
 	<div style="margin:15px;text-align:center">
 	<input type="submit" class="btn" name="simu_battle" value="대결!">
@@ -1167,7 +1169,7 @@ P11;
 		print('<span class="bold">'.$land["name"].'</span>');
 		print('<h4>팀</h4></div>');
 		print('<form action="'.INDEX.'?common='.__GET("common").'" method="post">');
-		if(isset($this->party_memo)) $this->ShowCharacters($this->char,"CHECKBOX",explode("<>",$this->party_memo));
+		$this->ShowCharacters($this->char,"CHECKBOX",explode("<>",(isset($this->party_memo) ? $this->party_memo : '')));
 
 print <<<P12
 	<div style="margin:15px;text-align:center">
@@ -2595,7 +2597,7 @@ P31;
 		print("<h4>Teams</h4>\n");
 		print("</div>");
 		print('<form action="'.INDEX.'?union='.__GET("union").'" method="post">');
-		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
+		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",(isset($this->party_memo) ? $this->party_memo : '')));
 
 print <<<P32
 	<div style="margin:15px;text-align:center">
@@ -3441,7 +3443,7 @@ P42;
 			print('<a href="?gamedata=job">게임 데이터</a><span class="divide"></span>'."\n");
 			print('<a href="?log">전투 기록</a><span class="divide"></span>'."\n");
 			if(BBS_OUT)
-			print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");			
+				print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");			
 			print('</div><div id="menu2">');
 			print("어서 오세요 [ ".TITLE." ]");
 			print('</div>');
@@ -3510,145 +3512,146 @@ P46;
 
 	function FirstLogin() {
 		$error = '';
-		if ($this->name)
-			return false;
+		if (!$this->name){
+			//print("* {$this->name} not found");
+			do {
+				if (!__POST("Done"))
+					break;
+				if(is_numeric(strpos(__POST("name"),"\t"))) {
+					$error	= 'error1';
+					break;
+				}
+				if(is_numeric(strpos(__POST("name"),"\n"))) {
+					$error	= 'error';
+					break;
+				}
+				$_POST["name"]	= trim(__POST("name"));
+				$_POST["name"]	= stripslashes(__POST("name"));
+				if (!__POST("name")) {
+					$error	= 'Name is blank.';
+					break;
+				}
+				$length	= strlen(__POST("name"));
+				if ( 0 == $length || 16 < $length) {
+					$error	= '1 to 16 letters?';
+					break;
+				}
+				$userName	= userNameLoad();
+				if(in_array(__POST("name"),$userName)) {
+					$error	= '이 이름은 이미 사용되고 있습니다.';
+					break;
+				}
+				$_POST["first_name"]	= trim(__POST("first_name"));
+				$_POST["first_name"]	= stripslashes(__POST("first_name"));
+				if(is_numeric(strpos(__POST("first_name"),"\t"))) {
+					$error	= 'error';
+					break;
+				}
+				if(is_numeric(strpos(__POST("first_name"),"\n"))) {
+					$error	= 'error';
+					break;
+				}
+				if (!__POST("first_name")) {
+					$error	= 'Character name is blank.';
+					break;
+				}
+				$length	= strlen(__POST("first_name"));
+				if ( 0 == $length || 16 < $length) {
+					$error	= '1 to 16 letters?';
+					break;
+				}
+				if(!__POST("fjob")) {
+					$error	= 'Select characters job.';
+					break;
+				}
+				$_POST["name"]	= htmlspecialchars(__POST("name"),ENT_QUOTES);
+				$_POST["first_name"]	= htmlspecialchars(__POST("first_name"),ENT_QUOTES);
 
-		do {
-			if (!__POST("Done"))
-				break;
-			if(is_numeric(strpos(__POST("name"),"\t"))) {
-				$error	= 'error1';
-				break;
-			}
-			if(is_numeric(strpos(__POST("name"),"\n"))) {
-				$error	= 'error';
-				break;
-			}
-			$_POST["name"]	= trim(__POST("name"));
-			$_POST["name"]	= stripslashes(__POST("name"));
-			if (!__POST("name")) {
-				$error	= 'Name is blank.';
-				break;
-			}
-			$length	= strlen(__POST("name"));
-			if ( 0 == $length || 16 < $length) {
-				$error	= '1 to 16 letters?';
-				break;
-			}
-			$userName	= userNameLoad();
-			if(in_array(__POST("name"),$userName)) {
-				$error	= '이 이름은 이미 사용되고 있습니다.';
-				break;
-			}
-			$_POST["first_name"]	= trim(__POST("first_name"));
-			$_POST["first_name"]	= stripslashes(__POST("first_name"));
-			if(is_numeric(strpos(__POST("first_name"),"\t"))) {
-				$error	= 'error';
-				break;
-			}
-			if(is_numeric(strpos(__POST("first_name"),"\n"))) {
-				$error	= 'error';
-				break;
-			}
-			if (!__POST("first_name")) {
-				$error	= 'Character name is blank.';
-				break;
-			}
-			$length	= strlen(__POST("first_name"));
-			if ( 0 == $length || 16 < $length) {
-				$error	= '1 to 16 letters?';
-				break;
-			}
-			if(!__POST("fjob")) {
-				$error	= 'Select characters job.';
-				break;
-			}
-			$_POST["name"]	= htmlspecialchars(__POST("name"),ENT_QUOTES);
-			$_POST["first_name"]	= htmlspecialchars(__POST("first_name"),ENT_QUOTES);
+				$this->name	= __POST("name");
+				userNameAdd($this->name);
+				$this->SaveData();
+				switch(__POST("fjob")){
+					case "1":
+						$job = 1; $gend = 0; break;
+					case "2":
+						$job = 1; $gend = 1; break;
+					case "3":
+						$job = 2; $gend = 0; break;
+					default:
+						$job = 2; $gend = 1;
+				}
+				include(DATA_BASE_CHAR);
+				$char	= new char();
+				$char->SetCharData(array_merge(BaseCharStatus($job),array("name"=>__POST('first_name'),"gender"=>"$gend")));
+				$char->SaveCharData($this->id);
+				return false;
+			}while(0);
 
-			$this->name	= __POST("name");
-			userNameAdd($this->name);
-			$this->SaveData();
-			switch(__POST("fjob")){
-				case "1":
-					$job = 1; $gend = 0; break;
-				case "2":
-					$job = 1; $gend = 1; break;
-				case "3":
-					$job = 2; $gend = 0; break;
-				default:
-					$job = 2; $gend = 1;
-			}
 			include(DATA_BASE_CHAR);
-			$char	= new char();
-			$char->SetCharData(array_merge(BaseCharStatus($job),array("name"=>__POST('first_name'),"gender"=>"$gend")));
-			$char->SaveCharData($this->id);
-			return false;
-		}while(0);
+			
+			$mr1 = array("gender"=>"0");
+			$mr2 = array_merge(BaseCharStatus("1"),$mr1);
+			$war_male	= new char();
+			$war_male->SetCharData($mr2);
+			
+			$mr3 = array("gender"=>"1");
+			$mr4 = array_merge(BaseCharStatus("1"),$mr3);
+			$war_female	= new char();
+			$war_female->SetCharData($mr4);
+			
+			$mr5 = array("gender"=>"0");
+			$mr6 = array_merge(BaseCharStatus("2"),$mr5);
+			$sor_male	= new char();
+			$sor_male->SetCharData($mr6);
+			
+			$mr7 = array("gender"=>"1");
+			$mr8 = array_merge(BaseCharStatus("2"),$mr7);
+			$sor_female	= new char();
+			$sor_female->SetCharData($mr8);
 
-		include(DATA_BASE_CHAR);
-		
-		$mr1 = array("gender"=>"0");
-		$mr2 = array_merge(BaseCharStatus("1"),$mr1);
-		$war_male	= new char();
-		$war_male->SetCharData($mr2);
-		
-		$mr3 = array("gender"=>"1");
-		$mr4 = array_merge(BaseCharStatus("1"),$mr3);
-		$war_female	= new char();
-		$war_female->SetCharData($mr4);
-		
-		$mr5 = array("gender"=>"0");
-		$mr6 = array_merge(BaseCharStatus("2"),$mr5);
-		$sor_male	= new char();
-		$sor_male->SetCharData($mr6);
-		
-		$mr7 = array("gender"=>"1");
-		$mr8 = array_merge(BaseCharStatus("2"),$mr7);
-		$sor_female	= new char();
-		$sor_female->SetCharData($mr8);
-
-		$temp52 = INDEX;
-		$temp54 = (__POST("name")?"value=\"".__POST('name')."\"":"");
-		$temp55 = $war_male->ShowImage();
-		$temp56 = $war_female->ShowImage();
-		$temp57 = $sor_male->ShowImage();
-		$temp58 = $sor_female->ShowImage();
-print <<<P47_A
-	<form action="{$temp52}" method="post" style="margin:15px">
-	P47_A;
-	ShowError($error);
-	print <<<P47_B
-	<h4>Name of Team</h4>
-	<p>Decide the Name of the team.<br />
-	It should be more than 1 and less than 16 letters.<br />
-	Other characters count as 2 letters.</p>
-	<p>1-16자의 팀명입니다.<br /></p>
-	<div class="bold u">TeamName</div>
-	<input class="text" style="width:160px" maxlength="16" name="name" {$temp54}>
-	<h4>First Character</h4>
-	<p>Decide the name of Your First Charactor.<br>
-	more than 1 and less than 16 letters.</p>
-	<p>첫 번째 인물의 명칭.</p>
-	<div class="bold u">CharacterName</div>
-	<input class="text" type="text" name="first_name" maxlength="16" style="width:160px;margin-bottom:10px">
-	<table cellspacing="0" style="width:400px"><tbody>
-	<tr><td class="td1" valign="bottom"><div style="text-align:center">{$temp55}<br><input type="radio" name="fjob" value="1" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center">{$temp56}<br><input type="radio" name="fjob" value="2" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center">{$temp57}<br><input type="radio" name="fjob" value="3" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center">{$temp58}<br><input type="radio" name="fjob" value="4" style="margin:3px"></div></td></tr>
-	<tr><td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td>
-	<td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td></tr>
-	<tr><td colspan="2" class="td4"><div style="text-align:center">Warrior</div></td><td colspan="2" class="td4"><div style="text-align:center">Socerer</div></td></tr>
-	</tbody></table>
-	<p>Choose your first character's job & Gender.</p>
-	<p>최초의 성별과 직업</p>
-	<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
-	<input type="hidden" value="1" name="Done">
-	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
-P47_B;
+			$temp52 = INDEX;
+			$temp54 = (__POST("name")?"value=\"".__POST('name')."\"":"");
+			$temp55 = $war_male->ShowImage();
+			$temp56 = $war_female->ShowImage();
+			$temp57 = $sor_male->ShowImage();
+			$temp58 = $sor_female->ShowImage();
+	print <<<P47_A
+		<form action="{$temp52}" method="post" style="margin:15px">
+		P47_A;
+		ShowError($error);
+		print <<<P47_B
+		<h4>Name of Team</h4>
+		<p>Decide the Name of the team.<br />
+		It should be more than 1 and less than 16 letters.<br />
+		Other characters count as 2 letters.</p>
+		<p>1-16자의 팀명입니다.<br /></p>
+		<div class="bold u">TeamName</div>
+		<input class="text" style="width:160px" maxlength="16" name="name" {$temp54}>
+		<h4>First Character</h4>
+		<p>Decide the name of Your First Charactor.<br>
+		more than 1 and less than 16 letters.</p>
+		<p>첫 번째 인물의 명칭.</p>
+		<div class="bold u">CharacterName</div>
+		<input class="text" type="text" name="first_name" maxlength="16" style="width:160px;margin-bottom:10px">
+		<table cellspacing="0" style="width:400px"><tbody>
+		<tr><td class="td1" valign="bottom"><div style="text-align:center">{$temp55}<br><input type="radio" name="fjob" value="1" style="margin:3px"></div></td>
+		<td class="td1" valign="bottom"><div style="text-align:center">{$temp56}<br><input type="radio" name="fjob" value="2" style="margin:3px"></div></td>
+		<td class="td1" valign="bottom"><div style="text-align:center">{$temp57}<br><input type="radio" name="fjob" value="3" style="margin:3px"></div></td>
+		<td class="td1" valign="bottom"><div style="text-align:center">{$temp58}<br><input type="radio" name="fjob" value="4" style="margin:3px"></div></td></tr>
+		<tr><td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td>
+		<td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td></tr>
+		<tr><td colspan="2" class="td4"><div style="text-align:center">Warrior</div></td><td colspan="2" class="td4"><div style="text-align:center">Socerer</div></td></tr>
+		</tbody></table>
+		<p>Choose your first character's job & Gender.</p>
+		<p>최초의 성별과 직업</p>
+		<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
+		<input type="hidden" value="1" name="Done">
+		<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
+	P47_B;
 
 			return true;
+		}else
+			return false;
 	}
 
 	function bbs01() {

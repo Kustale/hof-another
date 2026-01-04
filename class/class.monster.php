@@ -33,13 +33,13 @@ class monster extends char{
 		if($this->STATE === DEAD) {
 			if($this->summon) return true;
 			if($mes)
-				print($this->Name(bold).' <span class="recover">revived</span>!<br />'."\n");
+				print($this->Name('bold').' <span class="recover">revived</span>!<br />'."\n");
 			$this->STATE = 0;
 			return true;
 		}
 		if($this->STATE === POISON) {
 			if($mes)
-				print($this->Name(bold)."'s <span class=\"spdmg\">poison</span> has cured.<br />\n");
+				print($this->Name('bold')."'s <span class=\"spdmg\">poison</span> has cured.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
