@@ -14,6 +14,7 @@ class ClassSkillEffect{
 
 	function SkillEffect($skill,$skill_no,&$user,&$target) {
 		$option = array();
+		$dmg = 0;
 		
 		if($target === false) {
 			print("목표가 없다. 실패다!<br />\n");

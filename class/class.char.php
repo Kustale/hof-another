@@ -29,6 +29,7 @@ class char{
 	var $Pattern;
 	var $PatternMemo;
 	var $judge, $quantity, $action;
+	var $itemdrop;
 
 	var $team;
 	var $IMG;
@@ -50,6 +51,7 @@ class char{
 	var $JdgCount;
 	
 	var $monster; // ㅇㅅㅇ;;;
+	var $summon;
 
 	function __construct($file=false) {
 

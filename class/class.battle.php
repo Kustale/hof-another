@@ -594,6 +594,8 @@ function GetExp($exp,&$team) {
 
 
 	function &Defending(&$target,&$candidate,$skill) {
+		$fore = [];
+		
 		if($target === false) return false;
 
 		if(isset($skill["invalid"]))
