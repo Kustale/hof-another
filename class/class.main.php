@@ -3501,7 +3501,7 @@ print <<<P46
 <a href="#top">Top</a><br>
 Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 汉化 By <a href="http://www.firingsquad.com.cn/">FiringSquad中文网</a> 2006-2008.<br>
-한국어와 약간의 개조 by <a href="http://blog.naver.com/dk00007">Kustale</a> 1993-2025 ^-^.<br>
+한국어와 약간의 개조 by <a href="http://blog.naver.com/dk00007">Kustale</a> 1993-2026 ^-^.<br>
 </div>
 </div>
 </body>
