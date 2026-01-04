@@ -144,23 +144,24 @@ function __count($value){
 	}
 
 	function FileLock($file,$noExit=false) {
-		if(!file_exists($file))
-			return false;
-		$fp	= @fopen($file,"r+") or die("Error!");
-		if(!$fp)
-			return false;
-		$i=0;
-		do{
-			if(flock($fp, LOCK_EX | LOCK_NB)) {
-				stream_set_write_buffer($fp, 0);
-				return $fp;
-			} else {
-				usleep(10000);
-				$i++;
-			}
-		}while($i<5);
+		if(file_exists($file)){
+			$fp	= @fopen($file,"r+") or die("Error!");
+			if(!$fp)
+				return false;
+			$i=0;
+			do{
+				if(flock($fp, LOCK_EX | LOCK_NB)) {
+					stream_set_write_buffer($fp, 0);
+					return $fp;
+				} else {
+					usleep(10000);
+					$i++;
+				}
+			}while($i<5);
 
-		return $fp;
+			return $fp;
+		} else
+			return false;
 	}
 
 	function WriteFileFP($fp,$text,$check=false) {
@@ -184,43 +185,46 @@ function __count($value){
 
 	function ParseFileFP($fp) {
 
-		if(!$fp) return false;
-		while( !feof($fp) ) {
-			$str	= fgets($fp);
-			$str	= trim($str);
-			if(!$str) continue;
-			$pos	= strpos($str,"=");
-			if($pos === false)
-				continue;
-			$key	= substr($str,0,$pos);
-			$val	= substr($str,++$pos);
-			$data[$key]	= trim($val);
-		}
-		if($data)
-			return $data;
-		else
+		if(isset($fp)){
+			while( !feof($fp) ) {
+				$str	= fgets($fp);
+				$str	= trim($str);
+				if(!$str) continue;
+				$pos	= strpos($str,"=");
+				if($pos === false)
+					continue;
+				$key	= substr($str,0,$pos);
+				$val	= substr($str,++$pos);
+				$data[$key]	= trim($val);
+			}
+			if($data)
+				return $data;
+			else
+				return false;
+		} else
 			return false;
 	}
 
 	function ParseFile($file) {
-
-		$fp		= fopen($file,"r+");
-		if(!$fp) return false;
-		flock($fp, LOCK_EX | LOCK_NB);
-		while( !feof($fp) ) {
-			$str	= fgets($fp);
-			$str	= trim($str);
-			if(!$str) continue;
-			$pos	= strpos($str,"=");
-			if($pos === false)
-				continue;
-			$key	= substr($str,0,$pos);
-			$val	= substr($str,++$pos);
-			$data[$key]	= trim($val);
-		}
-		if($data)
-			return $data;
-		else
+		if(file_exists($file)){
+			$fp		= fopen($file,"r+");
+			flock($fp, LOCK_EX | LOCK_NB);
+			while( !feof($fp) ) {
+				$str	= fgets($fp);
+				$str	= trim($str);
+				if(!$str) continue;
+				$pos	= strpos($str,"=");
+				if($pos === false)
+					continue;
+				$key	= substr($str,0,$pos);
+				$val	= substr($str,++$pos);
+				$data[$key]	= trim($val);
+			}
+			if($data)
+				return $data;
+			else
+				return false;
+		} else
 			return false;
 	}
 

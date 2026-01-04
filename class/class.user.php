@@ -57,7 +57,7 @@ class user {
 		if(file_exists($file)) {
 			$this->file	= $file;
 			$this->fp	= FileLock($file,$noExit);
-			if(!$this->fp)
+			if(!isset($this->fp))
 				return false;
 			$data	= ParseFileFP($this->fp);
 			return $data;
@@ -236,7 +236,6 @@ class user {
 
 	function CharDataLoadAll() {
 		$dir	= USER.$this->id;
-		$this->char	= array();
 		foreach(glob("$dir/*") as $adr) {
 			$number	= basename($adr,".dat");
 			if(is_numeric($number)) {
@@ -250,12 +249,13 @@ class user {
 		if($this->char[$CharNo])
 			return $this->char[$CharNo];
 		$file	= USER.$this->id."/".$CharNo.".dat";
-		if(!file_exists($file))
+		if(!file_exists($file)){
 			return false;
-
-		$this->char[$CharNo]	= new char($file);
-		$this->char[$CharNo]->SetUser($this->id);
-		return $this->char[$CharNo];
+		} else {
+			$this->char[$CharNo]	= new char($file);
+			$this->char[$CharNo]->SetUser($this->id);
+			return $this->char[$CharNo];
+		}
 	}
 
 	function AddItem($no,$amount=false) {
@@ -393,10 +393,10 @@ class user {
 
 
 	function SaveData() {
-		$dir	= USER.$this->id;
+		//$dir	= USER.$this->id;
 		$file	= USER.$this->id."/".DATA;
 
-		if(file_exists($this->file) && $this->fp) {
+		if(file_exists($this->file) && isset($this->fp)) {
 			WriteFileFP($this->fp,$this->DataSavingFormat());
 			fclose($this->fp);
 			unset($this->fp);

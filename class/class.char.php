@@ -63,9 +63,11 @@ class char{
 	}
 
 	function fpclose() {
-		if(is_resource($this->fp)) {
-			fclose($this->fp);
-			unset($this->fp);
+		if(isset($this->fp)){
+			if(is_resource($this->fp)) {
+				fclose($this->fp);
+				unset($this->fp);
+			}
 		}
 	}
 
@@ -992,7 +994,7 @@ class char{
 		else
 			$file	= $dir."/".$this->birth.".dat";
 
-		if(file_exists($file) && $this->fp) {
+		if(file_exists($file) && isset($this->fp)) {
 			WriteFileFP($this->fp,$this->DataSavingFormat());
 			$this->fpclose();
 		} else {

@@ -188,6 +188,14 @@ DATA;
 	} else if(__POST_2("UserCharDetail")) {
 		$charAmount = 0;
 		$totalLevel = 0;
+		$totalStr = 0;
+		$totalInt = 0;
+		$totalDex = 0;
+		$totalSpd = 0;
+		$totalLuk = 0;
+		$totalMale = 0;
+		$totalFemale = 0;
+		$totalJob = array();
 		
 		include(GLOBAL_PHP);
 		$userFileList = glob(USER."*");
@@ -207,7 +215,8 @@ DATA;
 					$totalMale++;
 				else if($charData["gender"] === "1")
 					$totalFemale++;
-				$totalJob[$charData["job"]]++;
+				//$totalJob[$charData["job"]]++;
+				array_push($totalJob,$charData["job"]);
 
 			}
 		}
@@ -226,7 +235,9 @@ DATA;
 			include(DATA_JOB);
 			foreach($totalJob as $job => $amount) {
 				$jobData = LoadJobData($job);
-				print($job."({$jobData['name_male']},{$jobData['name_female']})"." : ".$amount."(".($amount/$charAmount*100)."%)<br>\n");
+				$nm = (isset($jobData['name_male']) ? $jobData['name_male'] : "*UnKnown");
+				$nf = (isset($jobData['name_female']) ? $jobData['name_female'] : "*UnKnown");
+				print($job."({$nm},{$nf})"." : ".$amount."(".($amount/$charAmount*100)."%)<br>\n");
 			}
 		} else
 			print("캐릭터 데이터가 한개도 존재 하지 않습니다.");
@@ -237,9 +248,11 @@ DATA;
 		$items = array();
 		if($userAmount > 0){
 			foreach($userFileList as $user) {
-				if(!$data = ParseFile($user."/item.dat"));
-				foreach($data as $itemno => $amount)
-					$items[$itemno] += $amount;
+				$data = ParseFile($user."/item.dat");
+				if(!$data == false){
+					foreach($data as $itemno => $amount)
+						$items[$itemno] += $amount;
+				}
 			}
 			foreach($items as $itemno => $amount) {
 				if(strlen($itemno) != 4) continue;
@@ -255,8 +268,9 @@ DATA;
 		foreach($userFileList as $user) {
 			$file = $user."/data.dat";
 			if(!$data = ParseFile($file)) continue;
-			$html .= "<tr><td>".$data["id"]."</td><td>".$data["name"]."</td><td>".$data["ip"]."</td></tr>\n";
-			$ipList[$data["ip"]?$data["ip"]:"*UnKnown"]++;
+			$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
+			//$ipList[isset($data["ip"])?$data["ip"]:"*UnKnown"]++;
+			array_push($ipList,(isset($data["ip"])?$data["ip"]:"*UnKnown"));
 		}
 		
 		print("<p>IP 중복 목록</p>\n");

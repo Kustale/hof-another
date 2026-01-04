@@ -30,18 +30,18 @@ class main extends user {
 		$this->Foot();
 		
 		if(!is_dir(USER))
-			mkdir(USER, 0777);
+			mkdir(USER, 0705);
 		if(!is_dir(UNION))
-			mkdir(UNION, 0777);
+			mkdir(UNION, 0705);
 		
 		if(!is_dir(LOG_DIR))
-			mkdir(LOG_DIR,0777);
+			mkdir(LOG_DIR,0705);
 		if(!is_dir(LOG_BATTLE_NORMAL))
-			mkdir(LOG_BATTLE_NORMAL,0777);
+			mkdir(LOG_BATTLE_NORMAL,0705);
 		if(!is_dir(LOG_BATTLE_RANK))
-			mkdir(LOG_BATTLE_RANK,0777);
+			mkdir(LOG_BATTLE_RANK,0705);
 		if(!is_dir(LOG_BATTLE_UNION))
-			mkdir(LOG_BATTLE_UNION,0777);
+			mkdir(LOG_BATTLE_UNION,0705);
 	}
 
 
@@ -3147,7 +3147,7 @@ HTML;
 			return false;
 		}
 
-		$file=USER.$this->id."/".DATA;
+		//$file=USER.$this->id."/".DATA;
 		if ($data = $this->LoadData()) {
 			if($this->pass == NULL)
 				return false;
