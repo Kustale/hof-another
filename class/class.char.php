@@ -48,6 +48,8 @@ class char{
 
 	var $ActCount;
 	var $JdgCount;
+	
+	var $monster; // ㅇㅅㅇ;;;
 
 	function __construct($file=false) {
 
@@ -1235,12 +1237,12 @@ P6_B;
 
 	function SetCharData(&$data) {
 		$this->name			= (isset($data["name"]) ? $data["name"] : "");
-		$this->gender		= (isset($data["gender"]) ? $data["gender"] : "");
-		$this->birth		= (isset($data["birth"]) ? $data["birth"] : "");
-		$this->level		= (isset($data["level"]) ? $data["level"] : "");
-		$this->exp			= (isset($data["exp"]) ? $data["exp"] : "");
-		$this->statuspoint	= (isset($data["statuspoint"]) ? $data["statuspoint"] : "");
-		$this->skillpoint	= (isset($data["skillpoint"]) ? $data["skillpoint"] : "");
+		$this->gender		= (isset($data["gender"]) ? $data["gender"] : 0);
+		$this->birth		= (isset($data["birth"]) ? $data["birth"] : 0);
+		$this->level		= (isset($data["level"]) ? $data["level"] : 0);
+		$this->exp			= (isset($data["exp"]) ? $data["exp"] : 0);
+		$this->statuspoint	= (isset($data["statuspoint"]) ? $data["statuspoint"] : 0);
+		$this->skillpoint	= (isset($data["skillpoint"]) ? $data["skillpoint"] : 0);
 
 		$this->job		= (isset($data["job"]) ? $data["job"] : "");
 		$this->SetJobData();
@@ -1248,11 +1250,11 @@ P6_B;
 		if(isset($data["img"]))
 			$this->img		= $data["img"];
 
-		$this->str		= (isset($data["str"]) ? $data["str"] : "");
-		$this->int		= (isset($data["int"]) ? $data["int"] : "");
-		$this->dex		= (isset($data["dex"]) ? $data["dex"] : "");
-		$this->spd		= (isset($data["spd"]) ? $data["spd"] : "");
-		$this->luk		= (isset($data["luk"]) ? $data["luk"] : "");
+		$this->str		= (isset($data["str"]) ? $data["str"] : 0);
+		$this->int		= (isset($data["int"]) ? $data["int"] : 0);
+		$this->dex		= (isset($data["dex"]) ? $data["dex"] : 0);
+		$this->spd		= (isset($data["spd"]) ? $data["spd"] : 0);
+		$this->luk		= (isset($data["luk"]) ? $data["luk"] : 0);
 
 		if (isset($data["maxhp"]) &&
 			isset($data["hp"]) &&
@@ -1268,15 +1270,15 @@ P6_B;
 			$this->sp		= $this->maxsp;
 		}
 
-		$this->weapon	= (isset($data["weapon"]) ? $data["weapon"] : "");
-		$this->shield	= (isset($data["shield"]) ? $data["shield"] : "");
-		$this->armor	= (isset($data["armor"]) ? $data["armor"] : "");
+		$this->weapon	= (isset($data["weapon"]) ? $data["weapon"] : 0);
+		$this->shield	= (isset($data["shield"]) ? $data["shield"] : 0);
+		$this->armor	= (isset($data["armor"]) ? $data["armor"] : 0);
 		$this->item		= (isset($data["item"]) ? $data["item"] : "");
 
 		$this->position	= (isset($data["position"]) ? $data["position"] : "");
 		$this->guard	= (isset($data["guard"]) ? $data["guard"] : "");
 
-		$this->skill	= (is_array($data["skill"]) ? $data["skill"] : explode("<>",$data["skill"]) );
+		$this->skill	= (isset($data["skill"]) ? (is_array($data["skill"]) ? $data["skill"] : explode("<>",$data["skill"]) ) : "");
 
 		$this->Pattern	= (isset($data["Pattern"]) ? $data["Pattern"] : "");
 

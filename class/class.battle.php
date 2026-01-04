@@ -260,8 +260,12 @@ HTML;
 	}
 
 	function ShowResult($result) {
-
+		$TotalHp2		= 0;
+		$TotalHp1		= 0;
+		$TotalMaxHp1	= 0;
+		$TotalMaxHp2	= 0;
 		$TotalAlive2	= 0;
+		
 		foreach($this->team1 as $char) {
 			if($char->STATE !== DEAD)
 				$TotalAlive2++;
@@ -335,8 +339,8 @@ HTML;
 			print("<div class=\"bold\">Items</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
-				print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
-				print("{$item[name]} x {$amount}<br />\n");
+				if(isset($item["img"])) print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
+				print("{$item['name']} x {$amount}<br />\n");
 			}
 		}
 		print("</td></tr>\n");
@@ -368,7 +372,7 @@ HTML;
 
 		if($char->expect) {
 			$skill	= $char->expect;
-			$return	= $char->target_expect;
+			$return	= $char->expect_target; // ㅇㅅㅇ???
 		} else {
 			$JudgeKey	= -1;
 
@@ -579,11 +583,11 @@ function GetExp($exp,&$team) {
 		if(!$itemdrop) return false;
 		if($MyTeam === $this->team0) {
 			foreach($itemdrop as $itemno => $amount) {
-				$this->team0_item["$itemno"]	+= $amount;
+				if(isset($this->team0_item["$itemno"])) $this->team0_item["$itemno"]	+= $amount;
 			}
 		} else {
 			foreach($itemdrop as $itemno => $amount) {
-				$this->team1_item["$itemno"]	+= $amount;
+				if(isset($this->team1_item["$itemno"])) $this->team1_item["$itemno"]	+= $amount;
 			}
 		}
 	}

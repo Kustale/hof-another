@@ -296,6 +296,7 @@ function ShowLogList() {
 
 	print("<h4>최근의 전투 - <a href=\"?clog\">전부 표시</a>(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
+	$limit = 0;
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
 		$limit++;
