@@ -83,27 +83,29 @@ function __count($value){
 		$list	= glob(USER."*");
 		$now	= time();
 		foreach($list as $file) {
-			if(!is_dir($file)) continue;
-			$UserID	= substr($file,strrpos($file,"/")+1);
-			$user	= new user($UserID,true);
-			if($user->IsAbandoned())
-			{
-				if(!isset($Ranking))
+			if(!$file == "index.php"){
+				if(!is_dir($file)) continue;
+				$UserID	= substr($file,strrpos($file,"/")+1);
+				$user	= new user($UserID,true);
+				if($user->IsAbandoned())
 				{
-					include_once(CLASS_RANKING);
-					$Ranking	= new Ranking();
-					$RankChange	= false;
+					if(!isset($Ranking))
+					{
+						include_once(CLASS_RANKING);
+						$Ranking	= new Ranking();
+						$RankChange	= false;
+					}
+					if( $Ranking->DeleteRank($UserID) ) {
+						$RankChange	= true;
+					}
+					RecordManage(date("Y M d G:i:s",$now).": user ".$user->id." deleted.");
+					$user->DeleteUser(false);
 				}
-				if( $Ranking->DeleteRank($UserID) ) {
-					$RankChange	= true;
+					else
+				{
+					$user->fpCloseAll();
+					unset($user);
 				}
-				RecordManage(date("Y M d G:i:s",$now).": user ".$user->id." deleted.");
-				$user->DeleteUser(false);
-			}
-				else
-			{
-				$user->fpCloseAll();
-				unset($user);
 			}
 		}
 		
@@ -235,7 +237,7 @@ function __count($value){
 			return $amount;
 		} else {
 			$amount	= __count(glob(USER."*"));
-			return $amount;
+			return $amount - 1; //index.php 제외
 		}
 	}
 

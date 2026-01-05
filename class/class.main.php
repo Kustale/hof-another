@@ -29,19 +29,72 @@ class main extends user {
 		$this->Debug();
 		$this->Foot();
 		
-		if(!is_dir(USER))
+		if(!is_dir(USER)){
 			mkdir(USER, 0705);
-		if(!is_dir(UNION))
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(USER."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
+		if(!is_dir(UNION)){
 			mkdir(UNION, 0705);
-		
-		if(!is_dir(LOG_DIR))
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(UNION."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
+		if(!is_dir(LOG_DIR)){
 			mkdir(LOG_DIR,0705);
-		if(!is_dir(LOG_BATTLE_NORMAL))
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(LOG_DIR."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
+		if(!is_dir(LOG_BATTLE_NORMAL)){
 			mkdir(LOG_BATTLE_NORMAL,0705);
-		if(!is_dir(LOG_BATTLE_RANK))
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(LOG_BATTLE_NORMAL."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
+		if(!is_dir(LOG_BATTLE_RANK)){
 			mkdir(LOG_BATTLE_RANK,0705);
-		if(!is_dir(LOG_BATTLE_UNION))
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(LOG_BATTLE_RANK."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
+		if(!is_dir(LOG_BATTLE_UNION)){
 			mkdir(LOG_BATTLE_UNION,0705);
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp = fopen(LOG_BATTLE_UNION."index.php","w");
+			fwrite($fp,$st);
+			fclose($fp);
+		}
 	}
 
 
@@ -3148,8 +3201,6 @@ HTML;
 			unset($_SESSION["pass"]);
 			return false;
 		}
-
-		//$file=USER.$this->id."/".DATA;
 		if ($data = $this->LoadData()) {
 			if($this->pass == NULL)
 				return false;
@@ -3241,7 +3292,7 @@ HTML;
 	}
 
 	function MakeNewData() {
-		if(MAX_USERS <= __count(glob(USER."*")))
+		if(MAX_USERS <= __count(glob(USER."*")) - 1)
 			return array(false,"Maximum users.<br />최대 가입자 수에 도달했습니다.");
 		if(__POST("Newid"))
 			trim($_POST["Newid"]);
@@ -3290,6 +3341,14 @@ HTML;
 				fputs($fp,"time=".START_TIME."\n");
 				fputs($fp,"record_btl_log=1\n");
 			fclose($fp);
+$st = <<<EOF
+<?php
+header('location:../');
+?>
+EOF;
+			$fp2 = fopen(USER.__POST("Newid")."/index.php","w");
+			fwrite($fp2,$st);
+			fclose($fp2);
 			$_SESSION["id"]=__POST("Newid");
 			setcookie("NO",session_id(),time()+COOKIE_EXPIRE);
 			$success	= "<div class=\"recover\">ID : ".__POST('Newid')." 가입 완료. 로그인 해주세요</div>";
@@ -3299,7 +3358,7 @@ HTML;
 
 
 	function NewForm($error=NULL) {
-		if(MAX_USERS <= __count(glob(USER."*"))) {
+		if(MAX_USERS <= __count(glob(USER."*")) - 1) {
 
 print <<<P38
 	<div style="margin:15px">

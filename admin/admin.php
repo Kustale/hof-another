@@ -9,7 +9,6 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 한국어 버전 by Kustale, FE
 */
 
-
 	function __GET_2($name){
 		return (isset($_GET[$name]) ? $_GET[$name] : NULL);
 	}
@@ -88,11 +87,13 @@ MENU;
 		$userList = glob(USER."*");
 		print("<p>모든 사용자</p>\n");
 		foreach($userList as $user) {
-			print('<form action="?" method="post">');
-			print('<input type="submit" name="UserData" value=" 관리 ">');
-			print('<input type="hidden" name="userID" value="'.basename($user).'">');
-			print(basename($user)."\n");
-			print("</form>\n");
+			if(!$user == "index.php"){
+				print('<form action="?" method="post">');
+				print('<input type="submit" name="UserData" value=" 관리 ">');
+				print('<input type="hidden" name="userID" value="'.basename($user).'">');
+				print(basename($user)."\n");
+				print("</form>\n");
+			}
 		}
 	} else if(__POST_2("UserData")) {
 		$userFileList = glob(USER.__POST_2("userID")."/*");
@@ -176,10 +177,12 @@ DATA;
 		$totalMoney = 0;
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			$user = new user(basename($user,".dat"));
-			$totalMoney += $user->money;
+			if(!$user == "index.php"){
+				$user = new user(basename($user,".dat"));
+				$totalMoney += $user->money;
+			}
 		}
-		print("UserAmount :".__count_2($userFileList)."<br>\n");
+		print("UserAmount :".(__count_2($userFileList) - 1)."<br>\n");
 		print("TotalMoney :".MoneyFormat($totalMoney)."<br>\n");
 		if($userFileList == 0)
 			print("AveMoney :".MoneyFormat($totalMoney/__count_2($userFileList))."<br>\n");
@@ -200,24 +203,25 @@ DATA;
 		include(GLOBAL_PHP);
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			$userDir = glob($user."/*");
-			foreach($userDir as $fileName) {
-				if(!is_numeric(basename($fileName,".dat"))) continue;
-				$charData = ParseFile($fileName);
-				$charAmount++;
-				$totalLevel += $charData["level"];
-				$totalStr += $charData["str"];
-				$totalInt += $charData["int"];
-				$totalDex += $charData["dex"];
-				$totalSpd += $charData["spd"];
-				$totalLuk += $charData["luk"];
-				if($charData["gender"] === "0")
-					$totalMale++;
-				else if($charData["gender"] === "1")
-					$totalFemale++;
-				//$totalJob[$charData["job"]]++;
-				array_push($totalJob,$charData["job"]);
+			if(!$user == "index.php"){
+				$userDir = glob($user."/*");
+				foreach($userDir as $fileName) {
+					if(!is_numeric(basename($fileName,".dat"))) continue;
+					$charData = ParseFile($fileName);
+					$charAmount++;
+					$totalLevel += $charData["level"];
+					$totalStr += $charData["str"];
+					$totalInt += $charData["int"];
+					$totalDex += $charData["dex"];
+					$totalSpd += $charData["spd"];
+					$totalLuk += $charData["luk"];
+					if($charData["gender"] === "0")
+						$totalMale++;
+					else if($charData["gender"] === "1")
+						$totalFemale++;
+					array_push($totalJob,$charData["job"]);
 
+				}
 			}
 		}
 		if($charAmount > 0){
@@ -248,10 +252,12 @@ DATA;
 		$items = array();
 		if($userAmount > 0){
 			foreach($userFileList as $user) {
-				$data = ParseFile($user."/item.dat");
-				if(!$data == false){
-					foreach($data as $itemno => $amount)
-						$items[$itemno] += $amount;
+				if(!$user == "index.php"){
+					$data = ParseFile($user."/item.dat");
+					if(!$data == false){
+						foreach($data as $itemno => $amount)
+							$items[$itemno] += $amount;
+					}
 				}
 			}
 			foreach($items as $itemno => $amount) {
@@ -266,11 +272,12 @@ DATA;
 		$userFileList = glob(USER."*");
 		$ipList = array();
 		foreach($userFileList as $user) {
-			$file = $user."/data.dat";
-			if(!$data = ParseFile($file)) continue;
-			$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
-			//$ipList[isset($data["ip"])?$data["ip"]:"*UnKnown"]++;
-			array_push($ipList,(isset($data["ip"])?$data["ip"]:"*UnKnown"));
+			if(!$user == "index.php"){
+				$file = $user."/data.dat";
+				if(!$data = ParseFile($file)) continue;
+				$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
+				array_push($ipList,(isset($data["ip"])?$data["ip"]:"*UnKnown"));
+			}
 		}
 		
 		print("<p>IP 중복 목록</p>\n");
@@ -288,13 +295,15 @@ DATA;
 		print("※(항목 데이터를 제외하고) {$baseSize}바이트보다 작은 파일을 검색합니다.</p>");
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			$userDir = glob($user."/*");
-			if(filesize($user."/data.dat") < $baseSize)
-				print($user."/data.dat"."(".filesize($user."/data.dat").")"."<br>\n");
-			foreach($userDir as $fileName) {
-				if(!is_numeric(basename($fileName,".dat"))) continue;
-				if(filesize($fileName) < $baseSize)
-					print($fileName."(".filesize($fileName).")<br>\n");
+			if(!$user == "index.php"){
+				$userDir = glob($user."/*");
+				if(filesize($user."/data.dat") < $baseSize)
+					print($user."/data.dat"."(".filesize($user."/data.dat").")"."<br>\n");
+				foreach($userDir as $fileName) {
+					if(!is_numeric(basename($fileName,".dat"))) continue;
+					if(filesize($fileName) < $baseSize)
+						print($fileName."(".filesize($fileName).")<br>\n");
+				}
 			}
 		}
 	} else if(__POST_2("adminBattleLog")) {

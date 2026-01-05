@@ -38,10 +38,6 @@ input{background-color:#dddddd;
 <?php
 	include("../class/global.php");
 
-	//function UserAmount() {
-	//	return 1;
-	//}
-
 	define("ROWS",__POST("patternNum")?__POST("patternNum"):8);
 	define("IMG","../image/char/");
 

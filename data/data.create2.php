@@ -68,11 +68,11 @@ function ItemAbilityPossibility($type) {
 			155,156,157,158,159,
 			204,200,205,201,
 			254,250,255,251,
-			H00,H01,H02,
-			HM0,HM1,HM2,
-			S00,S01,
-			SM0,SM1,SM2,
-			A00,A01,A02,A03,A04,
+			'H00','H01','H02',
+			'HM0','HM1','HM2',
+			'S00','S01',
+			'SM0','SM1','SM2',
+			'A00','A01','A02','A03','A04',
 			);
 			$high	= array(
 			110,111,112,113,114,
@@ -81,11 +81,11 @@ function ItemAbilityPossibility($type) {
 			165,166,167,168,169,
 			202,206,203,
 			252,256,253,
-			H03,H04,H05,
-			HM3,HM4,HM5,
-			S02,S03,
-			SM3,SM4,SM5,
-			A05,A06,A07,A08,A09,
+			'H03','H04','H05',
+			'HM3','HM4','HM5',
+			'S02','S03',
+			'SM3','SM4','SM5',
+			'A05','A06','A07','A08','A09',
 			);
 			break;
 		case "Shield":
@@ -99,20 +99,20 @@ function ItemAbilityPossibility($type) {
 			$low	= array(
 			300,301,
 			350,351,
-			H00,H01,H02,
-			HM0,HM1,HM2,
-			S00,S01,
-			SM0,SM1,SM2,
-			A00,A01,A02,A03,A04,
+			'H00','H01','H02',
+			'HM0','HM1','HM2',
+			'S00','S01',
+			'SM0','SM1','SM2',
+			'A00','A01','A02','A03','A04',
 			);
 			$high	= array(
 			302,303,304,
 			352,353,354,
-			H03,H04,H05,
-			HM3,HM4,HM5,
-			S02,S03,
-			SM3,SM4,SM5,
-			A05,A06,A07,A08,A09,
+			'H03','H04','H05',
+			'HM3','HM4','HM5',
+			'S02','S03',
+			'SM3','SM4','SM5',
+			'A05','A06','A07','A08','A09',
 			);
 			break;
 		
@@ -122,9 +122,9 @@ function ItemAbilityPossibility($type) {
 			252,256,253,
 			);
 			$high	= array(
-			HM5,
-			SM5,
-			A05,A09,
+			'HM5',
+			'SM5',
+			'A05','A09',
 			304,354,
 			);
 			break;

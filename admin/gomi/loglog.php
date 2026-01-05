@@ -20,7 +20,7 @@ Code fixed by Kustale ( jinsu8527@gmail.com )
 include("../setting.php");
 $admin	= "../";
 $users	= glob($admin.USER."/*");
-print("Users : ".__count($users)." / ".MAX_USERS."<br />\n");
+print("Users : ".(__count($users) - 1)." / ".MAX_USERS."<br />\n");
 
 print("--- ManageLog<br />\n");
 foreach(file($admin.MANAGE_LOG_FILE) as $string) {

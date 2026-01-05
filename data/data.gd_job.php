@@ -183,7 +183,7 @@ foreach($job as $No => $exp) {
 	print($JobData["name_male"]);
 	if($JobData["name_male"] !== $JobData["name_female"])
 		print("<br />(".$JobData["name_female"].")");
-	print('</span><a href="#top">↑</a></td>'."\n");
+	print('</span><a href="#top">↑</a></td>'."\n"); // 원판에는 없는 위로가기 버튼 추가 ^-^
 	print("<td$css>");
 	print('<img src="'.IMG_CHAR.$JobData["img_male"].'" />');
 	print('<img src="'.IMG_CHAR.$JobData["img_female"].'" />');

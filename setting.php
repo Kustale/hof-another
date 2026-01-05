@@ -15,7 +15,7 @@ define("MAX_TIME",150000);// 최대 시간
 define("TIME_GAIN_DAY",30000);// 하루에 회복하는 총 시간
 define("MAX_CHAR",40); // 최대 소지 캐릭터 수
 define("MAX_USERS",100); // 최대 등록자 수
-define("ABANDONED",60*60*24*30*6); // 게임이 포기된 것으로 간주되는 기간
+define("ABANDONED",60*60*24*30*6); // 게임을 접어버린 시간부터 지났을때 자동 탈퇴 되는 시간
 define("CONTROL_PERIOD",60*60*12); // 정기 관리주기
 define("RECORD_IP",1); // IP를 기록할까요? (0=NO 1=YES)
 
@@ -24,8 +24,8 @@ define("DEBUG",0); // 페이지에 Array나 함수명이 등장[개발자 전용
 define("CHAR_NO_IMAGE","NoImage.gif"); // 캐릭터 이미지가 없을 때 표시되는 이미지
 define("SESSION_SWITCH",1); // 0=OFF
 define("CHAR_ROW",5); // 한 화면의 문자 열 수
-define("CRYPT_KEY",'$1$12345678$'); // 경로 인코딩 키(게임 설치 후 변경하지 마세요)
-define("COOKIE_EXPIRE",60*60*24*3); //60*60*24*3
+define("CRYPT_KEY",'$1$12345678$'); // 경로 인코딩 키(게임이 구동된[user, log등등 폴더가 생성된] 이후 변경하지 마세요)
+define("COOKIE_EXPIRE",60*60*24*3); //60*60*24*3 : 건들지 않아도 되는 항목
 define("UP_PASS","password"); // 업데이트 정보만 사용됩니다.
 
 define("START_TIME",15000); // 게임이 시작될 때 가지고 있는 시간
@@ -78,6 +78,8 @@ define("DELAY_BASE",5); // 숫자가 높으면 차이가 나지 않는다.
 define("UNION_BATTLE_TIME",10); // 유니온전에서 소모하는 시간
 define("UNION_BATTLE_NEXT",60*10); //Union 다음 전투까지의 간격
 
+// 아래 부터는 따로 건들거는 없는 항목들
+
 // files
 define("INDEX","index.php");
 
@@ -114,16 +116,14 @@ define("DATA_LAND_APPEAR", DATA_DIR."data.land_appear.php");
 define("DATA_CLASSCHANGE", DATA_DIR."data.classchange.php");
 define("DATA_CREATE", DATA_DIR."data.create.php");
 define("DATA_TOWN", DATA_DIR."data.town_appear.php");
-
 define("MANUAL", DATA_DIR."data.manual0.php");
 define("MANUAL_HIGH", DATA_DIR."data.manual1.php");
-
 define("GAME_DATA_JOB", DATA_DIR."data.gd_job.php");
 define("GAME_DATA_ITEM", DATA_DIR."data.gd_item.php");
 define("GAME_DATA_JUDGE", DATA_DIR."data.gd_judge.php");
 define("GAME_DATA_MONSTER", DATA_DIR."data.gd_monster.php");
-
 define("TUTORIAL", DATA_DIR."data.tutorial.php");
+
 // DAT
 define("AUCTION_ITEM","./auction.dat"); // 항목 경매용 파일
 define("AUCTION_ITEM_LOG","./auction_log.dat"); // 항목 경매에 대한 로그 파일
@@ -137,15 +137,18 @@ define("BBS_TOWN","./bbs_town.dat");
 define("MANAGE_LOG_FILE","./managed.dat"); // 정기 관리 기록 파일
 define("USER_NAME","./username.dat"); // 이름 저장 파일
 
-// dir
+// 이미지 dir
 define("IMG_CHAR","./image/char/");
 define("IMG_CHAR_REV","./image/char_rev/");
 define("IMG_ICON","./image/icon/");
 define("IMG_OTHER","./image/other/");
+
+//유저 정보 dir
 define("USER","./user/");
-define("UNION","./union/");
 define("DATA","data.dat");
 define("ITEM","item.dat");
+
+define("UNION","./union/");
 
 define("LOG_DIR","./log/");
 define("LOG_BATTLE_NORMAL",LOG_DIR."normal/");
@@ -155,17 +158,14 @@ define("LOG_BATTLE_UNION",LOG_DIR."union/");
 // 상태 정의
 define("FRONT","front");
 define("BACK","back");
-
 define("TEAM_0",0);
 define("TEAM_1",1);
 define("WIN",0);
 define("LOSE",1);
 define("DRAW","d");
-
 define("ALIVE",0);
 define("DEAD",1);
 define("POISON",2);
-
 define("CHARGE",0);
 define("CAST",1);
 
