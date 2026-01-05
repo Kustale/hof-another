@@ -300,30 +300,36 @@ function ShowLogList() {
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	$limit = 0;
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file);
-		$limit++;
-		if(30 <= $limit) {
-			break;
+		if(!$file == "index.php"){
+			BattleLogDetail($file);
+			$limit++;
+			if(30 <= $limit) {
+				break;
+			}
 		}
 	}
 	$limit	= 0;
 	print("<h4>보스전 - <a href=\"?ulog\">전부 표시</a>(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"UNION");
-		$limit++;
-		if(30 <= $limit) {
-			break;
+		if(!$file == "index.php"){
+			BattleLogDetail($file,"UNION");
+			$limit++;
+			if(30 <= $limit) {
+				break;
+			}
 		}
 	}
 	$limit	= 0;
 	print("<h4>랭킹전 - <a href=\"?rlog\">전부 표시</a>(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"RANK");
-		$limit++;
-		if(30 <= $limit) {
-			break;
+		if(!$file == "index.php"){
+			BattleLogDetail($file,"RANK");
+			$limit++;
+			if(30 <= $limit) {
+				break;
+			}
 		}
 	}
 
@@ -340,7 +346,9 @@ function LogShowCommon() {
 	print("<h4>최근 전투 - 전체 기록(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file);
+		if(!$file == "index.php"){
+			BattleLogDetail($file);
+		}
 	}
 	print("</div>\n");
 }
@@ -355,7 +363,9 @@ function LogShowUnion() {
 	print("<h4>보스전 - 전체 기록(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"UNION");
+		if(!$file == "index.php"){
+			BattleLogDetail($file,"UNION");
+		}
 	}
 	print("</div>\n");
 }
@@ -370,7 +380,9 @@ function LogShowRanking() {
 	print("<h4>랭킹전 - 전체기록(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"RANK");
+		if(!$file == "index.php"){
+			BattleLogDetail($file,"RANK");
+		}
 	}
 	print("</div>\n");
 }

@@ -1164,7 +1164,7 @@ P11;
 
 		print("</div>\n");
 		$files	= glob(UNION."*");
-		if($files) {
+		if($files && !$files == "index.php") {
 			include(CLASS_UNION);
 			include(DATA_MONSTER);
 			foreach($files as $file) {
@@ -1194,10 +1194,12 @@ P11;
 		print("<div style=\"margin:0 20px\">\n");
 		$log	= @glob(LOG_BATTLE_UNION."*");
 		foreach(array_reverse($log) as $file) {
-			$limit++;
-			BattleLogDetail($file,"UNION");
-			if(15 <= $limit)
-				break;
+			if(!$file == "index.php"){
+				$limit++;
+				BattleLogDetail($file,"UNION");
+				if(15 <= $limit)
+					break;
+			}
 		}
 		print("</div></div>\n");
 	}

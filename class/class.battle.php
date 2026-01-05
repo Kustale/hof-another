@@ -151,9 +151,11 @@ HTML;
 
 		$i	= 0;
 		while($logAmount <= __count($log) ) {
-			unlink($log["$i"]);
-			unset($log["$i"]);
-			$i++;
+			if(!$log["$i"] == "index.php"){
+				unlink($log["$i"]);
+				unset($log["$i"]);
+				$i++;
+			}
 		}
 
 		$time	= time().substr(microtime(),2,6);

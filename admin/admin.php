@@ -311,21 +311,27 @@ DATA;
 			$dir = LOG_BATTLE_NORMAL;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				unlink($file);
+				if(!$file == "index.php"){
+					unlink($file);
+				}
 			}
 			print("<p>일반 전투 기록은 삭제됩니다.</p>\n");
 		} else if(__POST_2("deleteLogUnion")) {
 			$dir = LOG_BATTLE_UNION;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				unlink($file);
+				if(!$file == "index.php"){
+					unlink($file);
+				}
 			}
 			print("<p>보스 전투 기록이 삭제되었습니다.</p>\n");
 		} else if(__POST_2("deleteLogRanking")) {
 			$dir = LOG_BATTLE_RANK;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				unlink($file);
+				if(!$file == "index.php"){
+					unlink($file);
+				}
 			}
 			print("<p>전투 기록이 삭제되었습니다.</p>\n");
 		}
