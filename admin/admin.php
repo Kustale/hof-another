@@ -87,13 +87,13 @@ MENU;
 		$userList = glob(USER."*");
 		print("<p>모든 사용자</p>\n");
 		foreach($userList as $user) {
-			if(!$user == "index.php"){
-				print('<form action="?" method="post">');
-				print('<input type="submit" name="UserData" value=" 관리 ">');
-				print('<input type="hidden" name="userID" value="'.basename($user).'">');
-				print(basename($user)."\n");
-				print("</form>\n");
-			}
+			$fileh = pathinfo($user);
+			if($fileh["extension"] == "php") continue;
+			print('<form action="?" method="post">');
+			print('<input type="submit" name="UserData" value=" 관리 ">');
+			print('<input type="hidden" name="userID" value="'.basename($user).'">');
+			print(basename($user)."\n");
+			print("</form>\n");
 		}
 	} else if(__POST_2("UserData")) {
 		$userFileList = glob(USER.__POST_2("userID")."/*");
@@ -177,10 +177,10 @@ DATA;
 		$totalMoney = 0;
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			if(!$user == "index.php"){
-				$user = new user(basename($user,".dat"));
-				$totalMoney += $user->money;
-			}
+			$fileh = pathinfo($user);
+			if($fileh["extension"] == "php") continue;
+			$user = new user(basename($user,".dat"));
+			$totalMoney += $user->money;
 		}
 		print("UserAmount :".(__count_2($userFileList) - 1)."<br>\n");
 		print("TotalMoney :".MoneyFormat($totalMoney)."<br>\n");
@@ -203,25 +203,24 @@ DATA;
 		include(GLOBAL_PHP);
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			if(!$user == "index.php"){
-				$userDir = glob($user."/*");
-				foreach($userDir as $fileName) {
-					if(!is_numeric(basename($fileName,".dat"))) continue;
-					$charData = ParseFile($fileName);
-					$charAmount++;
-					$totalLevel += $charData["level"];
-					$totalStr += $charData["str"];
-					$totalInt += $charData["int"];
-					$totalDex += $charData["dex"];
-					$totalSpd += $charData["spd"];
-					$totalLuk += $charData["luk"];
-					if($charData["gender"] === "0")
-						$totalMale++;
-					else if($charData["gender"] === "1")
-						$totalFemale++;
-					array_push($totalJob,$charData["job"]);
-
-				}
+			$fileh = pathinfo($user);
+			if($fileh["extension"] == "php") continue;
+			$userDir = glob($user."/*");
+			foreach($userDir as $fileName) {
+				if(!is_numeric(basename($fileName,".dat"))) continue;
+				$charData = ParseFile($fileName);
+				$charAmount++;
+				$totalLevel += $charData["level"];
+				$totalStr += $charData["str"];
+				$totalInt += $charData["int"];
+				$totalDex += $charData["dex"];
+				$totalSpd += $charData["spd"];
+				$totalLuk += $charData["luk"];
+				if($charData["gender"] === "0")
+					$totalMale++;
+				else if($charData["gender"] === "1")
+					$totalFemale++;
+				array_push($totalJob,$charData["job"]);
 			}
 		}
 		if($charAmount > 0){
@@ -252,12 +251,12 @@ DATA;
 		$items = array();
 		if($userAmount > 0){
 			foreach($userFileList as $user) {
-				if(!$user == "index.php"){
-					$data = ParseFile($user."/item.dat");
-					if(!$data == false){
-						foreach($data as $itemno => $amount)
-							$items[$itemno] += $amount;
-					}
+				$fileh = pathinfo($user);
+				if($fileh["extension"] == "php") continue;
+				$data = ParseFile($user."/item.dat");
+				if(!$data == false){
+					foreach($data as $itemno => $amount)
+						$items[$itemno] += $amount;
 				}
 			}
 			foreach($items as $itemno => $amount) {
@@ -272,12 +271,12 @@ DATA;
 		$userFileList = glob(USER."*");
 		$ipList = array();
 		foreach($userFileList as $user) {
-			if(!$user == "index.php"){
-				$file = $user."/data.dat";
-				if(!$data = ParseFile($file)) continue;
-				$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
-				array_push($ipList,(isset($data["ip"])?$data["ip"]:"*UnKnown"));
-			}
+			$fileh = pathinfo($user);
+			if($fileh["extension"] == "php") continue;
+			$file = $user."/data.dat";
+			if(!$data = ParseFile($file)) continue;
+			$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
+			array_push($ipList,(isset($data["ip"])?$data["ip"]:"*UnKnown"));
 		}
 		
 		print("<p>IP 중복 목록</p>\n");
@@ -295,15 +294,15 @@ DATA;
 		print("※(항목 데이터를 제외하고) {$baseSize}바이트보다 작은 파일을 검색합니다.</p>");
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
-			if(!$user == "index.php"){
-				$userDir = glob($user."/*");
-				if(filesize($user."/data.dat") < $baseSize)
-					print($user."/data.dat"."(".filesize($user."/data.dat").")"."<br>\n");
-				foreach($userDir as $fileName) {
-					if(!is_numeric(basename($fileName,".dat"))) continue;
-					if(filesize($fileName) < $baseSize)
-						print($fileName."(".filesize($fileName).")<br>\n");
-				}
+			$fileh = pathinfo($user);
+			if($fileh["extension"] == "php") continue;
+			$userDir = glob($user."/*");
+			if(filesize($user."/data.dat") < $baseSize)
+				print($user."/data.dat"."(".filesize($user."/data.dat").")"."<br>\n");
+			foreach($userDir as $fileName) {
+				if(!is_numeric(basename($fileName,".dat"))) continue;
+				if(filesize($fileName) < $baseSize)
+					print($fileName."(".filesize($fileName).")<br>\n");
 			}
 		}
 	} else if(__POST_2("adminBattleLog")) {
@@ -311,27 +310,27 @@ DATA;
 			$dir = LOG_BATTLE_NORMAL;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				if(!$file == "index.php"){
-					unlink($file);
-				}
+				$fileh = pathinfo($file);
+				if($fileh["extension"] == "php") continue;
+				unlink($file);
 			}
 			print("<p>일반 전투 기록은 삭제됩니다.</p>\n");
 		} else if(__POST_2("deleteLogUnion")) {
 			$dir = LOG_BATTLE_UNION;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				if(!$file == "index.php"){
-					unlink($file);
-				}
+				$fileh = pathinfo($file);
+				if($fileh["extension"] == "php") continue;
+				unlink($file);
 			}
 			print("<p>보스 전투 기록이 삭제되었습니다.</p>\n");
 		} else if(__POST_2("deleteLogRanking")) {
 			$dir = LOG_BATTLE_RANK;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
-				if(!$file == "index.php"){
+					$fileh = pathinfo($file);
+					if($fileh["extension"] == "php") continue;
 					unlink($file);
-				}
 			}
 			print("<p>전투 기록이 삭제되었습니다.</p>\n");
 		}

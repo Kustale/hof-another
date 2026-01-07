@@ -1164,10 +1164,12 @@ P11;
 
 		print("</div>\n");
 		$files	= glob(UNION."*");
-		if($files && !$files == "index.php") {
+		if($files) {
 			include(CLASS_UNION);
 			include(DATA_MONSTER);
 			foreach($files as $file) {
+				$fileh = pathinfo($file);
+				if($fileh["extension"] == "php") continue;
 				$UnionMons	= new union($file);
 				if($UnionMons->is_Alive())
 					$Union[]	= $UnionMons;
@@ -1194,12 +1196,12 @@ P11;
 		print("<div style=\"margin:0 20px\">\n");
 		$log	= @glob(LOG_BATTLE_UNION."*");
 		foreach(array_reverse($log) as $file) {
-			if(!$file == "index.php"){
-				$limit++;
-				BattleLogDetail($file,"UNION");
-				if(15 <= $limit)
-					break;
-			}
+			$fileh = pathinfo($file);
+			if($fileh["extension"] == "php") continue;
+			$limit++;
+			BattleLogDetail($file,"UNION");
+			if(15 <= $limit)
+				break;
 		}
 		print("</div></div>\n");
 	}

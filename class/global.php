@@ -83,30 +83,31 @@ function __count($value){
 		$list	= glob(USER."*");
 		$now	= time();
 		foreach($list as $file) {
-			if(!$file == "index.php"){
-				if(!is_dir($file)) continue;
-				$UserID	= substr($file,strrpos($file,"/")+1);
-				$user	= new user($UserID,true);
-				if($user->IsAbandoned())
+			$fileh = pathinfo($file);
+			if($fileh["extension"] == "php") continue;
+			if(!is_dir($file)) continue;
+			$UserID	= substr($file,strrpos($file,"/")+1);
+			$user	= new user($UserID,true);
+			if($user->IsAbandoned())
+			{
+				if(!isset($Ranking))
 				{
-					if(!isset($Ranking))
-					{
-						include_once(CLASS_RANKING);
-						$Ranking	= new Ranking();
-						$RankChange	= false;
-					}
-					if( $Ranking->DeleteRank($UserID) ) {
-						$RankChange	= true;
-					}
-					RecordManage(date("Y M d G:i:s",$now).": user ".$user->id." deleted.");
-					$user->DeleteUser(false);
+					include_once(CLASS_RANKING);
+					$Ranking	= new Ranking();
+					$RankChange	= false;
 				}
-					else
-				{
-					$user->fpCloseAll();
-					unset($user);
+				if( $Ranking->DeleteRank($UserID) ) {
+					$RankChange	= true;
 				}
+				RecordManage(date("Y M d G:i:s",$now).": user ".$user->id." deleted.");
+				$user->DeleteUser(false);
 			}
+				else
+			{
+				$user->fpCloseAll();
+				unset($user);
+			}
+			
 		}
 		
 		if($RankChange === true)
@@ -300,36 +301,36 @@ function ShowLogList() {
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	$limit = 0;
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file);
-			$limit++;
-			if(30 <= $limit) {
-				break;
-			}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file);
+		$limit++;
+		if(30 <= $limit) {
+			break;
 		}
 	}
 	$limit	= 0;
 	print("<h4>보스전 - <a href=\"?ulog\">전부 표시</a>(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file,"UNION");
-			$limit++;
-			if(30 <= $limit) {
-				break;
-			}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file,"UNION");
+		$limit++;
+		if(30 <= $limit) {
+			break;
 		}
 	}
 	$limit	= 0;
 	print("<h4>랭킹전 - <a href=\"?rlog\">전부 표시</a>(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file,"RANK");
-			$limit++;
-			if(30 <= $limit) {
-				break;
-			}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file,"RANK");
+		$limit++;
+		if(30 <= $limit) {
+			break;
 		}
 	}
 
@@ -346,9 +347,9 @@ function LogShowCommon() {
 	print("<h4>최근 전투 - 전체 기록(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file);
-		}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file);
 	}
 	print("</div>\n");
 }
@@ -363,9 +364,9 @@ function LogShowUnion() {
 	print("<h4>보스전 - 전체 기록(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file,"UNION");
-		}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file,"UNION");
 	}
 	print("</div>\n");
 }
@@ -380,9 +381,9 @@ function LogShowRanking() {
 	print("<h4>랭킹전 - 전체기록(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
-		if(!$file == "index.php"){
-			BattleLogDetail($file,"RANK");
-		}
+		$fileh = pathinfo($file);
+		if($fileh["extension"] == "php") continue;
+		BattleLogDetail($file,"RANK");
 	}
 	print("</div>\n");
 }

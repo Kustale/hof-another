@@ -151,11 +151,11 @@ HTML;
 
 		$i	= 0;
 		while($logAmount <= __count($log) ) {
-			if(!$log["$i"] == "index.php"){
-				unlink($log["$i"]);
-				unset($log["$i"]);
-				$i++;
-			}
+			$fileh = pathinfo($log["$i"]);
+			if($fileh["extension"] == "php") continue;
+			unlink($log["$i"]);
+			unset($log["$i"]);
+			$i++;
 		}
 
 		$time	= time().substr(microtime(),2,6);
