@@ -88,7 +88,7 @@ MENU;
 		print("<p>모든 사용자</p>\n");
 		foreach($userList as $user) {
 			$fileh = pathinfo($user);
-			if($fileh["extension"] == "php") continue;
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			print('<form action="?" method="post">');
 			print('<input type="submit" name="UserData" value=" 관리 ">');
 			print('<input type="hidden" name="userID" value="'.basename($user).'">');
@@ -99,6 +99,8 @@ MENU;
 		$userFileList = glob(USER.__POST_2("userID")."/*");
 		print("<p>USER :".__POST_2("userID")."</p>\n");
 		foreach($userFileList as $file) {
+			$fileh = pathinfo($file);
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			print('<form action="?" method="post">');
 			print('<input type="submit" name="UserFileDet" value=" 관리 ">');
 			print('<input type="hidden" name="userFile" value="'.basename($file).'">');
@@ -178,7 +180,7 @@ DATA;
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
 			$fileh = pathinfo($user);
-			if($fileh["extension"] == "php") continue;
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			$user = new user(basename($user,".dat"));
 			$totalMoney += $user->money;
 		}
@@ -204,7 +206,7 @@ DATA;
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
 			$fileh = pathinfo($user);
-			if($fileh["extension"] == "php") continue;
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			$userDir = glob($user."/*");
 			foreach($userDir as $fileName) {
 				if(!is_numeric(basename($fileName,".dat"))) continue;
@@ -216,9 +218,9 @@ DATA;
 				$totalDex += $charData["dex"];
 				$totalSpd += $charData["spd"];
 				$totalLuk += $charData["luk"];
-				if($charData["gender"] === "0")
+				if((isset($charData["gender"]) ? $charData["gender"] : "") === "0")
 					$totalMale++;
-				else if($charData["gender"] === "1")
+				else if((isset($charData["gender"]) ? $charData["gender"] : "") === "1")
 					$totalFemale++;
 				array_push($totalJob,$charData["job"]);
 			}
@@ -252,7 +254,7 @@ DATA;
 		if($userAmount > 0){
 			foreach($userFileList as $user) {
 				$fileh = pathinfo($user);
-				if($fileh["extension"] == "php") continue;
+				if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 				$data = ParseFile($user."/item.dat");
 				if(!$data == false){
 					foreach($data as $itemno => $amount)
@@ -272,7 +274,7 @@ DATA;
 		$ipList = array();
 		foreach($userFileList as $user) {
 			$fileh = pathinfo($user);
-			if($fileh["extension"] == "php") continue;
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			$file = $user."/data.dat";
 			if(!$data = ParseFile($file)) continue;
 			$html .= "<tr><td>".(isset($data["id"])?$data["id"]:"")."</td><td>".(isset($data["name"])?$data["name"]:"")."</td><td>".(isset($data["ip"])?$data["ip"]:"")."</td></tr>\n";
@@ -295,7 +297,7 @@ DATA;
 		$userFileList = glob(USER."*");
 		foreach($userFileList as $user) {
 			$fileh = pathinfo($user);
-			if($fileh["extension"] == "php") continue;
+			if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 			$userDir = glob($user."/*");
 			if(filesize($user."/data.dat") < $baseSize)
 				print($user."/data.dat"."(".filesize($user."/data.dat").")"."<br>\n");
@@ -311,7 +313,7 @@ DATA;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
 				$fileh = pathinfo($file);
-				if($fileh["extension"] == "php") continue;
+				if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 				unlink($file);
 			}
 			print("<p>일반 전투 기록은 삭제됩니다.</p>\n");
@@ -320,7 +322,7 @@ DATA;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
 				$fileh = pathinfo($file);
-				if($fileh["extension"] == "php") continue;
+				if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 				unlink($file);
 			}
 			print("<p>보스 전투 기록이 삭제되었습니다.</p>\n");
@@ -329,7 +331,7 @@ DATA;
 			$logFile = glob($dir."*");
 			foreach($logFile as $file) {
 					$fileh = pathinfo($file);
-					if($fileh["extension"] == "php") continue;
+					if((isset($fileh["extension"]) ? $fileh["extension"] : "") == "php") continue;
 					unlink($file);
 			}
 			print("<p>전투 기록이 삭제되었습니다.</p>\n");
