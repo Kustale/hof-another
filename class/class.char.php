@@ -1216,10 +1216,10 @@ P6_B;
 	function PatternExplode() {
 		if($this->judge)
 			return false;
-		$Pattern	= explode("|",$this->Pattern);
-		$this->judge	= explode("<>",$Pattern["0"]);
-		$this->quantity	= explode("<>",$Pattern["1"]);
-		$this->action	= explode("<>",$Pattern["2"]);
+		if(isset($this->Pattern)) $Pattern	= explode("|",$this->Pattern);
+		if(isset($Pattern["0"])) $this->judge	= explode("<>",$Pattern["0"]);
+		if(isset($Pattern["1"])) $this->quantity	= explode("<>",$Pattern["1"]);
+		if(isset($Pattern["2"])) $this->action	= explode("<>",$Pattern["2"]);
 	}
 
 	function PatternSave($judge,$quantity,$action) {

@@ -33,7 +33,7 @@ class union extends char{
 	var $itemdrop;
 
 
-	function union($file=false) {
+	function __construct($file=false) {
 		$this->LoadData($file);
 	}
 
@@ -113,7 +113,7 @@ class union extends char{
 		print("</div>\n");
 	}
 
-	function ShowValueChange() {
+	function ShowValueChange($from, $to) { // ㅇㅅㅇ
 		print("(??? > ???)");
 	}
 
@@ -311,7 +311,7 @@ class union extends char{
 		}
 	}
 
-	function SaveCharData() {
+	function SaveCharData($id = false) { // ㅇㅅㅇ
 		if(!file_exists($this->file))
 			return false;
 		$string	 = "MonsterNumber=".$this->MonsterNumber."\n";

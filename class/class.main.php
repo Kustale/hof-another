@@ -875,16 +875,16 @@ P4;
 			print("<select name=\"judge".$i."\">\n");
 			foreach($list as $val) {
 				$exp	= LoadJudgeData($val);
-				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).(isset($exp["css"])?' class="select0"':NULL).">".(isset($exp["css"])?' ':'   ')."{$exp['exp']}</option>\n");
+				print("<option value=\"{$val}\"".((isset($char->judge[$i]) ? $char->judge[$i] : "") == $val ? " selected" : NULL).(isset($exp["css"])?' class="select0"':NULL).">".(isset($exp["css"])?' ':'   ')."{$exp['exp']}</option>\n");
 			}
 			print("</select>\n");
 			print("</td><td>\n");
-			print("<input type=\"text\" name=\"quantity".$i."\" maxlength=\"4\" value=\"".$char->quantity[$i]."\" style=\"width:56px\" class=\"text\">");
+			print("<input type=\"text\" name=\"quantity".$i."\" maxlength=\"4\" value=\"".(isset($char->quantity[$i]) ? $char->quantity[$i] : "")."\" style=\"width:56px\" class=\"text\">");
 			print("</td><td>\n");
 			print("<select name=\"skill".$i."\">\n");
 			foreach($char->skill as $val) {
 				$skill	= LoadSkillData($val);
-				print("<option value=\"{$val}\"".($char->action[$i] == $val ? " selected" : NULL).">");
+				print("<option value=\"{$val}\"".((isset($char->action[$i]) ? $char->action[$i] : "") == $val ? " selected" : NULL).">");
 				print($skill["name"].(isset($skill["sp"])?" - (SP:{$skill['sp']})":NULL));
 				print("</option>\n");
 			}
@@ -1748,6 +1748,7 @@ P17;
 
 		if(__POST("SetRankTeam")) {
 			$now	= time();
+			$checked = [];
 			if(($now - $this->rank_set_time) < RANK_TEAM_SET_TIME) {
 				$left	= RANK_TEAM_SET_TIME - ($now - $this->rank_set_time);
 				$day	= floor($left / 3600 / 24);
